@@ -12,8 +12,9 @@ const Intro = () => {
   const styles = StyleSheet.create({
     title: {
       fontSize: 20,
+      marginBottom: 5,
       color: '#342D21',
-      fontFamily: 'Chilanka-Regular',
+     fontFamily: 'Chilanka-Regular',
     },
     image: {
       width: 330,
@@ -22,7 +23,7 @@ const Intro = () => {
     text: {
       fontSize: 16,
       color: '#342D21',
-      fontFamily: 'Chilanka-Regular'
+    fontFamily: 'Chilanka-Regular'
     },
     button: {
       marginTop: 20,
@@ -36,7 +37,7 @@ const Intro = () => {
     },
     buttonText: {
       fontSize: 20,
-      color: '#fff',
+      color: '#373737',
       fontFamily: 'Poppins-SemiBold'
     }
   });
@@ -90,7 +91,7 @@ const Intro = () => {
 
   return (
     <AppIntroSlider
-      activeDotStyle={{ width: 15, backgroundColor: '#EBA400' }}
+      activeDotStyle={{ width: 15, backgroundColor: '#977700' }}
       dotStyle={{ width: 15, backgroundColor: '#D9D9D9' }}
       renderItem={_renderItem}
       data={slides}
