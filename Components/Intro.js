@@ -14,7 +14,7 @@ const Intro = () => {
       fontSize: 20,
       marginBottom: 5,
       color: '#342D21',
-     fontFamily: 'Chilanka-Regular',
+      fontFamily: 'Chilanka-Regular',
     },
     image: {
       width: 330,
@@ -23,7 +23,7 @@ const Intro = () => {
     text: {
       fontSize: 16,
       color: '#342D21',
-    fontFamily: 'Chilanka-Regular'
+      fontFamily: 'Chilanka-Regular'
     },
     button: {
       marginTop: 20,
@@ -32,8 +32,8 @@ const Intro = () => {
       paddingHorizontal: 20,
       backgroundColor: '#FEE502',
       borderRadius: 20,
-      justifyContent: 'center', 
-      alignItems: 'center', 
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     buttonText: {
       fontSize: 20,
