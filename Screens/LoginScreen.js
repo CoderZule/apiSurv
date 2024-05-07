@@ -144,6 +144,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#342D21',
     marginBottom: 8,
+    marginLeft: 7,
     fontFamily: 'Chilanka-Regular'
 
   },
@@ -153,11 +154,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5F5F5',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#C9D3DB',
-    borderStyle: 'solid', 
-
+    borderRadius: 15,
+ 
      },
   inputIcon: {
     padding: 10,
