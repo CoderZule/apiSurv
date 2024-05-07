@@ -2,8 +2,11 @@ import React, { Component } from "react";
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import AppIntroSlider from 'react-native-app-intro-slider';
 import { useFonts } from 'expo-font';
+import { useNavigation } from '@react-navigation/native'; // Import useNavigation hook
 
 const Intro = () => {
+  const navigation = useNavigation(); // Get navigation object using useNavigation hook
+
   const [loaded] = useFonts({
     'Chilanka-Regular': require('../assets/fonts/Chilanka-Regular.ttf'),
     'Poppins-Semibold': require('../assets/fonts/Poppins-SemiBold.ttf'),
@@ -11,7 +14,7 @@ const Intro = () => {
 
   const styles = StyleSheet.create({
     title: {
-      fontSize: 20,
+      fontSize: 19,
       marginBottom: 5,
       color: '#342D21',
       fontFamily: 'Chilanka-Regular',
@@ -21,7 +24,7 @@ const Intro = () => {
       height: 340,
     },
     text: {
-      fontSize: 16,
+      fontSize: 17,
       color: '#342D21',
       fontFamily: 'Chilanka-Regular'
     },
@@ -36,7 +39,7 @@ const Intro = () => {
       alignItems: 'center',
     },
     buttonText: {
-      fontSize: 20,
+      fontSize: 18,
       color: '#373737',
       fontFamily: 'Poppins-SemiBold'
     }
@@ -68,13 +71,12 @@ const Intro = () => {
 
   const _renderItem = ({ item, index }) => {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor:"#fff" }}>
         <Image style={styles.image} source={item.image} />
         <Text style={styles.title}>{item.title}</Text>
         <Text style={styles.text}>{item.text}</Text>
-        {/* Render the button only on the last slide */}
-        {index === slides.length - 1 && (
-          <TouchableOpacity style={styles.button} onPress={_onDone}>
+         {index === slides.length - 1 && (
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login')}>
             <Text style={styles.buttonText}>Commencer</Text>
           </TouchableOpacity>
         )}
@@ -82,13 +84,7 @@ const Intro = () => {
     );
   }
 
-  const _onDone = () => {
-    // User finished the introduction. Show real app through
-    // navigation or simply by controlling state
-    // You can implement this functionality as per your requirement
-    console.log('Introduction completed');
-  }
-
+ 
   return (
     <AppIntroSlider
       activeDotStyle={{ width: 15, backgroundColor: '#977700' }}
