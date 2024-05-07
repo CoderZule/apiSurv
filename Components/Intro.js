@@ -2,10 +2,10 @@ import React, { Component } from "react";
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import AppIntroSlider from 'react-native-app-intro-slider';
 import { useFonts } from 'expo-font';
-import { useNavigation } from '@react-navigation/native'; // Import useNavigation hook
+import { useNavigation } from '@react-navigation/native';  
 
 const Intro = () => {
-  const navigation = useNavigation(); // Get navigation object using useNavigation hook
+  const navigation = useNavigation(); 
 
   const [loaded] = useFonts({
     'Chilanka-Regular': require('../assets/fonts/Chilanka-Regular.ttf'),
