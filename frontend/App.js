@@ -4,6 +4,7 @@ import Splash from './Screens/WelcomingScreens/Splash';
 import Index from './Screens/WelcomingScreens/Index';
 
 import LoginScreen from './Screens/LoginScreen';
+import HomeScreen from './Screens/HomeScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -31,6 +32,7 @@ export default function App() {
           <>
             <Stack.Screen name="Index" component={Index} />
             <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="Home" component={HomeScreen} />
           </>
         )}
       </Stack.Navigator>

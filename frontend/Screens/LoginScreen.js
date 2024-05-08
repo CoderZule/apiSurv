@@ -7,12 +7,18 @@ import {
   Text,
   TouchableOpacity,
   TextInput,
+  Alert  
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useFonts } from 'expo-font';
 import { FontAwesome5 } from '@expo/vector-icons';
+import axios from 'axios';  
+import { useNavigation } from '@react-navigation/native';  
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LoginScreen() {
+  const navigation = useNavigation(); 
+
   const [loaded] = useFonts({
     'Chilanka-Regular': require('../assets/fonts/Chilanka-Regular.ttf'),
     'Poppins-Semibold': require('../assets/fonts/Poppins-SemiBold.ttf'),
@@ -21,15 +27,35 @@ export default function LoginScreen() {
   const [form, setForm] = useState({
     email: '',
     password: '',
-    hidePassword: true, 
+    hidePassword: true,
   });
 
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post(
+        'http://192.168.1.19:5001/user-login',
+        
+        {
+          Email: form.email,
+          Password: form.password,
+        }
+      );
+
+       const currentUser = response.data.currentUser;
+
+      AsyncStorage.setItem("token",response.data.token);
+
+       navigation.navigate('Home', { user: currentUser });
+    } catch (error) {
+       Alert.alert('Échec de connexion', 'Identifiants invalides. Veuillez réessayer.');
+     }
+  };
   const togglePasswordVisibility = () => {
     setForm({ ...form, hidePassword: !form.hidePassword });
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor:"#fff"  }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <View style={styles.container}>
         <KeyboardAwareScrollView>
           <View style={styles.header}>
@@ -47,7 +73,7 @@ export default function LoginScreen() {
             <View style={styles.input}>
               <Text style={styles.inputLabel}>E-mail</Text>
               <View style={styles.inputContainer}>
-              <FontAwesome5 name="envelope" size={20} color="#6b7280" style={styles.inputIcon} />
+                <FontAwesome5 name="envelope" size={20} color="#6b7280" style={styles.inputIcon} />
                 <TextInput
                   autoCapitalize="none"
                   autoCorrect={false}
@@ -58,7 +84,7 @@ export default function LoginScreen() {
                   placeholderTextColor="#6b7280"
                   style={styles.inputControl}
                   value={form.email}
-                  
+
                 />
               </View>
             </View>
@@ -74,7 +100,7 @@ export default function LoginScreen() {
                   placeholder="********"
                   placeholderTextColor="#6b7280"
                   style={styles.inputControl}
-                  secureTextEntry={form.hidePassword} 
+                  secureTextEntry={form.hidePassword}
                   value={form.password}
                 />
                 <TouchableOpacity onPress={togglePasswordVisibility}>
@@ -89,9 +115,7 @@ export default function LoginScreen() {
             </View>
 
             <View style={styles.formAction}>
-              <TouchableOpacity onPress={() => {
-                // handle onPress
-              }}>
+              <TouchableOpacity onPress={handleLogin}>
                 <View style={styles.btn}>
                   <Text style={styles.btnText}>Se connecter</Text>
                 </View>
@@ -155,14 +179,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F5F5F5',
     borderRadius: 15,
- 
-     },
+
+  },
   inputIcon: {
     padding: 10,
   },
   inputControl: {
     flex: 1,
-     paddingHorizontal: 1,
+    paddingHorizontal: 1,
     height: 50,
     fontSize: 15,
     fontWeight: '500',
@@ -170,9 +194,9 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     fontFamily: 'Chilanka-Regular'
 
-    
+
   },
- 
+
   formAction: {
     marginTop: 4,
     marginBottom: 16,
