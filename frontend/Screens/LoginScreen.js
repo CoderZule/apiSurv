@@ -45,8 +45,10 @@ export default function LoginScreen() {
 
       AsyncStorage.setItem("token",response.data.token);
 
-       navigation.navigate('Home', { user: currentUser });
-    } catch (error) {
+    navigation.navigate('DrawerNavigator');
+
+
+     } catch (error) {
        Alert.alert('Échec de connexion', 'Identifiants invalides. Veuillez réessayer.');
      }
   };

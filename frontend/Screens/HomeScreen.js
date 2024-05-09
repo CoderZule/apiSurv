@@ -1,14 +1,12 @@
 import React from 'react';
-import { View, Text,TouchableOpacity, StyleSheet} from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import HomeHeader from '../Components/HomeHeader';
 
-import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-export default function HomeScreen() {
+export default function HomeScreen({ user, navigation}) {
 
 
   const styles = StyleSheet.create({
-    
+
     button: {
       marginTop: 20,
       width: 276,
@@ -26,27 +24,18 @@ export default function HomeScreen() {
     }
   });
 
-  const navigation = useNavigation();
-
-  const handleLogout = async () => {
-    try {
-      // Clear the stored token from AsyncStorage
-      await AsyncStorage.removeItem('token');
-      navigation.navigate('Login');
-    } catch (error) {
-      console.log('Error logging out:', error);
-    }
-  };
-
+ 
 
 
   return (
     <View>
-      <TouchableOpacity onPress={handleLogout}>
-        <View style={styles.button}>
-          <Text style={styles.buttonText}>Logout</Text>
-        </View>
-      </TouchableOpacity>
+          <HomeHeader navigation={navigation} />
+
+ 
+
+ 
     </View>
   )
+
+
 }
