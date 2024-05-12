@@ -3,8 +3,8 @@ import {
   Text
 } from 'react-native';
 
-export default function ProfileScreen() {
+export default function StatsScreen() {
   return (
-    <Text>ProfileScreen</Text>
+    <Text>Stats Screen</Text>
   )
 }
