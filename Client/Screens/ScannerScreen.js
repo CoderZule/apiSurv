@@ -3,12 +3,19 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { Camera } from 'expo-camera';
+import axios from 'axios';
 
 export default function ScannerScreen({ navigation }) {
 
-    const handleBarCodeScanned = ({ type, data }) => {
-        alert(`Barcode scanned! Type: ${type}, Data: ${data}`);
-        navigation.goBack();
+    const handleBarCodeScanned = async ({ type, data }) => {
+        try {
+            const response = await axios.get(`http://192.168.1.19:3000/api/hive/getHiveById/${data}`);
+            const hiveData = response.data;
+            alert(`Hive Data: ${JSON.stringify(hiveData)}`);
+          navigation.navigate('Home')
+        } catch (error) {
+            console.error('Error fetching hive data:', error);
+        }
     };
 
     return (
@@ -20,11 +27,11 @@ export default function ScannerScreen({ navigation }) {
             />
 
             <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.goBack()}>
- 
+
                 <Text style={styles.cancelButtonText}>Annuler</Text>
             </TouchableOpacity>
 
-             <View style={styles.imageContainer}>
+            <View style={styles.imageContainer}>
                 <Image source={require('../assets/scanner.png')} style={styles.customIcon} />
             </View>
         </View>
@@ -47,20 +54,20 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
         padding: 16,
         borderRadius: 10,
-      },
-      cancelButtonText: {
+    },
+    cancelButtonText: {
         fontSize: 18,
         color: 'white',
-      },
+    },
     imageContainer: {
         position: 'absolute',
-        top: '40%', // Adjust positioning as desired
+        top: '40%', 
         alignSelf: 'center',
         justifyContent: 'center',
         alignItems: 'center',
     },
     customIcon: {
-        width: 200,  // Set width and height according to your icon dimensions
+        width: 200,   
         height: 200,
     },
 });
