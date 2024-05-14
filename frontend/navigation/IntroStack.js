@@ -9,36 +9,37 @@ import Index from '../Screens/WelcomingScreens/Index';
 import LoginScreen from '../Screens/LoginScreen'
 import HomeScreen from '../Screens/HomeScreen';
 import DrawerNavigator from './DrawerNavigator';
- 
-  
+import ScannerScreen from '../Screens/ScannerScreen';
+
+
 const Stack = createNativeStackNavigator();
 
 export function IntroStack() {
-    const [showSplash, setShowSplash] = useState(true);
+  const [showSplash, setShowSplash] = useState(true);
 
   const handleSplashFinish = () => {
     setShowSplash(false);
   };
 
   return (
-        <Stack.Navigator
-        screenOptions={{
-          headerShown: false, 
-        }}
-      >
-        {showSplash ? (
-          <Stack.Screen name="Splash">
-            {props => <Splash {...props} onFinish={handleSplashFinish} />}
-          </Stack.Screen>
-        ) : (
-          <>
-            <Stack.Screen name="Index" component={Index} />
-            <Stack.Screen name="Login" component={LoginScreen} />
-            <Stack.Screen name="Home" component={HomeScreen} />
-            <Stack.Screen name ="DrawerNavigator" component={DrawerNavigator} />
-
-           </>
-        )}
-      </Stack.Navigator>
-   );
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      {showSplash ? (
+        <Stack.Screen name="Splash">
+          {props => <Splash {...props} onFinish={handleSplashFinish} />}
+        </Stack.Screen>
+      ) : (
+        <>
+          <Stack.Screen name="Index" component={Index} />
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="DrawerNavigator" component={DrawerNavigator} />
+          <Stack.Screen name="ScannerScreen" component={ScannerScreen} />
+        </>
+      )}
+    </Stack.Navigator>
+  );
 }
