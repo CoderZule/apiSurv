@@ -11,8 +11,7 @@ export default function ScannerScreen({ navigation }) {
         try {
             const response = await axios.get(`http://192.168.1.19:3000/api/hive/getHiveById/${data}`);
             const hiveData = response.data;
-            alert(`Hive Data: ${JSON.stringify(hiveData)}`);
-          navigation.navigate('Home')
+            navigation.navigate('HiveDetailsScreen', { hiveData }); 
         } catch (error) {
             console.error('Error fetching hive data:', error);
         }
@@ -27,7 +26,6 @@ export default function ScannerScreen({ navigation }) {
             />
 
             <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.goBack()}>
-
                 <Text style={styles.cancelButtonText}>Annuler</Text>
             </TouchableOpacity>
 

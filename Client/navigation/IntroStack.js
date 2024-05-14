@@ -10,6 +10,7 @@ import LoginScreen from '../Screens/LoginScreen'
 import HomeScreen from '../Screens/HomeScreen';
 import DrawerNavigator from './DrawerNavigator';
 import ScannerScreen from '../Screens/ScannerScreen';
+import HiveDetailsScreen from '../Screens/HiveDetailsScreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -38,6 +39,8 @@ export function IntroStack() {
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="DrawerNavigator" component={DrawerNavigator} />
           <Stack.Screen name="ScannerScreen" component={ScannerScreen} />
+          <Stack.Screen name="HiveDetailsScreen" component={HiveDetailsScreen} options={{ title: 'Hive Details' }} />
+
         </>
       )}
     </Stack.Navigator>
