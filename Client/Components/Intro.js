@@ -15,8 +15,11 @@ const Intro = () => {
   const styles = StyleSheet.create({
     title: {
       fontSize: 19,
+      fontWeight:'bold',
+      marginTop: 30,
       marginBottom: 5,
-      color: '#342D21',
+
+      color: '#977700',
       fontFamily: 'Chilanka-Regular',
     },
     image: {
@@ -25,6 +28,7 @@ const Intro = () => {
     },
     text: {
       fontSize: 17,
+     
       color: '#342D21',
       fontFamily: 'Chilanka-Regular'
     },
@@ -50,14 +54,14 @@ const Intro = () => {
       key: 1,
       title: 'Maximisez Votre Récolte de Miel',
       text: 'Optimisez vos récoltes et suivez\nvotre production avec facilité',
-      image: require('../assets/Intro/1.png'),
+      image: require('../assets/Intro/intro1.png'),
       backgroundColor: '#59b2ab',
     },
     {
       key: 2,
       title: 'Surveillez la Santé de Vos Abeilles',
       text: 'Gardez un œil sur la santé de vos\nabeilles pour des colonies\nvigoureuses',
-      image: require('../assets/Intro/2.png'),
+      image: require('../assets/Intro/intro2.png'),
       backgroundColor: '#febe29',
     },
     {
@@ -71,7 +75,7 @@ const Intro = () => {
 
   const _renderItem = ({ item, index }) => {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor:"#fff" }}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor:'#FBF5E0' }}>
         <Image style={styles.image} source={item.image} />
         <Text style={styles.title}>{item.title}</Text>
         <Text style={styles.text}>{item.text}</Text>
@@ -84,12 +88,16 @@ const Intro = () => {
     );
   }
 
- 
+  const renderNextButton = () => null; // Hide the "Next" button text
+  const renderDoneButton = () => null; // Hide the "Done" button text
+
   return (
     <AppIntroSlider
       activeDotStyle={{ width: 15, backgroundColor: '#977700' }}
       dotStyle={{ width: 15, backgroundColor: '#D9D9D9' }}
       renderItem={_renderItem}
+      renderNextButton={renderNextButton} // Render without text
+      renderDoneButton={renderDoneButton} // Render without text
       data={slides}
     />
   );

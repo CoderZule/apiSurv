@@ -34,32 +34,29 @@ export default function LoginScreen() {
     try {
       const response = await axios.post(
         'http://192.168.1.19:3000/api/user/login',
-        
         {
           Email: form.email,
           Password: form.password,
         }
       );
 
-       const currentUser = response.data.currentUser;
+      const currentUser = response.data.currentUser;
+      AsyncStorage.setItem("token", response.data.token);
+      navigation.navigate('DrawerNavigator');
 
-      AsyncStorage.setItem("token",response.data.token);
-
-    navigation.navigate('DrawerNavigator');
-
-
-     } catch (error) {
-       Alert.alert('Échec de connexion', 'Identifiants invalides. Veuillez réessayer.');
-     }
+    } catch (error) {
+      Alert.alert('Échec de connexion', 'Identifiants invalides. Veuillez réessayer.');
+    }
   };
+
   const togglePasswordVisibility = () => {
     setForm({ ...form, hidePassword: !form.hidePassword });
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+    <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <KeyboardAwareScrollView>
+        <KeyboardAwareScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.header}>
             <Image
               resizeMode="contain"
@@ -75,18 +72,17 @@ export default function LoginScreen() {
             <View style={styles.input}>
               <Text style={styles.inputLabel}>E-mail</Text>
               <View style={styles.inputContainer}>
-                <FontAwesome5 name="envelope" size={20} color="#6b7280" style={styles.inputIcon} />
+                <FontAwesome5 name="envelope" size={20} color="#977700" style={styles.inputIcon} />
                 <TextInput
                   autoCapitalize="none"
                   autoCorrect={false}
                   clearButtonMode="while-editing"
                   keyboardType="email-address"
                   onChangeText={email => setForm({ ...form, email })}
-                  placeholder="apic@exemple.com"
+                  placeholder="exemple@apisurv.com"
                   placeholderTextColor="#6b7280"
                   style={styles.inputControl}
                   value={form.email}
-
                 />
               </View>
             </View>
@@ -94,7 +90,7 @@ export default function LoginScreen() {
             <View style={styles.input}>
               <Text style={styles.inputLabel}>Mot de passe</Text>
               <View style={styles.inputContainer}>
-                <FontAwesome5 name="lock" size={20} color="#6b7280" style={styles.inputIcon} />
+                <FontAwesome5 name="lock" size={20} color="#977700" style={styles.inputIcon} />
                 <TextInput
                   autoCorrect={false}
                   clearButtonMode="while-editing"
@@ -128,106 +124,108 @@ export default function LoginScreen() {
           </View>
         </KeyboardAwareScrollView>
       </View>
-    </SafeAreaView>
+     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#FBF5E0'
+  },
   container: {
     flex: 1,
-    paddingVertical: 24,
-    paddingHorizontal: 0,
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
   },
   subtitle: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: '500',
     color: '#342D21',
-    fontFamily: 'Chilanka-Regular'
-
-  },
+    fontFamily: 'Chilanka-Regular',
+   },
   header: {
     alignItems: 'center',
     justifyContent: 'center',
     marginVertical: 36,
   },
   headerImg: {
-    width: 250,
-    height: 168,
+    marginTop:20,
+    width: 210,
+    height: 180,
     alignSelf: 'center',
   },
   form: {
-    marginBottom: 24,
     paddingHorizontal: 24,
     flexGrow: 1,
     flexShrink: 1,
     flexBasis: 0,
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 50,  // Top border radius for the form
+    borderTopRightRadius: 50,  // Top border radius for the form
+    paddingVertical: 45,
   },
+  
   input: {
     marginBottom: 16,
   },
   inputLabel: {
-    fontSize: 17,
+    fontSize: 15,
     fontWeight: '600',
-    color: '#342D21',
+    color: '#373737',
     marginBottom: 8,
-    marginLeft: 7,
-    fontFamily: 'Chilanka-Regular'
-
+    marginLeft: 10,
+    fontFamily: 'Chilanka-Regular',
   },
   inputContainer: {
-    flex: 1,
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5F5F5',
-    borderRadius: 15,
-
+    backgroundColor: '#F5F5F5',  
+    borderRadius: 30,  
+    paddingHorizontal: 10,  
+    paddingVertical: 8,  
+    borderColor: '#E5E5E5',  
+    borderWidth: 1,  
   },
   inputIcon: {
     padding: 10,
   },
   inputControl: {
     flex: 1,
-    paddingHorizontal: 1,
-    height: 50,
+    paddingHorizontal: 8,
     fontSize: 15,
     fontWeight: '500',
     color: '#797979',
-    paddingVertical: 8,
-    fontFamily: 'Chilanka-Regular'
-
-
+    fontFamily: 'Chilanka-Regular',
   },
-
   formAction: {
-    marginTop: 4,
+    marginTop: 16,
     marginBottom: 16,
   },
   formLink: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 14,
+    fontWeight: '500',
     color: '#977700',
     textAlign: 'center',
-    fontFamily: 'Chilanka-Regular'
-
+    fontFamily: 'Chilanka-Regular',
+    marginTop: 12,
   },
   btn: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderWidth: 1,
-    backgroundColor: '#FEE502',
-    borderRadius: 20,
-    borderColor: '#FEE502',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    backgroundColor: '#FEE502',  
+    borderRadius: 30,  
   },
   btnText: {
-    fontSize: 18,
+    fontSize: 16,
     lineHeight: 26,
     fontWeight: '600',
-    color: '#373737',
-    fontFamily: 'Poppins-SemiBold'
-
-  },
+    color: '#373737',  
+    fontFamily: 'Poppins-SemiBold',
+  }
 });

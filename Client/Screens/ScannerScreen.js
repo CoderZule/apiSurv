@@ -26,11 +26,12 @@ export default function ScannerScreen({ navigation }) {
             />
 
             <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.goBack()}>
-                <Text style={styles.cancelButtonText}>Annuler</Text>
+                 <Image  source={require('../assets/back.png')} style={styles.customIcon2} />
+
             </TouchableOpacity>
 
             <View style={styles.imageContainer}>
-                <Image source={require('../assets/scanner.png')} style={styles.customIcon} />
+                <Image source={require('../assets/scanme.gif')} style={styles.customIcon1} />
             </View>
         </View>
     );
@@ -53,10 +54,6 @@ const styles = StyleSheet.create({
         padding: 16,
         borderRadius: 10,
     },
-    cancelButtonText: {
-        fontSize: 18,
-        color: 'white',
-    },
     imageContainer: {
         position: 'absolute',
         top: '40%', 
@@ -64,8 +61,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    customIcon: {
+    customIcon1: {
         width: 200,   
         height: 200,
+    },
+    customIcon2: {
+        width: 40,   
+        height: 30,
     },
 });

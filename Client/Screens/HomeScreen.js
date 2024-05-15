@@ -24,15 +24,15 @@ export default function HomeScreen({ user, navigation }) {
   useEffect(() => {
     (async () => {
       if (Platform.OS !== 'web') {
-        const { status } = await Camera.requestPermissionsAsync(); // Request camera permissions
+        const { status } = await Camera.requestPermissionsAsync();  
         setHasPermission(status === 'granted');
       }
     })();
   }, []);
 
   const openScanner = () => {
-    setModalVisible(false); // Close the modal before opening the scanner
-    navigation.navigate('ScannerScreen'); // Navigate to the scanner screen
+    setModalVisible(false);  
+    navigation.navigate('ScannerScreen');  
   };
 
   if (hasPermission === null) {
