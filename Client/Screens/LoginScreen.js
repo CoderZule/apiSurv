@@ -7,22 +7,17 @@ import {
   Text,
   TouchableOpacity,
   TextInput,
-  Alert  
+  Alert
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { useFonts } from 'expo-font';
 import { FontAwesome5 } from '@expo/vector-icons';
-import axios from 'axios';  
-import { useNavigation } from '@react-navigation/native';  
+import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LoginScreen() {
-  const navigation = useNavigation(); 
+  const navigation = useNavigation();
 
-  const [loaded] = useFonts({
-    'Chilanka-Regular': require('../assets/fonts/Chilanka-Regular.ttf'),
-    'Poppins-Semibold': require('../assets/fonts/Poppins-SemiBold.ttf'),
-  });
 
   const [form, setForm] = useState({
     email: '',
@@ -41,8 +36,12 @@ export default function LoginScreen() {
       );
 
       const currentUser = response.data.currentUser;
-      AsyncStorage.setItem("token", response.data.token);
-      navigation.navigate('DrawerNavigator');
+      console.log(currentUser);
+      AsyncStorage.multiSet([
+        ['token', response.data.token],
+        ['currentUser', JSON.stringify(response.data.currentUser)]
+      ]);
+            navigation.navigate('DrawerNavigator', currentUser);
 
     } catch (error) {
       Alert.alert('Échec de connexion', 'Identifiants invalides. Veuillez réessayer.');
@@ -124,7 +123,7 @@ export default function LoginScreen() {
           </View>
         </KeyboardAwareScrollView>
       </View>
-     </SafeAreaView>
+    </SafeAreaView>
   );
 }
 
@@ -144,15 +143,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
     color: '#342D21',
-    fontFamily: 'Chilanka-Regular',
-   },
+  },
   header: {
     alignItems: 'center',
     justifyContent: 'center',
     marginVertical: 36,
   },
   headerImg: {
-    marginTop:20,
+    marginTop: 20,
     width: 210,
     height: 180,
     alignSelf: 'center',
@@ -167,7 +165,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 50,  // Top border radius for the form
     paddingVertical: 45,
   },
-  
+
   input: {
     marginBottom: 16,
   },
@@ -177,17 +175,16 @@ const styles = StyleSheet.create({
     color: '#373737',
     marginBottom: 8,
     marginLeft: 10,
-    fontFamily: 'Chilanka-Regular',
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F5F5F5',  
-    borderRadius: 30,  
-    paddingHorizontal: 10,  
-    paddingVertical: 8,  
-    borderColor: '#E5E5E5',  
-    borderWidth: 1,  
+    backgroundColor: '#F5F5F5',
+    borderRadius: 30,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderColor: '#E5E5E5',
+    borderWidth: 1,
   },
   inputIcon: {
     padding: 10,
@@ -198,7 +195,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '500',
     color: '#797979',
-    fontFamily: 'Chilanka-Regular',
   },
   formAction: {
     marginTop: 16,
@@ -209,7 +205,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#977700',
     textAlign: 'center',
-    fontFamily: 'Chilanka-Regular',
     marginTop: 12,
   },
   btn: {
@@ -218,14 +213,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 12,
     paddingHorizontal: 24,
-    backgroundColor: '#FEE502',  
-    borderRadius: 30,  
+    backgroundColor: '#FEE502',
+    borderRadius: 30,
   },
   btnText: {
-    fontSize: 16,
-    lineHeight: 26,
-    fontWeight: '600',
-    color: '#373737',  
-    fontFamily: 'Poppins-SemiBold',
+    fontSize: 17,
+    color: '#373737',
+    fontWeight: 'bold',
   }
 });

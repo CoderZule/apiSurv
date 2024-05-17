@@ -1,14 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, StatusBar } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useFonts } from 'expo-font';
-
+ 
 export default function HomeHeader({ navigation }) {
 
-  const [loaded] = useFonts({
-    'Chilanka-Regular': require('../assets/fonts/Chilanka-Regular.ttf'),
-    'Poppins-Semibold': require('../assets/fonts/Poppins-SemiBold.ttf'),
-  });
+ 
 
    React.useEffect(() => {
     StatusBar.setHidden(true);
@@ -49,7 +45,6 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 25,
     fontWeight: 'bold',
-    fontFamily: 'Poppins-Semibold'
-
+ 
   },
 });

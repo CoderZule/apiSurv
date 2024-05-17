@@ -3,8 +3,8 @@ import {
   Text
 } from 'react-native';
 
-export default function StorageScreen() {
+export default function AboutAppScreen() {
   return (
-    <Text>Storage Screen</Text>
+    <Text>hi</Text>
   )
 }

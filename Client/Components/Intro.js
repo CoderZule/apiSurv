@@ -1,37 +1,30 @@
-import React, { Component } from "react";
+import React from "react";
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import AppIntroSlider from 'react-native-app-intro-slider';
-import { useFonts } from 'expo-font';
-import { useNavigation } from '@react-navigation/native';  
-
+ import { useNavigation } from '@react-navigation/native';  
+ 
 const Intro = () => {
   const navigation = useNavigation(); 
-
-  const [loaded] = useFonts({
-    'Chilanka-Regular': require('../assets/fonts/Chilanka-Regular.ttf'),
-    'Poppins-Semibold': require('../assets/fonts/Poppins-SemiBold.ttf'),
-  });
-
+ 
+  
   const styles = StyleSheet.create({
     title: {
       fontSize: 19,
       fontWeight:'bold',
-      marginTop: 30,
+       marginTop: 30,
       marginBottom: 5,
-
-      color: '#977700',
-      fontFamily: 'Chilanka-Regular',
-    },
+       color: '#977700',
+     },
     image: {
       width: 330,
       height: 340,
     },
     text: {
-      fontSize: 17,
-     
+      textAlign:"center",
+      fontSize: 15,
+      fontFamily:'',
       color: '#342D21',
-      fontFamily: 'Chilanka-Regular'
-    },
+     },
     button: {
       marginTop: 20,
       width: 276,
@@ -43,32 +36,32 @@ const Intro = () => {
       alignItems: 'center',
     },
     buttonText: {
-      fontSize: 18,
+      fontSize: 17,
       color: '#373737',
-      fontFamily: 'Poppins-SemiBold'
-    }
+      fontWeight:'bold',
+     }
   });
 
   const slides = [
     {
       key: 1,
       title: 'Maximisez Votre Récolte de Miel',
-      text: 'Optimisez vos récoltes et suivez\nvotre production avec facilité',
+      text: 'Optimisez vos récoltes et suivez \nvotre production avec facilité',
       image: require('../assets/Intro/intro1.png'),
       backgroundColor: '#59b2ab',
     },
     {
       key: 2,
       title: 'Surveillez la Santé de Vos Abeilles',
-      text: 'Gardez un œil sur la santé de vos\nabeilles pour des colonies\nvigoureuses',
+      text: 'Gardez un œil sur la santé de vos\n abeilles pour des colonies vigoureuses',
       image: require('../assets/Intro/intro2.png'),
       backgroundColor: '#febe29',
     },
     {
       key: 3,
       title: 'Gérez Vos Ruchers avec Simplicité',
-      text: 'Accédez aux données de vos\nruchers instantanément avec le scan\nQR',
-      image: require('../assets/Intro/3.png'),
+      text: 'Accédez aux données de vos\nruchers instantanément avec le scan QR',
+      image: require('../assets/Intro/intro3.png'),
       backgroundColor: '#22bcb5',
     }
   ];

@@ -1,18 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, Platform } from 'react-native';
 import HomeHeader from '../Components/HomeHeader';
-import { useFonts } from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
-import { Camera } from 'expo-camera';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function HomeScreen({ user, navigation }) {
+import { useCameraPermissions } from 'expo-camera';
+
+
+export default function HomeScreen({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
-  const [hasPermission, setHasPermission] = useState(null);
+  const [permission, requestPermission] = useCameraPermissions();
+  const [currentUser, setCurrentUser] = useState(null);
 
-  const [loaded] = useFonts({
-    'Chilanka-Regular': require('../assets/fonts/Chilanka-Regular.ttf'),
-    'Poppins-Semibold': require('../assets/fonts/Poppins-SemiBold.ttf'),
-  });
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const currentUserString = await AsyncStorage.getItem('currentUser');
+        setCurrentUser(JSON.parse(currentUserString));
+      } catch (error) {
+        console.error('Error retrieving current user:', error);
+      }
+    };
+
+    fetchCurrentUser();
+  }, []);
 
   const propertiesData = [
     { id: 1, name: 'Ruchers', value: '2', img: require('../assets/rucher.png') },
@@ -21,26 +32,26 @@ export default function HomeScreen({ user, navigation }) {
     { id: 4, name: 'Force', value: '70%', img: require('../assets/force.png') },
   ];
 
-  useEffect(() => {
-    (async () => {
-      if (Platform.OS !== 'web') {
-        const { status } = await Camera.requestPermissionsAsync();  
-        setHasPermission(status === 'granted');
-      }
-    })();
-  }, []);
+
 
   const openScanner = () => {
-    setModalVisible(false);  
-    navigation.navigate('ScannerScreen');  
+    setModalVisible(false);
+    navigation.navigate('ScannerScreen');
   };
 
-  if (hasPermission === null) {
-    return <View style={styles.container}><Text>Requesting camera permission...</Text></View>;
+  if (!permission) {
+    return <View />;
   }
-  if (hasPermission === false) {
-    return <View style={styles.container}><Text>No access to camera.</Text></View>;
+
+  if (!permission.granted) {
+    return (
+      <View style={styles.container}>
+        <Text style={{ textAlign: 'center' }}>Nous avons besoin de votre autorisation pour afficher la caméra</Text>
+        <Button onPress={requestPermission} title="grant permission" />
+      </View>
+    );
   }
+
 
   return (
     <View style={styles.container}>
@@ -50,13 +61,15 @@ export default function HomeScreen({ user, navigation }) {
         <Text style={styles.headerText1}>Bonjour</Text>
         <Text style={styles.headerText1}></Text>
         <View style={styles.headerTextContainer}>
-          <Text style={styles.headerText2}>Mariem</Text>
+          {currentUser ? (
+            <Text style={styles.headerText2}>{currentUser.Firstname}</Text>
+          ) : null}
         </View>
       </View>
 
       <View style={styles.propertiesContainer}>
         {propertiesData.map((item) => (
-          <View key={item.id} style={[styles.smallCard, { backgroundColor: '#F5F5F5' }]}>
+          <View key={item.id} style={[styles.smallCard, { backgroundColor: '#fff' }]}>
             <Image style={styles.image} source={item.img} />
             <View style={styles.propertyInfo}>
               <Text style={styles.nameText}>{item.name}</Text>
@@ -84,11 +97,11 @@ export default function HomeScreen({ user, navigation }) {
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Scanner le code QR</Text>
             <TouchableOpacity style={styles.modalButton} onPress={openScanner}>
-              <Ionicons name="archive-outline" size={20} color="#373737" />
+              <Ionicons name="archive-outline" size={20} color="#977700" />
               <Text style={styles.modalButtonText}>Détails de la ruche</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.modalButton} onPress={openScanner}>
-              <Ionicons name="create-outline" size={20} color="#373737" />
+              <Ionicons name="create-outline" size={20} color="#977700" />
               <Text style={styles.modalButtonText}>Ajouter une inspection</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
@@ -100,13 +113,14 @@ export default function HomeScreen({ user, navigation }) {
     </View>
   );
 }
- 
+
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    
-    backgroundColor: '#fff'
+
+
+    backgroundColor: '#FBF5E0'
   },
   headerTextView: {
     flexDirection: 'row',
@@ -119,7 +133,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     paddingLeft: 10,
-    fontFamily: 'Poppins-Semibold'
 
   },
   headerTextContainer: {
@@ -132,7 +145,6 @@ const styles = StyleSheet.create({
     color: '#977700',
     fontSize: 24,
     fontWeight: 'bold',
-    fontFamily: 'Poppins-Semibold'
 
   },
   propertiesContainer: {
@@ -164,13 +176,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#5e6977',
     textAlign: 'center',
-    fontFamily: 'Chilanka-Regular'
 
   },
   valueText: {
     color: '#5e6977',
     textAlign: 'center',
-    fontFamily: 'Chilanka-Regular'
 
   },
   centeredContainer: {
@@ -178,11 +188,12 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   qrScan: {
-    width: 212,
-    height: 185,
+    width: 260,
+    height: 260,
     marginVertical: 50,
   },
   button: {
+
     width: 276,
     height: 50,
     paddingHorizontal: 20,
@@ -193,9 +204,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   buttonText: {
-    fontSize: 18,
+    fontSize: 17,
     color: '#373737',
-    fontFamily: 'Poppins-SemiBold',
+    fontWeight: 'bold',
   },
   modalContainer: {
     flex: 1,
@@ -214,7 +225,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 15,
-    fontFamily: 'Poppins-SemiBold',
     color: '#977700',
   },
   modalButton: {
@@ -230,7 +240,6 @@ const styles = StyleSheet.create({
   modalButtonText: {
     textAlign: 'center',
     color: '#373737',
-    fontFamily: 'Poppins-SemiBold',
     fontSize: 16,
     marginLeft: 10,
   },
@@ -243,7 +252,6 @@ const styles = StyleSheet.create({
   closeButtonText: {
     textAlign: 'center',
     color: '#373737',
-    fontFamily: 'Poppins-SemiBold',
     fontSize: 16,
   },
 });

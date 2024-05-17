@@ -2,27 +2,27 @@
 
 import React from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
-import { Camera } from 'expo-camera';
+import { CameraView} from 'expo-camera';
 import axios from 'axios';
 
 export default function ScannerScreen({ navigation }) {
 
-    const handleBarCodeScanned = async ({ type, data }) => {
-        try {
-            const response = await axios.get(`http://192.168.1.19:3000/api/hive/getHiveById/${data}`);
-            const hiveData = response.data;
-            navigation.navigate('HiveDetailsScreen', { hiveData }); 
-        } catch (error) {
-            console.error('Error fetching hive data:', error);
-        }
-    };
+   const handleBarCodeScanned = async ({ type, data }) => {
+    try {
+        const response = await axios.get(`http://192.168.1.19:3000/api/hive/getHiveById/${data}`);
+        const hiveData = response.data;
+        navigation.navigate('HiveDetailsScreen', { hiveData }); 
+    } catch (error) {
+        console.error('Error fetching hive data:', error);
+    }
+};
+
 
     return (
         <View style={styles.container}>
-            <Camera
+            <CameraView
                 style={styles.camera}
-                type={Camera.Constants.Type.back}
-                onBarCodeScanned={handleBarCodeScanned}
+                 onBarcodeScanned={handleBarCodeScanned}
             />
 
             <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.goBack()}>

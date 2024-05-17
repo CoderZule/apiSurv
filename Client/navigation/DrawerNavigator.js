@@ -1,14 +1,16 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+
 import HomeScreen from '../Screens/HomeScreen';
 import ProfilScreen from '../Screens/ProfilScreen';
 import TasksScreen from '../Screens/TasksScreen';
 import FinancesScreen from '../Screens/FinancesScreen';
-import StorageScreen from '../Screens/StorageScreen';
+import RecolteScreen from '../Screens/RecolteScreen';
 import StatsScreen from '../Screens/StatsScreen';
-
 import DrawerContent from '../Components/DrawerContent';
+import MyInspectionsListScreen from '../Screens/MyInspectionsListScreen';
+import AboutAppScreen from '../Screens/AboutAppScreen';
 
 
 
@@ -24,7 +26,7 @@ export default function DrawerNavigator() {
                 activeTintColor: 'white',
                 headerShown: false,
                 drawerStyle: {
-                    backgroundColor: "#000000",
+                    backgroundColor: "#fff",
                    
                 }
             }}
@@ -35,8 +37,10 @@ export default function DrawerNavigator() {
             <Drawer.Screen name="Profil" component={ProfilScreen} />
             <Drawer.Screen name="Tasks" component={TasksScreen} />
             <Drawer.Screen name="Finances" component={FinancesScreen} />
-            <Drawer.Screen name="Storage" component={StorageScreen} />
+            <Drawer.Screen name="Recolte" component={RecolteScreen} />
             <Drawer.Screen name="Stats" component={StatsScreen} />
+            <Drawer.Screen name="Inspections" component={MyInspectionsListScreen} />
+            <Drawer.Screen name="AboutApp" component={AboutAppScreen}/>
 
 
 
