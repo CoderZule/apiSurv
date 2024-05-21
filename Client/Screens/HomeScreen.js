@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, Platform } from
 import HomeHeader from '../Components/HomeHeader';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import axios from 'axios';
 import { useCameraPermissions } from 'expo-camera';
 
 
@@ -11,6 +11,8 @@ export default function HomeScreen({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [permission, requestPermission] = useCameraPermissions();
   const [currentUser, setCurrentUser] = useState(null);
+  const [apiariesCount, setApiariesCount] = useState(0);
+  const [hivesCount, setHivesCount] = useState(0);
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -25,18 +27,64 @@ export default function HomeScreen({ navigation }) {
     fetchCurrentUser();
   }, []);
 
+  useEffect(() => {
+    const fetchApiariesCount = async () => {
+      try {
+        if (currentUser) {
+          const response = await axios.get('http://192.168.1.19:3000/api/apiary/getAllApiaries');
+          const apiaries = response.data.data;
+          
+          const userApiaries = apiaries.filter(apiary => apiary.Owner._id === currentUser._id);
+           setApiariesCount(userApiaries.length);
+        }
+      } catch (error) {
+       
+        console.error('Error fetching apiaries count:', error);
+      }
+    };
+    
+    fetchApiariesCount();
+  }, [currentUser]);
+
+  const fetchHivesCount = async () => {
+    try {
+      if (currentUser) {
+        const response = await axios.get('http://192.168.1.19:3000/api/hive/getAllHives');
+        const hives = response.data.data;
+  
+        // Fetch all apiaries owned by the current user
+        const apiariesResponse = await axios.get('http://192.168.1.19:3000/api/apiary/getAllApiaries');
+        const userApiaries = apiariesResponse.data.data.filter(apiary => apiary.Owner._id === currentUser._id);
+  
+        // Filter hives based on the apiaries owned by the current user
+        const userHives = hives.filter(hive => userApiaries.some(apiary => apiary._id === hive.Apiary._id));
+        
+         setHivesCount(userHives.length);
+      }
+    } catch (error) {
+      console.error('Error fetching hives count:', error);
+    }
+  };
+  
+  fetchHivesCount();
+  
+
   const propertiesData = [
-    { id: 1, name: 'Ruchers', value: '2', img: require('../assets/rucher.png') },
-    { id: 2, name: 'Ruches', value: '16', img: require('../assets/ruche.png') },
+    { id: 1, name: 'Ruchers', value: apiariesCount.toString(), img: require('../assets/rucher.png') },
+    { id: 2, name: 'Ruches', value: hivesCount.toString(), img: require('../assets/ruche.png') },
     { id: 3, name: 'Solde', value: '0.00 د.ت', img: require('../assets/solde.png') },
     { id: 4, name: 'Force', value: '70%', img: require('../assets/force.png') },
   ];
 
 
 
-  const openScanner = () => {
+  const openScannerInspDetails = () => {
     setModalVisible(false);
-    navigation.navigate('ScannerScreen');
+    navigation.navigate('ScannerScreenInspectionsDetails');
+  };
+  const openScannerAddInspec = () => {
+    setModalVisible(false);
+    navigation.navigate('ScannerScreenAddInspections');
   };
 
   if (!permission) {
@@ -96,11 +144,11 @@ export default function HomeScreen({ navigation }) {
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Scanner le code QR</Text>
-            <TouchableOpacity style={styles.modalButton} onPress={openScanner}>
+            <TouchableOpacity style={styles.modalButton} onPress={openScannerInspDetails}>
               <Ionicons name="archive-outline" size={20} color="#977700" />
               <Text style={styles.modalButtonText}>Détails de la ruche</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.modalButton} onPress={openScanner}>
+            <TouchableOpacity style={styles.modalButton} onPress={openScannerAddInspec}>
               <Ionicons name="create-outline" size={20} color="#977700" />
               <Text style={styles.modalButtonText}>Ajouter une inspection</Text>
             </TouchableOpacity>

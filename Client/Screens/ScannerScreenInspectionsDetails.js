@@ -5,7 +5,7 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { CameraView} from 'expo-camera';
 import axios from 'axios';
 
-export default function ScannerScreen({ navigation }) {
+export default function ScannerScreenInspectionsDetails({ navigation }) {
 
    const handleBarCodeScanned = async ({ type, data }) => {
     try {
