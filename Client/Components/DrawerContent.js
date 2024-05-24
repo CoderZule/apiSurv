@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Switch, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, Switch, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
@@ -9,14 +9,31 @@ export default function DrawerContent(props) {
     const navigation = useNavigation();
 
     const handleLogout = async () => {
-        try {
-            // Clear the stored token from AsyncStorage
-            await AsyncStorage.removeItem('token');
-            navigation.navigate('Login');
-        } catch (error) {
-            console.log('Error logging out:', error);
-        }
+        Alert.alert(
+            'Confirmation',
+            'Êtes-vous sûr de vouloir vous déconnecter?',
+            [
+                {
+                    text: 'Annuler',
+                    style: 'cancel'
+                },
+                {
+                    text: 'Se déconnecter',
+                    onPress: async () => {
+                        try {
+                            // Clear the stored token from AsyncStorage
+                            await AsyncStorage.removeItem('token');
+                            navigation.navigate('Login');
+                        } catch (error) {
+                            console.log('Error logging out:', error);
+                        }
+                    }
+                }
+            ],
+            { cancelable: false }
+        );
     };
+
 
     return (
         <View style={styles.container}>

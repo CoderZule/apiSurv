@@ -19,7 +19,7 @@ export default function HomeHeader({ navigation }) {
         <Ionicons name="menu" color="white" size={32} />
       </TouchableOpacity>
       <View style={styles.titleContainer}>
-        <Text style={styles.headerTitle}>apiSurv</Text>
+        <Text style={styles.headerTitle}>Accueil</Text>
       </View>
     </View>
   );
@@ -34,9 +34,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 15,
    },
-  menuButton: {
-    marginRight: 10,
-  },
+
   titleContainer: {
     flex: 1, 
     alignItems: 'center', 

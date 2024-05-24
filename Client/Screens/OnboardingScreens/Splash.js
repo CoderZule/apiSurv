@@ -25,10 +25,7 @@ const Splash = ({ onFinish }) => {
 
   return (
     <View style={styles.container}>
-      <Image 
-        source={require('../../assets/splashtop.png')} 
-        style={styles.splashTop}
-      />
+    
       <Animated.Image 
         source={require('../../assets/logo.png')} 
         style={[styles.logo, { opacity: fadeAnim }]} 
