@@ -36,8 +36,7 @@ export default function LoginScreen() {
       );
 
       const currentUser = response.data.currentUser;
-      console.log(currentUser);
-      AsyncStorage.multiSet([
+       AsyncStorage.multiSet([
         ['token', response.data.token],
         ['currentUser', JSON.stringify(response.data.currentUser)]
       ]);

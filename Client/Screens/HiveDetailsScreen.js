@@ -120,10 +120,7 @@ const HiveDetailsScreen = ({ route }) => {
                                         <Text style={styles.label}>Date d'ajout</Text>
                                         <Text style={styles.text}>{formatDate(hiveData.Added)}</Text>
                                     </View>
-                                    <View style={styles.detailItem}>
-                                        <Text style={styles.label}>Note</Text>
-                                        <Text style={styles.text}>{hiveData.Note}</Text>
-                                    </View>
+                                
                                     <View style={styles.detailItem}>
                                         <Text style={styles.label}>Force de la Colonie</Text>
                                         <Text style={styles.text}>{hiveData.Colony.strength}</Text>
@@ -197,11 +194,7 @@ const HiveDetailsScreen = ({ route }) => {
                                             </View>
 
 
-
-                                            <View style={styles.detailItem}>
-                                                <Text style={styles.label}>Reine Note</Text>
-                                                <Text style={styles.text}>{hiveData.Queen.note}</Text>
-                                            </View>
+ 
 
                                         </View>
                                     )}
