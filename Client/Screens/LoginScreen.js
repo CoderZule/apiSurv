@@ -28,13 +28,14 @@ export default function LoginScreen() {
   const handleLogin = async () => {
     try {
       const response = await axios.post(
-        'http://192.168.1.19:3000/api/user/login',
+        'http://192.168.1.14:3000/api/user/login',
         {
           Email: form.email,
           Password: form.password,
         }
       );
-
+ 
+  
       const currentUser = response.data.currentUser;
        AsyncStorage.multiSet([
         ['token', response.data.token],
@@ -43,7 +44,7 @@ export default function LoginScreen() {
             navigation.navigate('DrawerNavigator', currentUser);
 
     } catch (error) {
-      Alert.alert('Échec de connexion', 'Identifiants invalides. Veuillez réessayer.');
+      Alert.alert('Échec de connexion', error.toString());
     }
   };
 

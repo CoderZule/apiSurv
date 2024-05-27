@@ -31,7 +31,7 @@ export default function HomeScreen({ navigation }) {
     const fetchApiariesCount = async () => {
       try {
         if (currentUser) {
-          const response = await axios.get('http://192.168.1.19:3000/api/apiary/getAllApiaries');
+          const response = await axios.get('http://192.168.1.14:3000/api/apiary/getAllApiaries');
           const apiaries = response.data.data;
           
           const userApiaries = apiaries.filter(apiary => apiary.Owner._id === currentUser._id);
@@ -49,11 +49,11 @@ export default function HomeScreen({ navigation }) {
   const fetchHivesCount = async () => {
     try {
       if (currentUser) {
-        const response = await axios.get('http://192.168.1.19:3000/api/hive/getAllHives');
+        const response = await axios.get('http://192.168.1.14:3000/api/hive/getAllHives');
         const hives = response.data.data;
   
         // Fetch all apiaries owned by the current user
-        const apiariesResponse = await axios.get('http://192.168.1.19:3000/api/apiary/getAllApiaries');
+        const apiariesResponse = await axios.get('http://192.168.1.14:3000/api/apiary/getAllApiaries');
         const userApiaries = apiariesResponse.data.data.filter(apiary => apiary.Owner._id === currentUser._id);
   
         // Filter hives based on the apiaries owned by the current user

@@ -9,7 +9,7 @@ export default function ScannerScreenInspectionsDetails({ navigation }) {
 
    const handleBarCodeScanned = async ({ type, data }) => {
     try {
-        const response = await axios.get(`http://192.168.1.19:3000/api/hive/getHiveById/${data}`);
+        const response = await axios.get(`http://192.168.1.14:3000/api/hive/getHiveById/${data}`);
         const hiveData = response.data;
         navigation.navigate('HiveDetailsScreen', { hiveData }); 
     } catch (error) {

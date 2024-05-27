@@ -3,10 +3,19 @@ import { StyleSheet, ScrollView, View, Text, TextInput, TouchableOpacity, Switch
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DateTimePicker from '@react-native-community/datetimepicker';
+
 
 const AddInspectionScreen = ({ route }) => {
 
   const { hiveData } = route.params;
+
+
+
+  const [date, setDate] = useState(new Date());
+  const [showPicker, setShowPicker] = useState(false);
+
+
   const [inspector, setInspector] = useState('');
   const [isQueenMarked, setIsQueenMarked] = useState(hiveData.Queen.isMarked);
   const [Queen, setQueen] = useState({
@@ -36,12 +45,12 @@ const AddInspectionScreen = ({ route }) => {
     },
     note: ''
   });
-  
+
   const [ActivityAdd, setActivityAdd] = useState('');
   const [ActivityRemove, setActivityRemove] = useState('');
   const [HoneyStores, setHoneyStores] = useState('');
   const [PollenStores, setPollenStores] = useState('');
-  
+
   const [BeeHealth, setBeeHealth] = useState({
     disease: '',
     treatment: '',
@@ -53,7 +62,7 @@ const AddInspectionScreen = ({ route }) => {
     doses: '',
     note: ''
   });
-  
+
   const [SpottedProblems, setSpottedProblems] = useState({
     pests: '',
     predation: '',
@@ -61,7 +70,7 @@ const AddInspectionScreen = ({ route }) => {
     actiontaken: '',
     note: ''
   });
-  
+
   const [Weather, setWeather] = useState({
     conditions: '',
     temperature: 0,
@@ -70,9 +79,9 @@ const AddInspectionScreen = ({ route }) => {
     windspeed: 0,
     winddirection: 0
   });
-  
+
   const [Note, setNote] = useState('');
-  
+
 
 
   useEffect(() => {
@@ -122,6 +131,19 @@ const AddInspectionScreen = ({ route }) => {
   };
 
 
+  const handleDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShowPicker(false);
+    setDate(currentDate);
+    // Update your hiveData.Queen.installed if needed
+  };
+
+  const togglePicker = () => {
+    setShowPicker(!showPicker);
+  };
+
+
+
   const handleAddInspection = () => {
     // Logic to add inspection to the hive
     // You can use the state variables to send the data to your backend or perform any other action
@@ -168,13 +190,117 @@ const AddInspectionScreen = ({ route }) => {
     "Gramme (g)",
     "Millilitre (ml)"];
 
+  const diseases = [
+    'Acariose',
+    'Loque américaine',
+    'Abeilles africanisées',
+    'Loque américaine',
+    'Animaux',
+    'Crise craie',
+    'Couvain refroidi',
+    'Syndrome d\'effondrement des colonies (CCD)',
+    'Dysenterie',
+    'Loque européenne',
+    'Loque européenne',
+    'Ouvrières pondeuses',
+    'Nosema',
+    'Pertes causées par les pesticides',
+    'Sans reine',
+    'Petit coléoptère de la ruche',
+    'Loque pierreuse',
+    'Tropilaelaps',
+    'Varroa',
+    'Guêpes',
+    'Teigne de la cire',
+    'Autre'];
+
+  const treatments = [
+    'Acaricide ajouté',
+    'Acaricide retiré',
+    'Apiguard',
+    'Apistan',
+    'Apivar',
+    'Check Mite',
+    'Acide formique',
+    'Pads Formic Pro',
+    'Fumagilline-B',
+    'Miticide ajouté',
+    'Miticide retiré',
+    'Autre',
+    'Acide oxalique',
+    'Poussière de sucre',
+    'Terramycine',
+    'Thymol',
+    'Tylosine'
+  ];
+
+
+  const doses = ["Gouttes", "Grammes", "Millilitres"];
+  const HoneyPollenHarvest = ["Faible", "Moyenne", "Élevée"];
+
+
+  const [selectedAjouts, setSelectedAjouts] = useState([]);
+  const [selectedEnlevements, setSelectedEnlevements] = useState([]);
+
+  const options = [
+    { name: "Couvain ouvert", requiresNumberInput: true },
+    { name: "Couvain fermé", requiresNumberInput: true },
+    { name: "Cadre de miel", requiresNumberInput: true },
+    { name: "Cadre de pollen", requiresNumberInput: true },
+    { name: "Cire gaufrée", requiresNumberInput: true },
+    { name: "Rayon de miel", requiresNumberInput: true }
+  ];
+
+
+
+
+
+  const handleAjoutsChange = (itemValue) => {
+    setSelectedAjouts((prev) => {
+      if (prev.includes(itemValue)) {
+        return prev.filter(item => item !== itemValue);
+      }
+      return [...prev, itemValue];
+    });
+  };
+
+  const handleEnlevementsChange = (itemValue) => {
+    setSelectedEnlevements((prev) => {
+      if (prev.includes(itemValue)) {
+        return prev.filter(item => item !== itemValue);
+      }
+      return [...prev, itemValue];
+    });
+  };
+
+
+  const renderOption = (option, selectedItems, handleChange) => {
+    return (
+      <TouchableOpacity
+        key={option.name}
+        style={[styles.option, selectedItems.includes(option.name) && styles.selectedOption]}
+        onPress={() => handleChange(option.name)}
+      >
+        <Text style={styles.optionText}>{option.name}</Text>
+        {option.requiresNumberInput && (
+          <TextInput
+            style={[styles.textInput, { width: 50 }]} // Adjust width as needed
+            keyboardType="numeric"
+            placeholder="Qty"
+            onChangeText={(text) => handleChange(option.name, parseInt(text))}
+          />
+        )}
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Ajouter une inspection</Text>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.detailsContainer}>
 
-          {/* Hive and Apiary */}
+          {/* Inspector Details*/}
           <View style={styles.fieldset}>
             <Text style={styles.fieldsetTitle}>Inspecteur</Text>
             <View style={[styles.detailItem, styles.inline]}>
@@ -194,10 +320,10 @@ const AddInspectionScreen = ({ route }) => {
               />
             </View>
           </View>
-          {/* End of Hive and Apiary */}
+          {/* End of Inspector Details*/}
 
 
-          {/* Hive and Apiary */}
+          {/* Hive and Apiary Details */}
           <View style={styles.fieldset}>
             <Text style={styles.fieldsetTitle}>Rucher et Ruche</Text>
             <View style={[styles.detailItem, styles.inline]}>
@@ -217,10 +343,10 @@ const AddInspectionScreen = ({ route }) => {
               />
             </View>
           </View>
-          {/* End of Hive and Apiary */}
+          {/* End of Hive and Apiary Details */}
 
 
-          {/* Data and Time */}
+          {/* Data and Time Details */}
           <View style={styles.fieldset}>
             <Text style={styles.fieldsetTitle}>Date et Heure</Text>
             <View style={[styles.detailItem, styles.inline]}>
@@ -240,7 +366,9 @@ const AddInspectionScreen = ({ route }) => {
               />
             </View>
           </View>
-          {/* End of Date and Time*/}
+          {/* End of Date and Time Details */}
+
+
 
           {/* Queen Details*/}
           <View style={styles.fieldset}>
@@ -344,32 +472,87 @@ const AddInspectionScreen = ({ route }) => {
           {/* End of Queen Details*/}
 
 
-          {/* Colony Details*/}
+          {/* Equipments Details  */}
           <View style={styles.fieldset}>
-            <Text style={styles.fieldsetTitle}>Colonie</Text>
+            <Text style={styles.fieldsetTitle}>Équipements</Text>
+
+
+
 
             <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Tempérament</Text>
+              <Text style={styles.label}>Nombre de hausses</Text>
+              <TextInput
+                style={[styles.textInput, styles.inlineInput]}
+                keyboardType='numeric'
+                value={Supplies.ingredients.quantity}
+              />
+            </View>
+
+            <View style={[styles.detailItem, styles.inline]}>
+              <Text style={styles.label}>Nombre de trappes à pollen</Text>
+              <TextInput
+                style={[styles.textInput, styles.inlineInput]}
+                keyboardType='numeric'
+                value={Supplies.ingredients.quantity}
+              />
+            </View>
+
+            <View style={[styles.detailItem, styles.inline]}>
+              <Text style={styles.label}>Nombre total de cadres</Text>
+              <TextInput
+                style={[styles.textInput, styles.inlineInput]}
+                keyboardType='numeric'
+                value={Supplies.ingredients.quantity}
+              />
+            </View>
+
+
+          </View>
+          {/* End of Equipments  Details*/}
+
+
+
+          {/* Supplies Details  */}
+          <View style={styles.fieldset}>
+            <Text style={styles.fieldsetTitle}>Fournitures</Text>
+
+            <View style={[styles.detailItem, styles.inline]}>
+              <Text style={styles.label}>Produit</Text>
               <Picker
                 style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                selectedValue={Colony.temperament}
-                onValueChange={(itemValue) => handleColonyChange('temperament', itemValue)}
+                selectedValue={Supplies.product}
               >
-                {temperament.map((state, index) => (
+                {supplies.map((state, index) => (
                   <Picker.Item key={index} label={state} value={state} />
                 ))}
               </Picker>
             </View>
 
+            <View style={[styles.detailItem, styles.inline]}>
+              <Text style={styles.label}>Ingrédients</Text>
+              <TextInput
+                style={[styles.textInput, styles.inlineInput]}
+                value={Supplies.ingredients.name}
+              />
+            </View>
 
             <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Force</Text>
+              <Text style={styles.label}>Quantité totale</Text>
+              <TextInput
+                style={[styles.textInput, styles.inlineInput]}
+                keyboardType='numeric'
+                value={Supplies.ingredients.quantity}
+              />
+            </View>
+
+
+            <View style={[styles.detailItem, styles.inline]}>
+              <Text style={styles.label}>Unité</Text>
               <Picker
                 style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                selectedValue={Colony.strength}
-                onValueChange={(itemValue) => handleColonyChange('strength', itemValue)}
+                selectedValue={Supplies.ingredients.unit}
               >
-                {force.map((state, index) => (
+                {units.map((state, index) => (
                   <Picker.Item key={index} label={state} value={state} />
                 ))}
               </Picker>
@@ -381,13 +564,12 @@ const AddInspectionScreen = ({ route }) => {
                 style={[styles.textInput, styles.inlineInput, styles.textArea]}
                 multiline={true}
                 numberOfLines={4}
-                value={Colony.note}
-                onChangeText={(text) => handleQueenChange('note', text)}
+                value={Note}
               />
             </View>
-
           </View>
-          {/* End of Colony Details*/}
+          {/* End of Supplies Details*/}
+
 
           {/* Brood Details*/}
           <View style={styles.fieldset}>
@@ -446,47 +628,147 @@ const AddInspectionScreen = ({ route }) => {
           {/* End of Brood Details*/}
 
 
-          {/* Supplies Details  */}
+
+          {/* Colony Details*/}
           <View style={styles.fieldset}>
-            <Text style={styles.fieldsetTitle}>Fournitures</Text>
+            <Text style={styles.fieldsetTitle}>Colonie</Text>
 
             <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Produit</Text>
+              <Text style={styles.label}>Tempérament</Text>
               <Picker
                 style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                selectedValue={Supplies.product}
-               >
-                {supplies.map((state, index) => (
+                selectedValue={Colony.temperament}
+                onValueChange={(itemValue) => handleColonyChange('temperament', itemValue)}
+              >
+                {temperament.map((state, index) => (
+                  <Picker.Item key={index} label={state} value={state} />
+                ))}
+              </Picker>
+            </View>
+
+
+            <View style={[styles.detailItem, styles.inline]}>
+              <Text style={styles.label}>Force</Text>
+              <Picker
+                style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
+                selectedValue={Colony.strength}
+                onValueChange={(itemValue) => handleColonyChange('strength', itemValue)}
+              >
+                {force.map((state, index) => (
                   <Picker.Item key={index} label={state} value={state} />
                 ))}
               </Picker>
             </View>
 
             <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Ingrédients</Text>
+              <Text style={styles.label}>Note</Text>
               <TextInput
-                style={[styles.textInput, styles.inlineInput]}
-                value={Supplies.ingredients.name}
-               />
+                style={[styles.textInput, styles.inlineInput, styles.textArea]}
+                multiline={true}
+                numberOfLines={4}
+                value={Colony.note}
+                onChangeText={(text) => handleQueenChange('note', text)}
+              />
+            </View>
+
+          </View>
+          {/* End of Colony Details*/}
+
+
+
+          {/* Treatment Details  */}
+          <View style={styles.fieldset}>
+            <Text style={styles.fieldsetTitle}>Maladie et traitement</Text>
+
+            <View style={[styles.detailItem, styles.inline]}>
+              <Text style={styles.label}>Maladie</Text>
+              <Picker
+                style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
+                selectedValue={Supplies.product}
+              >
+                {diseases.map((state, index) => (
+                  <Picker.Item key={index} label={state} value={state} />
+                ))}
+              </Picker>
             </View>
 
             <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Quantité totale</Text>
+              <Text style={styles.label}>Traitements</Text>
+              <Picker
+                style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
+                selectedValue={Supplies.product}
+              >
+                {treatments.map((state, index) => (
+                  <Picker.Item key={index} label={state} value={state} />
+                ))}
+              </Picker>
+            </View>
+
+            <View style={styles.fieldset}>
+              <Text style={styles.fieldsetTitle}>Durée</Text>
+              <View>
+                <View style={[styles.detailItem, styles.inline]}>
+                  <Text style={styles.label}>À partir de</Text>
+                  <Pressable onPress={togglePicker}>
+                    <Text style={[styles.textInput, styles.inlineInput]}>
+                      {hiveData.Queen.installed ? hiveData.Queen.installed.toString() : ""}
+                    </Text>
+                  </Pressable>
+                </View>
+                {showPicker && (
+                  <DateTimePicker
+                    testID="dateTimePicker"
+                    value={date}
+                    mode="date"
+                    is24Hour={true}
+                    display="default"
+                    onChange={handleDateChange}
+                    locale="fr"
+                  />
+                )}
+              </View>
+
+              <View>
+                <View style={[styles.detailItem, styles.inline]}>
+                  <Text style={styles.label}>À</Text>
+                  <Pressable onPress={togglePicker}>
+                    <Text style={[styles.textInput, styles.inlineInput]}>
+                      {hiveData.Queen.installed ? hiveData.Queen.installed.toString() : ""}
+                    </Text>
+                  </Pressable>
+                </View>
+                {showPicker && (
+                  <DateTimePicker
+                    testID="dateTimePicker"
+                    value={date}
+                    mode="date"
+                    is24Hour={true}
+                    display="default"
+                    onChange={handleDateChange}
+                    locale="fr"
+                  />
+                )}
+              </View>
+            </View>
+
+
+            <View style={[styles.detailItem, styles.inline]}>
+              <Text style={styles.label}>Quantité</Text>
               <TextInput
                 style={[styles.textInput, styles.inlineInput]}
                 keyboardType='numeric'
                 value={Supplies.ingredients.quantity}
-               />
+              />
             </View>
 
 
             <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Unité</Text>
+              <Text style={styles.label}>Doses</Text>
               <Picker
                 style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
                 selectedValue={Supplies.ingredients.unit}
-               >
-                {units.map((state, index) => (
+              >
+                {doses.map((state, index) => (
                   <Picker.Item key={index} label={state} value={state} />
                 ))}
               </Picker>
@@ -499,14 +781,77 @@ const AddInspectionScreen = ({ route }) => {
                 multiline={true}
                 numberOfLines={4}
                 value={Note}
-               />
+              />
             </View>
           </View>
-          {/* End of Supplies Details*/}
+          {/* End of Treatment Details*/}
 
 
 
+          {/* Honey and Pollen stores Details  */}
+          <View style={styles.fieldset}>
+            <Text style={styles.fieldsetTitle}>Récoltes</Text>
 
+            <View style={[styles.detailItem, styles.inline]}>
+              <Text style={styles.label}>Récolte de miel </Text>
+              <Picker
+                style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
+                selectedValue={Supplies.product}
+              >
+                {HoneyPollenHarvest.map((state, index) => (
+                  <Picker.Item key={index} label={state} value={state} />
+                ))}
+              </Picker>
+            </View>
+
+            <View style={[styles.detailItem, styles.inline]}>
+              <Text style={styles.label}>Récolte de pollens </Text>
+              <Picker
+                style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
+                selectedValue={Supplies.product}
+              >
+                {HoneyPollenHarvest.map((state, index) => (
+                  <Picker.Item key={index} label={state} value={state} />
+                ))}
+              </Picker>
+            </View>
+
+
+
+          </View>
+
+          {/* End of Honey and Pollen stores Details */}
+
+
+          {/* Actions Taken */}
+          <ScrollView>
+            <View style={styles.fieldset}>
+              <Text style={styles.fieldsetTitle}>Actions entreprises</Text>
+
+              {/* Frames for Ajouts and Enlèvements */}
+              <View style={styles.frameContainer}>
+                {/* Frame for Ajouts */}
+                <View style={styles.frame}>
+                  <Text style={styles.frameTitle}>Ajouts</Text>
+                  <View style={styles.optionsContainer}>
+                    {options.map((option) => renderOption(option, selectedAjouts, handleAjoutsChange))}
+
+                  </View>
+                </View>
+
+                {/* Frame for Enlèvements */}
+                <View style={styles.frame}>
+                  <Text style={styles.frameTitle}>Enlèvements</Text>
+                  <View style={styles.optionsContainer}>
+                    {options.map((option) => renderOption(option, selectedEnlevements, handleEnlevementsChange))}
+                  </View>
+                </View>
+              </View>
+
+            </View>
+
+          </ScrollView>
+          {/* End of Actions Taken  */}
 
           <TouchableOpacity style={styles.addButton} onPress={handleAddInspection}>
             <Text style={styles.addButtonText}>Ajouter</Text>
@@ -543,7 +888,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   label: {
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: 'bold',
     color: '#342D21',
     marginBottom: 8,
@@ -611,9 +956,61 @@ const styles = StyleSheet.create({
     // Add styles for textArea
     height: 100, // Adjust the height according to your design
     textAlignVertical: 'top', // Align text to the top
-  }
+  },
+
+  picker: {
+    flex: 2
+  },
+  optionsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginBottom: 10,
+    justifyContent: 'flex-start', // Align items horizontally starting from the left
+    alignItems: 'flex-start', // Align items vertically starting from the top
+  },
+  optionsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  option: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 8,
+    marginRight: 5,
+    marginBottom: 5,
+  },
+  optionText: {
+    fontSize: 14,
+  },
+  selectedOption: {
+    backgroundColor: '#B8E986',
+  },
+
+  frameContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
+  },
+  frame: {
+    flex: 1,
+    marginLeft: 5,
+    marginRight: 5,
+    borderWidth: 1,
+    borderColor: '#977700',
+    borderRadius: 8,
+    padding: 10,
+  },
+  frameTitle: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    alignSelf: 'center',
+    color: '#342D21',
+  },
 
 
 });
+
 
 export default AddInspectionScreen;
