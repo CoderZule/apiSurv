@@ -44,7 +44,7 @@ export default function LoginScreen() {
             navigation.navigate('DrawerNavigator', currentUser);
 
     } catch (error) {
-      Alert.alert('Échec de connexion', error.toString());
+      Alert.alert('Échec de connexion', 'Identifiants invalides. Veuillez réessayer.');
     }
   };
 

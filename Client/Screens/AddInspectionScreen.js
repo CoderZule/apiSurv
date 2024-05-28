@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, ScrollView, View, Text, TextInput, TouchableOpacity, Switch, Button, Pressable } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -9,12 +8,6 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 const AddInspectionScreen = ({ route }) => {
 
   const { hiveData } = route.params;
-
-
-
-  const [date, setDate] = useState(new Date());
-  const [showPicker, setShowPicker] = useState(false);
-
 
   const [inspector, setInspector] = useState('');
   const [isQueenMarked, setIsQueenMarked] = useState(hiveData.Queen.isMarked);
@@ -25,12 +18,13 @@ const AddInspectionScreen = ({ route }) => {
     clipped: false,
     temperament: '',
     note: '',
-    queencells: '',
+    queenCells: '',
     isSwarmed: false
   });
   const [Colony, setColony] = useState({
     strength: '',
     temperament: '',
+    deadBees: false,
     note: '',
 
 
@@ -72,82 +66,22 @@ const AddInspectionScreen = ({ route }) => {
   });
 
   const [Weather, setWeather] = useState({
-    conditions: '',
+    condition: '',
     temperature: 0,
     humidity: 0,
     pressure: 0,
-    windspeed: 0,
-    winddirection: 0
+    windSpeed: 0,
+    windDirection: 0
   });
 
   const [Note, setNote] = useState('');
+  const [date, setDate] = useState(new Date());
+  const [showPicker, setShowPicker] = useState(false);
+  const [selectedAjouts, setSelectedAjouts] = useState([]);
+  const [selectedEnlevements, setSelectedEnlevements] = useState([]);
+  const [showWeatherDetails, setShowWeatherDetails] = useState(false);
 
 
-
-  useEffect(() => {
-    // Fetch currentUser from AsyncStorage
-    AsyncStorage.getItem('currentUser')
-      .then((value) => {
-        if (value) {
-          const inspector = JSON.parse(value);
-          setInspector(inspector);
-
-        } else {
-          setInspector('Unknown Inspector');
-        }
-      })
-      .catch((error) => {
-        console.error('Error retrieving currentUser from AsyncStorage:', error);
-        setInspector('Unknown Inspector');
-      });
-  }, []);
-
-  useEffect(() => {
-    if (!isQueenMarked) {
-      setQueen({ ...Queen, color: '' }); // Reset color if isMarked is false
-    }
-  }, [isQueenMarked]);
-
-  const handleQueenChange = (key, value) => {
-    setQueen(prevQueen => ({
-      ...prevQueen,
-      [key]: value
-    }));
-  };
-
-  const handleColonyChange = (key, value) => {
-    setColony(prevColony => ({
-      ...prevColony,
-      [key]: value
-    }));
-  };
-
-  const handleMarkedChange = (value) => {
-    setIsQueenMarked(value);
-    setQueen(prevQueen => ({
-      ...prevQueen,
-      isMarked: value
-    }));
-  };
-
-
-  const handleDateChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    setShowPicker(false);
-    setDate(currentDate);
-    // Update your hiveData.Queen.installed if needed
-  };
-
-  const togglePicker = () => {
-    setShowPicker(!showPicker);
-  };
-
-
-
-  const handleAddInspection = () => {
-    // Logic to add inspection to the hive
-    // You can use the state variables to send the data to your backend or perform any other action
-  };
 
   const colors = ['Rouge', 'Bleu', 'Vert', 'Jaune', 'Orange', 'Violet', 'Rose', 'Marron', 'Blanc', 'Noir'];
   const startYear = 2015;
@@ -234,14 +168,8 @@ const AddInspectionScreen = ({ route }) => {
     'Tylosine'
   ];
 
-
   const doses = ["Gouttes", "Grammes", "Millilitres"];
   const HoneyPollenHarvest = ["Faible", "Moyenne", "Élevée"];
-
-
-  const [selectedAjouts, setSelectedAjouts] = useState([]);
-  const [selectedEnlevements, setSelectedEnlevements] = useState([]);
-
   const options = [
     { name: "Couvain ouvert", requiresNumberInput: true },
     { name: "Couvain fermé", requiresNumberInput: true },
@@ -251,7 +179,65 @@ const AddInspectionScreen = ({ route }) => {
     { name: "Rayon de miel", requiresNumberInput: true }
   ];
 
+  const weather_conditions = ["Ciel Dégagé", "Quelques Nuages", "Nuages Épars", "Nuages Fragmentés", "Averses", "Pluie", "Orage", "Neige", "Brume"];
+  const weather_wind_direction = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
 
+
+  useEffect(() => {
+    AsyncStorage.getItem('currentUser')
+      .then((value) => {
+        if (value) {
+          const inspector = JSON.parse(value);
+          setInspector(inspector);
+
+        } else {
+          setInspector('Unknown Inspector');
+        }
+      })
+      .catch((error) => {
+        console.error('Error retrieving currentUser from AsyncStorage:', error);
+        setInspector('Unknown Inspector');
+      });
+  }, []);
+
+  useEffect(() => {
+    if (!isQueenMarked) {
+      setQueen({ ...Queen, color: '' });
+    }
+  }, [isQueenMarked]);
+
+  const handleQueenChange = (key, value) => {
+    setQueen(prevQueen => ({
+      ...prevQueen,
+      [key]: value
+    }));
+  };
+
+  const handleColonyChange = (key, value) => {
+    setColony(prevColony => ({
+      ...prevColony,
+      [key]: value
+    }));
+  };
+
+  const handleMarkedChange = (value) => {
+    setIsQueenMarked(value);
+    setQueen(prevQueen => ({
+      ...prevQueen,
+      isMarked: value
+    }));
+  };
+
+
+  const handleDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShowPicker(false);
+    setDate(currentDate);
+  };
+
+  const togglePicker = () => {
+    setShowPicker(!showPicker);
+  };
 
 
 
@@ -274,6 +260,8 @@ const AddInspectionScreen = ({ route }) => {
   };
 
 
+
+
   const renderOption = (option, selectedItems, handleChange) => {
     return (
       <TouchableOpacity
@@ -292,6 +280,11 @@ const AddInspectionScreen = ({ route }) => {
         )}
       </TouchableOpacity>
     );
+  };
+
+  const handleAddInspection = () => {
+    // Logic to add inspection to the hive
+    // You can use the state variables to send the data to your backend or perform any other action
   };
 
   return (
@@ -449,9 +442,10 @@ const AddInspectionScreen = ({ route }) => {
               <Text style={styles.label}>Cellules royales</Text>
               <Picker
                 style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                selectedValue={Queen.queencells}
-                onValueChange={(itemValue) => handleQueenChange('queencells', itemValue)}
+                selectedValue={Queen.queenCells}
+                onValueChange={(itemValue) => handleQueenChange('queenCells', itemValue)}
               >
+
                 {queen_cells.map((state, index) => (
                   <Picker.Item key={index} label={state} value={state} />
                 ))}
@@ -472,12 +466,10 @@ const AddInspectionScreen = ({ route }) => {
           {/* End of Queen Details*/}
 
 
+
           {/* Equipments Details  */}
           <View style={styles.fieldset}>
             <Text style={styles.fieldsetTitle}>Équipements</Text>
-
-
-
 
             <View style={[styles.detailItem, styles.inline]}>
               <Text style={styles.label}>Nombre de hausses</Text>
@@ -549,7 +541,7 @@ const AddInspectionScreen = ({ route }) => {
             <View style={[styles.detailItem, styles.inline]}>
               <Text style={styles.label}>Unité</Text>
               <Picker
-                style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
+                style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0'}]}
                 selectedValue={Supplies.ingredients.unit}
               >
                 {units.map((state, index) => (
@@ -633,6 +625,18 @@ const AddInspectionScreen = ({ route }) => {
           <View style={styles.fieldset}>
             <Text style={styles.fieldsetTitle}>Colonie</Text>
 
+
+            <View style={[styles.detailItem, styles.inline]}>
+              <Text style={styles.label}>Abeilles mortes</Text>
+              <Switch
+                trackColor={{ false: "#767577", true: "#81b0ff" }}
+                thumbColor={Colony.deadBees ? "#f4f3f4" : "#f4f3f4"}
+                ios_backgroundColor="#3e3e3e"
+                onValueChange={(value) => handleQueenChange('deadBees', value)}
+                value={Colony.deadBees}
+              />
+            </View>
+
             <View style={[styles.detailItem, styles.inline]}>
               <Text style={styles.label}>Tempérament</Text>
               <Picker
@@ -683,7 +687,7 @@ const AddInspectionScreen = ({ route }) => {
             <View style={[styles.detailItem, styles.inline]}>
               <Text style={styles.label}>Maladie</Text>
               <Picker
-                style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
+                style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0'}]}
                 selectedValue={Supplies.product}
               >
                 {diseases.map((state, index) => (
@@ -853,6 +857,91 @@ const AddInspectionScreen = ({ route }) => {
           </ScrollView>
           {/* End of Actions Taken  */}
 
+          {/* Weather Details  */}
+          <View>
+            <View style={styles.inline}>
+              <Text style={styles.label}>Inclure la météo</Text>
+              <Switch
+                trackColor={{ false: "#767577", true: "#B8E986" }}
+
+                thumbColor={showWeatherDetails ? "#B8E986" : "#B8E986"}
+
+                value={showWeatherDetails}
+                onValueChange={(value) => setShowWeatherDetails(value)}
+              />
+            </View>
+
+            {showWeatherDetails && (
+              <View style={styles.fieldset}>
+                <Text style={styles.fieldsetTitle}>Météo</Text>
+
+                <View style={[styles.detailItem, styles.inline]}>
+                  <Text style={styles.label}>Température (°C)</Text>
+                  <TextInput
+                    style={[styles.textInput, styles.inlineInput]}
+                    keyboardType="numeric"
+                    value={Weather.temperature}
+                  />
+                </View>
+
+                <View style={[styles.detailItem, styles.inline]}>
+                  <Text style={styles.label}>Humidité (%)</Text>
+                  <TextInput
+                    style={[styles.textInput, styles.inlineInput]}
+                    keyboardType="numeric"
+                    value={Weather.humidity}
+                  />
+                </View>
+
+                <View style={[styles.detailItem, styles.inline]}>
+                  <Text style={styles.label}>Pression (hPa)</Text>
+                  <TextInput
+                    style={[styles.textInput, styles.inlineInput]}
+                    keyboardType="numeric"
+                    value={Weather.pressure}
+                  />
+                </View>
+
+                <View style={[styles.detailItem, styles.inline]}>
+                  <Text style={styles.label}>Vitesse du vent (km/h)</Text>
+                  <TextInput
+                    style={[styles.textInput, styles.inlineInput]}
+                    keyboardType="numeric"
+                    value={Weather.windSpeed}
+                  />
+                </View>
+
+                <View style={[styles.detailItem, styles.inline]}>
+                  <Text style={styles.label}>Direction du vent</Text>
+                  <Picker
+                    selectedValue={Weather.windDirection}
+                    style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
+                    onValueChange={(itemValue) => Weather.windDirection = itemValue}
+                  >
+                    {weather_wind_direction.map((direction, index) => (
+                      <Picker.Item key={index} label={direction} value={direction} />
+                    ))}
+                  </Picker>
+                </View>
+
+                <View style={[styles.detailItem, styles.inline]}>
+                  <Text style={styles.label}>Condition météorologique</Text>
+                  <Picker
+                    selectedValue={Weather.condition}
+                    style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
+                    onValueChange={(itemValue) => Weather.condition = itemValue}
+                  >
+                    {weather_conditions.map((condition, index) => (
+                      <Picker.Item key={index} label={condition} value={condition} />
+                    ))}
+                  </Picker>
+                </View>
+              </View>
+            )}
+          </View>
+          {/* End of Weather Details  */}
+
+
           <TouchableOpacity style={styles.addButton} onPress={handleAddInspection}>
             <Text style={styles.addButtonText}>Ajouter</Text>
           </TouchableOpacity>
@@ -1014,3 +1103,4 @@ const styles = StyleSheet.create({
 
 
 export default AddInspectionScreen;
+
