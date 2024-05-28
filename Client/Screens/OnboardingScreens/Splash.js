@@ -1,35 +1,46 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Image, StyleSheet, Animated } from 'react-native';
+import { View, StyleSheet, Animated } from 'react-native';
 
 const Splash = ({ onFinish }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const progressAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    Animated.timing(
-      fadeAnim,
-      {
-        toValue: 1,
-        duration: 3000, // Fade-in duration
-        useNativeDriver: true,
-      }
-    ).start();
-    
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 3000,  
+      useNativeDriver: true,
+    }).start();
+
     const timer = setTimeout(() => {
       onFinish();
-    }, 6000); // Total duration - Fade-in duration
+    }, 3000);  
+
+    Animated.timing(progressAnim, {
+      toValue: 1,
+      duration: 3000,  
+      useNativeDriver: false, 
+    }).start();
 
     return () => {
       clearTimeout(timer);
     };
-  }, [fadeAnim, onFinish]);
+  }, [fadeAnim, onFinish, progressAnim]);
 
   return (
     <View style={styles.container}>
-    
-      <Animated.Image 
-        source={require('../../assets/logo.png')} 
-        style={[styles.logo, { opacity: fadeAnim }]} 
+      <Animated.Image
+        source={require('../../assets/logo.png')}
+        style={[styles.logo, { opacity: fadeAnim }]}
       />
+      <View style={styles.progressBarContainer}>
+        <Animated.View
+          style={[
+            styles.progressBar,
+            { width: progressAnim.interpolate({ inputRange: [0, 1], outputRange: ['0%', '100%'] }) },
+          ]}
+        />
+      </View>
     </View>
   );
 };
@@ -39,19 +50,23 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff', 
+    backgroundColor: '#fff',
   },
   logo: {
-    width: 251, 
+    width: 251,
     height: 178,
   },
-  splashTop: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    resizeMode: 'cover',
-    height: 100, // Adjust as needed
+  progressBarContainer: {
+    width: '80%',  
+    height: 10,  
+    backgroundColor: '#ddd',
+    marginTop: 20,  
+    borderRadius: 5,
+    overflow: 'hidden',
+  },
+  progressBar: {
+    height: '100%',
+    backgroundColor: '#977700',  
   },
 });
 

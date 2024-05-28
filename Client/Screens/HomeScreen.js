@@ -145,7 +145,7 @@ export default function HomeScreen({ navigation }) {
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Scanner le code QR</Text>
             <TouchableOpacity style={styles.modalButton} onPress={openScannerInspDetails}>
-              <Ionicons name="archive-outline" size={20} color="#977700" />
+              <Ionicons name="archive-outline" size={20} color="#977700"  />
               <Text style={styles.modalButtonText}>Détails de la ruche</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.modalButton} onPress={openScannerAddInspec}>
@@ -153,7 +153,7 @@ export default function HomeScreen({ navigation }) {
               <Text style={styles.modalButtonText}>Ajouter une inspection</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
-              <Text style={styles.closeButtonText}>Fermer</Text>
+              <Text style={styles.closeButtonText}>Annuler</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -289,6 +289,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#373737',
     fontSize: 16,
+    fontWeight:"bold",
     marginLeft: 10,
   },
   closeButton: {

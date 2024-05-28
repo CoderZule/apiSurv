@@ -4,7 +4,6 @@ import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-
 const AddInspectionScreen = ({ route }) => {
 
   const { hiveData } = route.params;
