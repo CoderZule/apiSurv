@@ -1,187 +1,49 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, ScrollView, View, Text, TextInput, TouchableOpacity, Switch, Button, Pressable } from 'react-native';
+import { StyleSheet, ScrollView, View, Text, TextInput, TouchableOpacity, Switch, Button, Pressable, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import axios from 'axios';
+
+import {
+  colors,
+  queen_cells,
+  temperament,
+  force,
+  brood,
+  malebrood,
+  supplies,
+  units,
+  diseases,
+  treatments,
+  doses,
+  HoneyPollenHarvest,
+  options,
+  weather_conditions,
+  weather_wind_direction
+} from './Data';
+
 
 const AddInspectionScreen = ({ route }) => {
 
   const { hiveData } = route.params;
 
-  const [inspector, setInspector] = useState('');
-  const [isQueenMarked, setIsQueenMarked] = useState(hiveData.Queen.isMarked);
-  const [Queen, setQueen] = useState({
-    seen: false,
-    isMarked: hiveData.Queen.isMarked,
-    color: '',
-    clipped: false,
-    temperament: '',
-    note: '',
-    queenCells: '',
-    isSwarmed: false
-  });
-  const [Colony, setColony] = useState({
-    strength: '',
-    temperament: '',
-    deadBees: false,
-    note: '',
-
-
-  });
-
-  const [Supplies, setSupplies] = useState({
-    product: '',
-    ingredients: {
-      name: '',
-      quantity: 0,
-      unit: ''
-    },
-    note: ''
-  });
-
-  const [ActivityAdd, setActivityAdd] = useState('');
-  const [ActivityRemove, setActivityRemove] = useState('');
-  const [HoneyStores, setHoneyStores] = useState('');
-  const [PollenStores, setPollenStores] = useState('');
-
-  const [BeeHealth, setBeeHealth] = useState({
-    disease: '',
-    treatment: '',
-    duration: {
-      from: Date.now(),
-      to: Date.now()
-    },
-    quantity: 0,
-    doses: '',
-    note: ''
-  });
-
-  const [SpottedProblems, setSpottedProblems] = useState({
-    pests: '',
-    predation: '',
-    equipment: '',
-    actiontaken: '',
-    note: ''
-  });
-
-  const [Weather, setWeather] = useState({
-    condition: '',
-    temperature: 0,
-    humidity: 0,
-    pressure: 0,
-    windSpeed: 0,
-    windDirection: 0
-  });
-
-  const [Note, setNote] = useState('');
   const [date, setDate] = useState(new Date());
-  const [showPicker, setShowPicker] = useState(false);
+  const [showPickerFrom, setShowPickerFrom] = useState(false);
+  const [showPickerTo, setShowPickerTo] = useState(false);
+
   const [selectedAjouts, setSelectedAjouts] = useState([]);
   const [selectedEnlevements, setSelectedEnlevements] = useState([]);
   const [showWeatherDetails, setShowWeatherDetails] = useState(false);
-
-
-
-  const colors = ['Rouge', 'Bleu', 'Vert', 'Jaune', 'Orange', 'Violet', 'Rose', 'Marron', 'Blanc', 'Noir'];
   const startYear = 2015;
   const endYear = 2024;
   const years = Array.from(new Array(endYear - startYear + 1), (_, index) => startYear + index);
   years.reverse();
 
-
-  const queen_cells = ['Aucun', 'Essaim', 'Supersedure', 'Urgence'];
-  const temperament = [
-    "Agressive",
-    "Nerveuse",
-    "Calme",
-
-  ];
-  const force = [
-    "Trés Faible",
-    "Faible",
-    "Modérée",
-    "Forte",
-    "Très Forte"
-
-  ];
-  const brood = [
-    "Fermé",
-    "Ouvert",
-    "Irrégulièr",
-    "En rayon",
-    "Médiane du cadre",
-    "Régulièr"
-  ];
-  const malebrood = [
-    "Irrégulièr",
-    "Régulièr"
-  ];
-
-  const supplies = ["Miel", "Pollen"];
-  const units = ["Litre (L)",
-    "Kilogramme (kg)",
-    "Gramme (g)",
-    "Millilitre (ml)"];
-
-  const diseases = [
-    'Acariose',
-    'Loque américaine',
-    'Abeilles africanisées',
-    'Loque américaine',
-    'Animaux',
-    'Crise craie',
-    'Couvain refroidi',
-    'Syndrome d\'effondrement des colonies (CCD)',
-    'Dysenterie',
-    'Loque européenne',
-    'Loque européenne',
-    'Ouvrières pondeuses',
-    'Nosema',
-    'Pertes causées par les pesticides',
-    'Sans reine',
-    'Petit coléoptère de la ruche',
-    'Loque pierreuse',
-    'Tropilaelaps',
-    'Varroa',
-    'Guêpes',
-    'Teigne de la cire',
-    'Autre'];
-
-  const treatments = [
-    'Acaricide ajouté',
-    'Acaricide retiré',
-    'Apiguard',
-    'Apistan',
-    'Apivar',
-    'Check Mite',
-    'Acide formique',
-    'Pads Formic Pro',
-    'Fumagilline-B',
-    'Miticide ajouté',
-    'Miticide retiré',
-    'Autre',
-    'Acide oxalique',
-    'Poussière de sucre',
-    'Terramycine',
-    'Thymol',
-    'Tylosine'
-  ];
-
-  const doses = ["Gouttes", "Grammes", "Millilitres"];
-  const HoneyPollenHarvest = ["Faible", "Moyenne", "Élevée"];
-  const options = [
-    { name: "Couvain ouvert", requiresNumberInput: true },
-    { name: "Couvain fermé", requiresNumberInput: true },
-    { name: "Cadre de miel", requiresNumberInput: true },
-    { name: "Cadre de pollen", requiresNumberInput: true },
-    { name: "Cire gaufrée", requiresNumberInput: true },
-    { name: "Rayon de miel", requiresNumberInput: true }
-  ];
-
-  const weather_conditions = ["Ciel Dégagé", "Quelques Nuages", "Nuages Épars", "Nuages Fragmentés", "Averses", "Pluie", "Orage", "Neige", "Brume"];
-  const weather_wind_direction = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
+  const [inspector, setInspector] = useState('');
 
 
+  // get logged in current user
   useEffect(() => {
     AsyncStorage.getItem('currentUser')
       .then((value) => {
@@ -199,43 +61,32 @@ const AddInspectionScreen = ({ route }) => {
       });
   }, []);
 
-  useEffect(() => {
-    if (!isQueenMarked) {
-      setQueen({ ...Queen, color: '' });
-    }
-  }, [isQueenMarked]);
 
-  const handleQueenChange = (key, value) => {
-    setQueen(prevQueen => ({
-      ...prevQueen,
-      [key]: value
+
+   const togglePickerFrom = () => {
+    setShowPickerFrom(!showPickerFrom);
+  };
+
+  const togglePickerTo = () => {
+    setShowPickerTo(!showPickerTo);
+  };
+
+  const handleDateChangeFrom = (event, selectedDate) => {
+    const currentDate = selectedDate || formData.from;
+    setShowPickerFrom(false);
+    setFormData(prevData => ({
+      ...prevData,
+      from: currentDate
     }));
   };
 
-  const handleColonyChange = (key, value) => {
-    setColony(prevColony => ({
-      ...prevColony,
-      [key]: value
+  const handleDateChangeTo = (event, selectedDate) => {
+    const currentDate = selectedDate || formData.to;
+    setShowPickerTo(false);
+    setFormData(prevData => ({
+      ...prevData,
+      to: currentDate
     }));
-  };
-
-  const handleMarkedChange = (value) => {
-    setIsQueenMarked(value);
-    setQueen(prevQueen => ({
-      ...prevQueen,
-      isMarked: value
-    }));
-  };
-
-
-  const handleDateChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    setShowPicker(false);
-    setDate(currentDate);
-  };
-
-  const togglePicker = () => {
-    setShowPicker(!showPicker);
   };
 
 
@@ -281,9 +132,167 @@ const AddInspectionScreen = ({ route }) => {
     );
   };
 
-  const handleAddInspection = () => {
-    // Logic to add inspection to the hive
-    // You can use the state variables to send the data to your backend or perform any other action
+
+
+  const [formData, setFormData] = useState({
+    isMarked: hiveData.Queen.isMarked,
+    color: hiveData.Queen.color,
+    clipped: hiveData.Queen.clipped,
+    seen: hiveData.Queen.seen,
+    isSwarmed: hiveData.Queen.isSwarmed,
+    q_temperament: hiveData.Queen.temperament,
+    queenCells: hiveData.Queen.queenCells,
+    queenNote: hiveData.Queen.note,
+    TotalFrames: hiveData.Colony.TotalFrames,
+    supers: hiveData.Colony.supers,
+    pollenFrames: hiveData.Colony.pollenFrames,
+    strength: hiveData.Colony.strength,
+    c_temperament: hiveData.Colony.temperament,
+    deadBees: hiveData.Colony.deadBees,
+    colonyNote: hiveData.Colony.colonyNote,
+    state: '',
+    maleBrood: '',
+    totalBrood: 0,
+    DronesSeen: false,
+    product: '',
+    name: '',
+    quantity: 0,
+    unit: '',
+    SuppliesNote: '',
+    disease: '',
+    treatment: '',
+    from: new Date(),
+    to: new Date(),
+    quantity: 0,
+    doses: '',
+    BeeHealthNote: '',
+    HoneyStores: '',
+    PollenStores: '',
+    ActivityAdd: '',
+    ActivityRemove: '',
+
+
+
+
+
+
+
+  });
+
+  const handleInputChange = (key, value) => {
+    setFormData(prevState => ({
+      ...prevState,
+      [key]: value
+    }));
+  };
+
+  useEffect(() => {
+    if (!formData.isMarked) {
+      setFormData(prevData => ({
+        ...prevData,
+        color: '',
+      }));
+    }
+  }, [formData.isMarked]);
+
+
+  const handleAddInspection = async () => {
+    try {
+      const formattedData = {
+        Inspector: {
+          firstName: inspector.Firstname,
+          lastName: inspector.Lastname,
+          cin: inspector.Cin,
+        }, // the current logged in user(inspector)
+
+        InspectionDateTime: date, //Now time
+
+        ApiaryAndHive: {
+          apiaryName: hiveData.Apiary.Name,
+          hiveType: hiveData.Type,
+        },
+
+        Queen: {
+          seen: formData.seen,
+          isMarked: formData.isMarked,
+          color: formData.color,
+          clipped: formData.clipped,
+          temperament: formData.q_temperament,
+          note: formData.queenNote,
+          queenCells: formData.queenCells,
+          isSwarmed: formData.isSwarmed
+        },
+        Colony: {
+          strength: formData.strength,
+          temperament: formData.c_temperament,
+          deadBees: formData.deadBees,
+          supers: formData.supers,
+          pollenFrames: formData.pollenFrames,
+          TotalFrames: formData.TotalFrames,
+          note: formData.colonyNote
+
+        },
+        Brood: {
+          state: formData.state,
+          maleBrood: formData.maleBrood,
+          totalBrood: formData.totalBrood
+        },
+
+        DronesSeen: formData.DronesSeen,
+
+        Supplies: {
+          product: formData.product,
+          ingredients: {
+            name: formData.name,
+            quantity: formData.quantity,
+            unit: formData.unit
+          },
+          note: formData.SuppliesNote
+        },
+
+        BeeHealth: {
+          disease: formData.disease,
+          treatment: formData.treatment,
+          duration: {
+            from: formData.from,
+            to: formData.to
+          },
+          quantity: formData.quantity,
+          doses: formData.doses,
+          note: formData.BeeHealthNote
+        },
+
+        HoneyStores: formData.HoneyStores,
+        PollenStores: formData.PollenStores,
+
+        ActivityAdd: formData.ActivityAdd,
+        ActivityRemove: formData.ActivityRemove,
+
+        Weather: {
+          condition: '',
+          temperature: 0,
+          humidity: 0,
+          pressure: 0,
+          windSpeed: 0,
+          windDirection: 0
+        },
+
+        Note: '',
+
+        Hive: hiveData._id
+      };
+
+      const response = await axios.post('http://192.168.1.15:3000/api/inspection/create', formattedData);
+
+      if (response.status === 201) {
+        Alert.alert('Success', 'Inspection created successfully');
+      } else {
+        Alert.alert('Error', 'Failed to create inspection');
+      }
+    } catch (error) {
+      console.error('Error creating inspection:', error);
+      Alert.alert('Error', 'Failed to create inspection');
+    }
   };
 
   return (
@@ -361,7 +370,6 @@ const AddInspectionScreen = ({ route }) => {
           {/* End of Date and Time Details */}
 
 
-
           {/* Queen Details*/}
           <View style={styles.fieldset}>
             <Text style={styles.fieldsetTitle}>Reine</Text>
@@ -369,10 +377,10 @@ const AddInspectionScreen = ({ route }) => {
               <Text style={styles.label}>Observée</Text>
               <Switch
                 trackColor={{ false: "#767577", true: "#81b0ff" }}
-                thumbColor={Queen.seen ? "#f4f3f4" : "#f4f3f4"}
+                thumbColor={formData.seen ? "#f4f3f4" : "#f4f3f4"}
                 ios_backgroundColor="#3e3e3e"
-                onValueChange={(value) => handleQueenChange('seen', value)}
-                value={Queen.seen}
+                onValueChange={(value) => handleInputChange('seen', value)}
+                value={formData.seen}
               />
             </View>
 
@@ -380,10 +388,10 @@ const AddInspectionScreen = ({ route }) => {
               <Text style={styles.label}>Clippée</Text>
               <Switch
                 trackColor={{ false: "#767577", true: "#81b0ff" }}
-                thumbColor={Queen.clipped ? "#f4f3f4" : "#f4f3f4"}
+                thumbColor={formData.clipped ? "#f4f3f4" : "#f4f3f4"}
                 ios_backgroundColor="#3e3e3e"
-                onValueChange={(value) => handleQueenChange('clipped', value)}
-                value={Queen.clipped}
+                onValueChange={(value) => handleInputChange('clipped', value)}
+                value={formData.clipped}
               />
             </View>
 
@@ -391,10 +399,10 @@ const AddInspectionScreen = ({ route }) => {
               <Text style={styles.label}>Essaimé</Text>
               <Switch
                 trackColor={{ false: "#767577", true: "#81b0ff" }}
-                thumbColor={Queen.isSwarmed ? "#f4f3f4" : "#f4f3f4"}
+                thumbColor={formData.isSwarmed ? "#f4f3f4" : "#f4f3f4"}
                 ios_backgroundColor="#3e3e3e"
-                onValueChange={(value) => handleQueenChange('isSwarmed', value)}
-                value={Queen.isSwarmed}
+                onValueChange={(value) => handleInputChange('isSwarmed', value)}
+                value={formData.isSwarmed}
               />
             </View>
 
@@ -402,20 +410,20 @@ const AddInspectionScreen = ({ route }) => {
               <Text style={styles.label}>Marquée</Text>
               <Switch
                 trackColor={{ false: "#767577", true: "#81b0ff" }}
-                thumbColor={isQueenMarked ? "#f4f3f4" : "#f4f3f4"}
+                thumbColor={formData.isMarked ? "#f4f3f4" : "#f4f3f4"}
                 ios_backgroundColor="#3e3e3e"
-                onValueChange={(value) => handleMarkedChange(value)}
-                value={isQueenMarked}
+                onValueChange={(value) => handleInputChange('isMarked', value)}
+                value={formData.isMarked}
               />
             </View>
 
-            {isQueenMarked && (
+            {formData.isMarked && (
               <View style={[styles.detailItem, styles.inline]}>
                 <Text style={styles.label}>Couleur</Text>
                 <Picker
                   style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                  selectedValue={Queen.color}
-                  onValueChange={(itemValue) => handleQueenChange('color', itemValue)}
+                  selectedValue={formData.color}
+                  onValueChange={(value) => handleInputChange('color', value)}
                 >
                   {colors.map((color, index) => (
                     <Picker.Item key={index} label={color} value={color} />
@@ -428,8 +436,9 @@ const AddInspectionScreen = ({ route }) => {
               <Text style={styles.label}>Tempérament</Text>
               <Picker
                 style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                selectedValue={Queen.temperament}
-                onValueChange={(itemValue) => handleQueenChange('temperament', itemValue)}
+                selectedValue={formData.q_temperament}
+
+                onValueChange={(value) => handleInputChange('q_temperament', value)}
               >
                 {temperament.map((state, index) => (
                   <Picker.Item key={index} label={state} value={state} />
@@ -441,8 +450,9 @@ const AddInspectionScreen = ({ route }) => {
               <Text style={styles.label}>Cellules royales</Text>
               <Picker
                 style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                selectedValue={Queen.queenCells}
-                onValueChange={(itemValue) => handleQueenChange('queenCells', itemValue)}
+                selectedValue={formData.queenCells}
+
+                onValueChange={(value) => handleInputChange('queenCells', value)}
               >
 
                 {queen_cells.map((state, index) => (
@@ -457,13 +467,13 @@ const AddInspectionScreen = ({ route }) => {
                 style={[styles.textInput, styles.inlineInput, styles.textArea]}
                 multiline={true}
                 numberOfLines={4}
-                value={Queen.note}
-                onChangeText={(text) => handleQueenChange('note', text)}
+                value={formData.queenNote}
+                onChangeText={(value) => handleInputChange('queenNote', value)}
+
               />
             </View>
           </View>
           {/* End of Queen Details*/}
-
 
 
           {/* Equipments Details  */}
@@ -475,7 +485,8 @@ const AddInspectionScreen = ({ route }) => {
               <TextInput
                 style={[styles.textInput, styles.inlineInput]}
                 keyboardType='numeric'
-                value={Supplies.ingredients.quantity}
+                onChangeText={(value) => handleInputChange('supers', value)}
+                value={formData.supers}
               />
             </View>
 
@@ -484,7 +495,8 @@ const AddInspectionScreen = ({ route }) => {
               <TextInput
                 style={[styles.textInput, styles.inlineInput]}
                 keyboardType='numeric'
-                value={Supplies.ingredients.quantity}
+                onChangeText={(value) => handleInputChange('pollenFrames', value)}
+                value={formData.pollenFrames}
               />
             </View>
 
@@ -493,13 +505,15 @@ const AddInspectionScreen = ({ route }) => {
               <TextInput
                 style={[styles.textInput, styles.inlineInput]}
                 keyboardType='numeric'
-                value={Supplies.ingredients.quantity}
+                onChangeText={(value) => handleInputChange('TotalFrames', value)}
+                value={formData.TotalFrames}
               />
             </View>
 
 
           </View>
           {/* End of Equipments  Details*/}
+
 
 
 
@@ -511,7 +525,8 @@ const AddInspectionScreen = ({ route }) => {
               <Text style={styles.label}>Produit</Text>
               <Picker
                 style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                selectedValue={Supplies.product}
+                selectedValue={formData.product}
+                onValueChange={(value) => handleInputChange('product', value)}
               >
                 {supplies.map((state, index) => (
                   <Picker.Item key={index} label={state} value={state} />
@@ -523,7 +538,8 @@ const AddInspectionScreen = ({ route }) => {
               <Text style={styles.label}>Ingrédients</Text>
               <TextInput
                 style={[styles.textInput, styles.inlineInput]}
-                value={Supplies.ingredients.name}
+                onChangeText={(value) => handleInputChange('name', value)}
+                value={formData.name}
               />
             </View>
 
@@ -532,7 +548,8 @@ const AddInspectionScreen = ({ route }) => {
               <TextInput
                 style={[styles.textInput, styles.inlineInput]}
                 keyboardType='numeric'
-                value={Supplies.ingredients.quantity}
+                onChangeText={(value) => handleInputChange('quantity', value)}
+                value={formData.quantity}
               />
             </View>
 
@@ -540,8 +557,9 @@ const AddInspectionScreen = ({ route }) => {
             <View style={[styles.detailItem, styles.inline]}>
               <Text style={styles.label}>Unité</Text>
               <Picker
-                style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0'}]}
-                selectedValue={Supplies.ingredients.unit}
+                style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
+                selectedValue={formData.unit}
+                onValueChange={(value) => handleInputChange('unit', value)}
               >
                 {units.map((state, index) => (
                   <Picker.Item key={index} label={state} value={state} />
@@ -555,7 +573,8 @@ const AddInspectionScreen = ({ route }) => {
                 style={[styles.textInput, styles.inlineInput, styles.textArea]}
                 multiline={true}
                 numberOfLines={4}
-                value={Note}
+                onChangeText={(value) => handleInputChange('SuppliesNote', value)}
+                value={formData.SuppliesNote}
               />
             </View>
           </View>
@@ -570,8 +589,9 @@ const AddInspectionScreen = ({ route }) => {
               <Text style={styles.label}>État du couvain</Text>
               <Picker
                 style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                selectedValue={Colony.temperament}
-                onValueChange={(itemValue) => handleColonyChange('temperament', itemValue)}
+                selectedValue={formData.state}
+                onValueChange={(value) => handleInputChange('state', value)}
+
               >
                 {brood.map((state, index) => (
                   <Picker.Item key={index} label={state} value={state} />
@@ -584,8 +604,8 @@ const AddInspectionScreen = ({ route }) => {
               <TextInput
                 style={[styles.textInput, styles.inlineInput]}
                 keyboardType='numeric'
-                value={Colony.temperament.toString()}
-                onChangeText={(text) => handleColonyChange('temperament', parseInt(text))}
+                onChangeText={(value) => handleInputChange('totalBrood', value)}
+                value={formData.totalBrood}
               />
             </View>
 
@@ -595,8 +615,8 @@ const AddInspectionScreen = ({ route }) => {
               <Text style={styles.label}>Couvain mâle</Text>
               <Picker
                 style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                selectedValue={Colony.strength}
-                onValueChange={(itemValue) => handleColonyChange('strength', itemValue)}
+                selectedValue={formData.maleBrood}
+                onValueChange={(value) => handleInputChange('maleBrood', value)}
               >
                 {malebrood.map((state, index) => (
                   <Picker.Item key={index} label={state} value={state} />
@@ -608,10 +628,10 @@ const AddInspectionScreen = ({ route }) => {
               <Text style={styles.label}>Mâles Observés</Text>
               <Switch
                 trackColor={{ false: "#767577", true: "#81b0ff" }}
-                thumbColor={Queen.seen ? "#f4f3f4" : "#f4f3f4"}
+                thumbColor={formData.DronesSeen ? "#f4f3f4" : "#f4f3f4"}
                 ios_backgroundColor="#3e3e3e"
-                onValueChange={(value) => handleQueenChange('seen', value)}
-                value={Queen.seen}
+                onValueChange={(value) => handleInputChange('DronesSeen', value)}
+                value={formData.DronesSeen}
               />
             </View>
 
@@ -629,10 +649,10 @@ const AddInspectionScreen = ({ route }) => {
               <Text style={styles.label}>Abeilles mortes</Text>
               <Switch
                 trackColor={{ false: "#767577", true: "#81b0ff" }}
-                thumbColor={Colony.deadBees ? "#f4f3f4" : "#f4f3f4"}
+                thumbColor={formData.deadBees ? "#f4f3f4" : "#f4f3f4"}
                 ios_backgroundColor="#3e3e3e"
-                onValueChange={(value) => handleQueenChange('deadBees', value)}
-                value={Colony.deadBees}
+                onValueChange={(value) => handleInputChange('deadBees', value)}
+                value={formData.deadBees}
               />
             </View>
 
@@ -640,8 +660,8 @@ const AddInspectionScreen = ({ route }) => {
               <Text style={styles.label}>Tempérament</Text>
               <Picker
                 style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                selectedValue={Colony.temperament}
-                onValueChange={(itemValue) => handleColonyChange('temperament', itemValue)}
+                selectedValue={formData.c_temperament}
+                onValueChange={(value) => handleInputChange('c_temperament', value)}
               >
                 {temperament.map((state, index) => (
                   <Picker.Item key={index} label={state} value={state} />
@@ -654,8 +674,8 @@ const AddInspectionScreen = ({ route }) => {
               <Text style={styles.label}>Force</Text>
               <Picker
                 style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                selectedValue={Colony.strength}
-                onValueChange={(itemValue) => handleColonyChange('strength', itemValue)}
+                selectedValue={formData.strength}
+                onValueChange={(value) => handleInputChange('strength', value)}
               >
                 {force.map((state, index) => (
                   <Picker.Item key={index} label={state} value={state} />
@@ -669,8 +689,8 @@ const AddInspectionScreen = ({ route }) => {
                 style={[styles.textInput, styles.inlineInput, styles.textArea]}
                 multiline={true}
                 numberOfLines={4}
-                value={Colony.note}
-                onChangeText={(text) => handleQueenChange('note', text)}
+                onChangeText={(value) => handleInputChange('colonyNote', value)}
+                value={formData.colonyNote}
               />
             </View>
 
@@ -686,8 +706,9 @@ const AddInspectionScreen = ({ route }) => {
             <View style={[styles.detailItem, styles.inline]}>
               <Text style={styles.label}>Maladie</Text>
               <Picker
-                style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0'}]}
-                selectedValue={Supplies.product}
+                style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
+                selectedValue={formData.disease}
+                onValueChange={(value) => handleInputChange('disease', value)}
               >
                 {diseases.map((state, index) => (
                   <Picker.Item key={index} label={state} value={state} />
@@ -699,7 +720,8 @@ const AddInspectionScreen = ({ route }) => {
               <Text style={styles.label}>Traitements</Text>
               <Picker
                 style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                selectedValue={Supplies.product}
+                selectedValue={formData.treatment}
+                onValueChange={(value) => handleInputChange('treatment', value)}
               >
                 {treatments.map((state, index) => (
                   <Picker.Item key={index} label={state} value={state} />
@@ -712,20 +734,20 @@ const AddInspectionScreen = ({ route }) => {
               <View>
                 <View style={[styles.detailItem, styles.inline]}>
                   <Text style={styles.label}>À partir de</Text>
-                  <Pressable onPress={togglePicker}>
+                  <Pressable onPress={togglePickerFrom}>
                     <Text style={[styles.textInput, styles.inlineInput]}>
-                      {hiveData.Queen.installed ? hiveData.Queen.installed.toString() : ""}
+                      {formData.from.toLocaleDateString('fr-FR')}
                     </Text>
                   </Pressable>
                 </View>
-                {showPicker && (
+                {showPickerFrom && (
                   <DateTimePicker
-                    testID="dateTimePicker"
-                    value={date}
+                    testID="dateTimePickerFrom"
+                    value={formData.from}
                     mode="date"
                     is24Hour={true}
                     display="default"
-                    onChange={handleDateChange}
+                    onChange={handleDateChangeFrom}
                     locale="fr"
                   />
                 )}
@@ -734,20 +756,20 @@ const AddInspectionScreen = ({ route }) => {
               <View>
                 <View style={[styles.detailItem, styles.inline]}>
                   <Text style={styles.label}>À</Text>
-                  <Pressable onPress={togglePicker}>
+                  <Pressable onPress={togglePickerTo}>
                     <Text style={[styles.textInput, styles.inlineInput]}>
-                      {hiveData.Queen.installed ? hiveData.Queen.installed.toString() : ""}
+                      {formData.to.toLocaleDateString('fr-FR')}
                     </Text>
                   </Pressable>
                 </View>
-                {showPicker && (
+                {showPickerTo && (
                   <DateTimePicker
-                    testID="dateTimePicker"
-                    value={date}
+                    testID="dateTimePickerTo"
+                    value={formData.to}
                     mode="date"
                     is24Hour={true}
                     display="default"
-                    onChange={handleDateChange}
+                    onChange={handleDateChangeTo}
                     locale="fr"
                   />
                 )}
@@ -760,7 +782,8 @@ const AddInspectionScreen = ({ route }) => {
               <TextInput
                 style={[styles.textInput, styles.inlineInput]}
                 keyboardType='numeric'
-                value={Supplies.ingredients.quantity}
+                onChangeText={(value) => handleInputChange('quantity', value)}
+                value={formData.quantity}
               />
             </View>
 
@@ -769,7 +792,8 @@ const AddInspectionScreen = ({ route }) => {
               <Text style={styles.label}>Doses</Text>
               <Picker
                 style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                selectedValue={Supplies.ingredients.unit}
+                selectedValue={formData.doses}
+                onValueChange={(value) => handleInputChange('doses', value)}
               >
                 {doses.map((state, index) => (
                   <Picker.Item key={index} label={state} value={state} />
@@ -783,7 +807,8 @@ const AddInspectionScreen = ({ route }) => {
                 style={[styles.textInput, styles.inlineInput, styles.textArea]}
                 multiline={true}
                 numberOfLines={4}
-                value={Note}
+                onChangeText={(value) => handleInputChange('BeeHealthNote', value)}
+                value={formData.BeeHealthNote}
               />
             </View>
           </View>
@@ -799,7 +824,8 @@ const AddInspectionScreen = ({ route }) => {
               <Text style={styles.label}>Récolte de miel </Text>
               <Picker
                 style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                selectedValue={Supplies.product}
+                selectedValue={formData.HoneyStores}
+                onValueChange={(value) => handleInputChange('HoneyStores', value)}
               >
                 {HoneyPollenHarvest.map((state, index) => (
                   <Picker.Item key={index} label={state} value={state} />
@@ -811,7 +837,8 @@ const AddInspectionScreen = ({ route }) => {
               <Text style={styles.label}>Récolte de pollens </Text>
               <Picker
                 style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                selectedValue={Supplies.product}
+                selectedValue={formData.PollenStores}
+                onValueChange={(value) => handleInputChange('PollenStores', value)}
               >
                 {HoneyPollenHarvest.map((state, index) => (
                   <Picker.Item key={index} label={state} value={state} />
@@ -827,13 +854,13 @@ const AddInspectionScreen = ({ route }) => {
 
 
           {/* Actions Taken */}
-          <ScrollView>
+          {/* <ScrollView>
             <View style={styles.fieldset}>
               <Text style={styles.fieldsetTitle}>Actions entreprises</Text>
 
-              {/* Frames for Ajouts and Enlèvements */}
+            
               <View style={styles.frameContainer}>
-                {/* Frame for Ajouts */}
+              
                 <View style={styles.frame}>
                   <Text style={styles.frameTitle}>Ajouts</Text>
                   <View style={styles.optionsContainer}>
@@ -842,7 +869,7 @@ const AddInspectionScreen = ({ route }) => {
                   </View>
                 </View>
 
-                {/* Frame for Enlèvements */}
+                 
                 <View style={styles.frame}>
                   <Text style={styles.frameTitle}>Enlèvements</Text>
                   <View style={styles.optionsContainer}>
@@ -853,11 +880,12 @@ const AddInspectionScreen = ({ route }) => {
 
             </View>
 
-          </ScrollView>
+          </ScrollView> */}
+
           {/* End of Actions Taken  */}
 
           {/* Weather Details  */}
-          <View>
+          {/* <View>
             <View style={styles.inline}>
               <Text style={styles.label}>Inclure la météo</Text>
               <Switch
@@ -937,13 +965,16 @@ const AddInspectionScreen = ({ route }) => {
                 </View>
               </View>
             )}
-          </View>
+          </View> */}
           {/* End of Weather Details  */}
 
 
           <TouchableOpacity style={styles.addButton} onPress={handleAddInspection}>
             <Text style={styles.addButtonText}>Ajouter</Text>
           </TouchableOpacity>
+
+
+
         </View>
       </ScrollView>
 
