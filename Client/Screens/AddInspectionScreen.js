@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, ScrollView, View, Text, TextInput, TouchableOpacity, Switch, Button, Pressable, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import axios from 'axios';
+import * as Location from 'expo-location';
 
 import {
   colors,
@@ -23,6 +24,32 @@ import {
   weather_wind_direction
 } from './Data';
 
+const Option = React.memo(({ option, isSelected, onPressHandler, quantity, onQuantityChange }) => (
+  <TouchableOpacity
+    key={option.name}
+    style={[
+      styles.option,
+      isSelected ? styles.selectedOption : null
+    ]}
+    onPress={onPressHandler}
+  >
+    <Text style={styles.optionText}>{option.name}</Text>
+    {isSelected && (
+      <TextInput
+        value={quantity.toString()}
+        onChangeText={onQuantityChange}
+        style={[
+          styles.textInput,
+          { width: 50, marginBottom: 5 },
+        ]}
+        keyboardType="numeric"
+        placeholder="Qty"
+      />
+    )}
+  </TouchableOpacity>
+));
+
+
 
 const AddInspectionScreen = ({ route }) => {
 
@@ -32,8 +59,7 @@ const AddInspectionScreen = ({ route }) => {
   const [showPickerFrom, setShowPickerFrom] = useState(false);
   const [showPickerTo, setShowPickerTo] = useState(false);
 
-  const [selectedAjouts, setSelectedAjouts] = useState([]);
-  const [selectedEnlevements, setSelectedEnlevements] = useState([]);
+
   const [showWeatherDetails, setShowWeatherDetails] = useState(false);
   const startYear = 2015;
   const endYear = 2024;
@@ -63,7 +89,7 @@ const AddInspectionScreen = ({ route }) => {
 
 
 
-   const togglePickerFrom = () => {
+  const togglePickerFrom = () => {
     setShowPickerFrom(!showPickerFrom);
   };
 
@@ -87,49 +113,6 @@ const AddInspectionScreen = ({ route }) => {
       ...prevData,
       to: currentDate
     }));
-  };
-
-
-
-  const handleAjoutsChange = (itemValue) => {
-    setSelectedAjouts((prev) => {
-      if (prev.includes(itemValue)) {
-        return prev.filter(item => item !== itemValue);
-      }
-      return [...prev, itemValue];
-    });
-  };
-
-  const handleEnlevementsChange = (itemValue) => {
-    setSelectedEnlevements((prev) => {
-      if (prev.includes(itemValue)) {
-        return prev.filter(item => item !== itemValue);
-      }
-      return [...prev, itemValue];
-    });
-  };
-
-
-
-
-  const renderOption = (option, selectedItems, handleChange) => {
-    return (
-      <TouchableOpacity
-        key={option.name}
-        style={[styles.option, selectedItems.includes(option.name) && styles.selectedOption]}
-        onPress={() => handleChange(option.name)}
-      >
-        <Text style={styles.optionText}>{option.name}</Text>
-        {option.requiresNumberInput && (
-          <TextInput
-            style={[styles.textInput, { width: 50 }]} // Adjust width as needed
-            keyboardType="numeric"
-            placeholder="Qty"
-            onChangeText={(text) => handleChange(option.name, parseInt(text))}
-          />
-        )}
-      </TouchableOpacity>
-    );
   };
 
 
@@ -169,7 +152,9 @@ const AddInspectionScreen = ({ route }) => {
     HoneyStores: '',
     PollenStores: '',
     ActivityAdd: '',
+    QuantityAdded: 0,
     ActivityRemove: '',
+    QuantityRemoved: 0
 
 
 
@@ -179,12 +164,6 @@ const AddInspectionScreen = ({ route }) => {
 
   });
 
-  const handleInputChange = (key, value) => {
-    setFormData(prevState => ({
-      ...prevState,
-      [key]: value
-    }));
-  };
 
   useEffect(() => {
     if (!formData.isMarked) {
@@ -195,9 +174,156 @@ const AddInspectionScreen = ({ route }) => {
     }
   }, [formData.isMarked]);
 
+  const handleInputChange = (key, value) => {
+    setFormData(prevState => ({
+      ...prevState,
+      [key]: value
+    }));
+  };
+
+  const [selectedAjouts, setSelectedAjouts] = useState([]);
+  const [selectedEnlevements, setSelectedEnlevements] = useState([]);
+
+  const renderOption = (option, selectedItems, handleChange) => {
+    const selectedItem = selectedItems.find(item => item.name === option.name);
+    const isSelected = !!selectedItem;
+    const quantity = selectedItem ? selectedItem.quantity : 0;
+
+    const onPressHandler = () => {
+      handleChange(option.name, quantity); // Ensure quantity is passed
+    };
+
+    const onQuantityChange = (text) => {
+      const quantity = parseInt(text);
+      if (isNaN(quantity) || quantity < 0) {
+        handleChange(option.name, 0); // Deselect if quantity is not a positive number
+      } else {
+        handleChange(option.name, quantity); // Update quantity
+      }
+    };
+
+    return (
+      <Option
+        key={option.name}
+        option={option}
+        isSelected={isSelected}
+        onPressHandler={onPressHandler}
+        quantity={quantity}
+        onQuantityChange={onQuantityChange}
+      />
+    );
+  };
+
+  const handleAjoutsChange = (itemName, quantity) => {
+    setSelectedAjouts(prevState => {
+      const index = prevState.findIndex(item => item.name === itemName);
+      if (index !== -1) {
+        // Update existing item
+        const updatedState = prevState.map(item =>
+          item.name === itemName ? { ...item, quantity } : item
+        );
+        return updatedState.filter(item => item.quantity > 0); // Remove if quantity is 0
+      } else {
+        // Add new item
+        return [...prevState, { name: itemName, quantity }];
+      }
+    });
+  };
+
+  const handleEnlevementsChange = (itemName, quantity) => {
+    setSelectedEnlevements(prevState => {
+      const index = prevState.findIndex(item => item.name === itemName);
+      if (index !== -1) {
+        // Update existing item
+        const updatedState = prevState.map(item =>
+          item.name === itemName ? { ...item, quantity } : item
+        );
+        return updatedState.filter(item => item.quantity > 0); // Remove if quantity is 0
+      } else {
+        // Add new item
+        return [...prevState, { name: itemName, quantity }];
+      }
+    });
+  };
+
+  useEffect(() => {
+    const activitiesAdd = selectedAjouts.map(
+      activity => `${activity.name}: ${activity.quantity}`
+    );
+    const activitiesRemove = selectedEnlevements.map(
+      activity => `${activity.name}: ${activity.quantity}`
+    );
+
+    handleInputChange('ActivityAdd', activitiesAdd.join(', '));
+    handleInputChange(
+      'QuantityAdded',
+      selectedAjouts.reduce((total, item) => total + item.quantity, 0)
+    );
+    handleInputChange('ActivityRemove', activitiesRemove.join(', '));
+    handleInputChange(
+      'QuantityRemoved',
+      selectedEnlevements.reduce((total, item) => total + item.quantity, 0)
+    );
+  }, [selectedAjouts, selectedEnlevements]);
+
+
+
+
+  useEffect(() => {
+    if (showWeatherDetails) {
+      getLocationAndFetchWeather();
+    }
+  }, [showWeatherDetails]);
+
+
+  const getLocationAndFetchWeather = async () => {
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+
+      if (status !== 'granted') {
+        // Handle permission not granted
+        return;
+      }
+
+      const location = await Location.getCurrentPositionAsync({});
+      const { latitude, longitude } = location.coords;
+      fetchWeather(latitude, longitude);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchWeather = async (latitude, longitude) => {
+    try {
+      const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=d769c20d61c0a5bd6bf018b42cae8855&units=metric`);
+      const data = await response.json();
+
+      setFormData(prevState => ({
+        ...prevState,
+        temperature: data.main.temp.toString(),
+        humidity: data.main.humidity.toString(),
+        pressure: data.main.pressure.toString(),
+        windSpeed: data.wind.speed.toString(),
+        windDirection: data.wind.deg.toString(), // You may want to convert degrees to cardinal direction
+        condition: data.weather[0].main
+      }));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+
 
   const handleAddInspection = async () => {
     try {
+
+      // Filter out activities with a quantity of 0
+      const filteredAjouts = selectedAjouts.filter(activity => activity.quantity > 0);
+      const filteredEnlevements = selectedEnlevements.filter(activity => activity.quantity > 0);
+
+      const activitiesAdd = filteredAjouts.map(activity => `${activity.name}: ${activity.quantity}`);
+      const activitiesRemove = filteredEnlevements.map(activity => `${activity.name}: ${activity.quantity}`);
+
       const formattedData = {
         Inspector: {
           firstName: inspector.Firstname,
@@ -265,16 +391,21 @@ const AddInspectionScreen = ({ route }) => {
         HoneyStores: formData.HoneyStores,
         PollenStores: formData.PollenStores,
 
-        ActivityAdd: formData.ActivityAdd,
-        ActivityRemove: formData.ActivityRemove,
-
+        Adding: {
+          ActivityAdd: activitiesAdd.join(', '),
+          QuantityAdded: filteredAjouts.reduce((total, item) => total + item.quantity, 0),
+        },
+        Removing: {
+          ActivityRemove: activitiesRemove.join(', '),
+          QuantityRemoved: filteredEnlevements.reduce((total, item) => total + item.quantity, 0),
+        },
         Weather: {
-          condition: '',
-          temperature: 0,
-          humidity: 0,
-          pressure: 0,
-          windSpeed: 0,
-          windDirection: 0
+          condition: formData.condition,
+          temperature: formData.temperature,
+          humidity: formData.humidity,
+          pressure: formData.pressure,
+          windSpeed: formData.windSpeed,
+          windDirection: formData.windDirection
         },
 
         Note: '',
@@ -854,22 +985,16 @@ const AddInspectionScreen = ({ route }) => {
 
 
           {/* Actions Taken */}
-          {/* <ScrollView>
+          <ScrollView>
             <View style={styles.fieldset}>
               <Text style={styles.fieldsetTitle}>Actions entreprises</Text>
-
-            
               <View style={styles.frameContainer}>
-              
                 <View style={styles.frame}>
                   <Text style={styles.frameTitle}>Ajouts</Text>
                   <View style={styles.optionsContainer}>
                     {options.map((option) => renderOption(option, selectedAjouts, handleAjoutsChange))}
-
                   </View>
                 </View>
-
-                 
                 <View style={styles.frame}>
                   <Text style={styles.frameTitle}>Enlèvements</Text>
                   <View style={styles.optionsContainer}>
@@ -877,22 +1002,17 @@ const AddInspectionScreen = ({ route }) => {
                   </View>
                 </View>
               </View>
-
             </View>
-
-          </ScrollView> */}
-
+          </ScrollView>
           {/* End of Actions Taken  */}
 
           {/* Weather Details  */}
-          {/* <View>
+          <View>
             <View style={styles.inline}>
               <Text style={styles.label}>Inclure la météo</Text>
               <Switch
                 trackColor={{ false: "#767577", true: "#B8E986" }}
-
                 thumbColor={showWeatherDetails ? "#B8E986" : "#B8E986"}
-
                 value={showWeatherDetails}
                 onValueChange={(value) => setShowWeatherDetails(value)}
               />
@@ -907,7 +1027,8 @@ const AddInspectionScreen = ({ route }) => {
                   <TextInput
                     style={[styles.textInput, styles.inlineInput]}
                     keyboardType="numeric"
-                    value={Weather.temperature}
+                    value={formData.temperature}
+                    editable={false}
                   />
                 </View>
 
@@ -916,7 +1037,8 @@ const AddInspectionScreen = ({ route }) => {
                   <TextInput
                     style={[styles.textInput, styles.inlineInput]}
                     keyboardType="numeric"
-                    value={Weather.humidity}
+                    value={formData.humidity}
+                    editable={false}
                   />
                 </View>
 
@@ -925,7 +1047,8 @@ const AddInspectionScreen = ({ route }) => {
                   <TextInput
                     style={[styles.textInput, styles.inlineInput]}
                     keyboardType="numeric"
-                    value={Weather.pressure}
+                    value={formData.pressure}
+                    editable={false}
                   />
                 </View>
 
@@ -934,39 +1057,35 @@ const AddInspectionScreen = ({ route }) => {
                   <TextInput
                     style={[styles.textInput, styles.inlineInput]}
                     keyboardType="numeric"
-                    value={Weather.windSpeed}
+                    value={formData.windSpeed}
+                    editable={false}
                   />
                 </View>
 
                 <View style={[styles.detailItem, styles.inline]}>
                   <Text style={styles.label}>Direction du vent</Text>
-                  <Picker
-                    selectedValue={Weather.windDirection}
-                    style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                    onValueChange={(itemValue) => Weather.windDirection = itemValue}
-                  >
-                    {weather_wind_direction.map((direction, index) => (
-                      <Picker.Item key={index} label={direction} value={direction} />
-                    ))}
-                  </Picker>
+                  <TextInput
+                    style={[styles.textInput, styles.inlineInput]}
+                    value={formData.windDirection}
+                    editable={false}
+                  />
                 </View>
 
                 <View style={[styles.detailItem, styles.inline]}>
                   <Text style={styles.label}>Condition météorologique</Text>
-                  <Picker
-                    selectedValue={Weather.condition}
-                    style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                    onValueChange={(itemValue) => Weather.condition = itemValue}
-                  >
-                    {weather_conditions.map((condition, index) => (
-                      <Picker.Item key={index} label={condition} value={condition} />
-                    ))}
-                  </Picker>
+                  <TextInput
+                    style={[styles.textInput, styles.inlineInput]}
+                    value={formData.condition}
+                    editable={false}
+                  />
                 </View>
+
               </View>
             )}
-          </View> */}
+          </View>
           {/* End of Weather Details  */}
+
+
 
 
           <TouchableOpacity style={styles.addButton} onPress={handleAddInspection}>
