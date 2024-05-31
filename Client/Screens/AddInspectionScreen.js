@@ -5,7 +5,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import axios from 'axios';
 import * as Location from 'expo-location';
-
 import {
   colors,
   queen_cells,
@@ -48,7 +47,6 @@ const Option = React.memo(({ option, isSelected, onPressHandler, quantity, onQua
     )}
   </TouchableOpacity>
 ));
-
 
 
 const AddInspectionScreen = ({ route }) => {
@@ -154,7 +152,8 @@ const AddInspectionScreen = ({ route }) => {
     ActivityAdd: '',
     QuantityAdded: 0,
     ActivityRemove: '',
-    QuantityRemoved: 0
+    QuantityRemoved: 0,
+    InspectionNote:''
 
 
 
@@ -265,9 +264,6 @@ const AddInspectionScreen = ({ route }) => {
       selectedEnlevements.reduce((total, item) => total + item.quantity, 0)
     );
   }, [selectedAjouts, selectedEnlevements]);
-
-
-
 
   useEffect(() => {
     if (showWeatherDetails) {
@@ -408,7 +404,7 @@ const AddInspectionScreen = ({ route }) => {
           windDirection: formData.windDirection
         },
 
-        Note: '',
+        Note: formData.InspectionNote,
 
         Hive: hiveData._id
       };
@@ -1087,6 +1083,23 @@ const AddInspectionScreen = ({ route }) => {
 
 
 
+          {/* Supplies Details  */}
+          <View style={styles.fieldset}>
+            <Text style={styles.fieldsetTitle}>Note</Text>
+
+            
+
+            <View style={[styles.detailItem, styles.inline]}>
+               <TextInput
+                style={[styles.textInput, styles.inlineInput, styles.textArea]}
+                multiline={true}
+                numberOfLines={5}
+                onChangeText={(value) => handleInputChange('InspectionNote', value)}
+                value={formData.InspectionNote}
+              />
+            </View>
+          </View>
+          {/* End of Supplies Details*/}
 
           <TouchableOpacity style={styles.addButton} onPress={handleAddInspection}>
             <Text style={styles.addButtonText}>Ajouter</Text>
