@@ -38,7 +38,7 @@ export function IntroStack() {
         <>
           <Stack.Screen name="Index" component={Index} />
           <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="Accueil" component={HomeScreen} />
           <Stack.Screen name="DrawerNavigator" component={DrawerNavigator} />
           <Stack.Screen name="ScannerScreenInspectionsDetails" component={ScannerScreenInspectionsDetails} />
           <Stack.Screen name="ScannerScreenAddInspections" component={ScannerScreenAddInspections} />

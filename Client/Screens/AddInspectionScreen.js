@@ -22,6 +22,7 @@ import {
   weather_conditions,
   weather_wind_direction
 } from './Data';
+import { useNavigation } from '@react-navigation/native';
 
 const Option = React.memo(({ option, isSelected, onPressHandler, quantity, onQuantityChange }) => (
   <TouchableOpacity
@@ -50,13 +51,13 @@ const Option = React.memo(({ option, isSelected, onPressHandler, quantity, onQua
 
 
 const AddInspectionScreen = ({ route }) => {
+  const navigation = useNavigation();
 
   const { hiveData } = route.params;
 
   const [date, setDate] = useState(new Date());
   const [showPickerFrom, setShowPickerFrom] = useState(false);
   const [showPickerTo, setShowPickerTo] = useState(false);
-
 
   const [showWeatherDetails, setShowWeatherDetails] = useState(false);
   const startYear = 2015;
@@ -116,20 +117,20 @@ const AddInspectionScreen = ({ route }) => {
 
 
   const [formData, setFormData] = useState({
-    isMarked: hiveData.Queen.isMarked,
-    color: hiveData.Queen.color,
-    clipped: hiveData.Queen.clipped,
-    seen: hiveData.Queen.seen,
-    isSwarmed: hiveData.Queen.isSwarmed,
-    q_temperament: hiveData.Queen.temperament,
-    queenCells: hiveData.Queen.queenCells,
-    queenNote: hiveData.Queen.note,
+    isMarked: undefined,
+    color: '',
+    clipped: undefined,
+    seen: false,
+    isSwarmed: undefined,
+    q_temperament: '',
+    queenCells: '',
+    queenNote: '',
     TotalFrames: hiveData.Colony.TotalFrames,
     supers: hiveData.Colony.supers,
     pollenFrames: hiveData.Colony.pollenFrames,
     strength: hiveData.Colony.strength,
     c_temperament: hiveData.Colony.temperament,
-    deadBees: hiveData.Colony.deadBees,
+    deadBees: false,
     colonyNote: hiveData.Colony.colonyNote,
     state: '',
     maleBrood: '',
@@ -137,14 +138,14 @@ const AddInspectionScreen = ({ route }) => {
     DronesSeen: false,
     product: '',
     name: '',
-    quantity: 0,
+    suppliesQuantity: 0,
     unit: '',
     SuppliesNote: '',
     disease: '',
     treatment: '',
-    from: new Date(),
-    to: new Date(),
-    quantity: 0,
+    from: null,
+    to: null,
+    treatmentQuantity: 0,
     doses: '',
     BeeHealthNote: '',
     HoneyStores: '',
@@ -153,7 +154,7 @@ const AddInspectionScreen = ({ route }) => {
     QuantityAdded: 0,
     ActivityRemove: '',
     QuantityRemoved: 0,
-    InspectionNote:''
+    InspectionNote: ''
 
 
 
@@ -182,6 +183,7 @@ const AddInspectionScreen = ({ route }) => {
 
   const [selectedAjouts, setSelectedAjouts] = useState([]);
   const [selectedEnlevements, setSelectedEnlevements] = useState([]);
+  const [showQueenDetails, setShowQueenDetails] = useState(formData.seen);
 
   const renderOption = (option, selectedItems, handleChange) => {
     const selectedItem = selectedItems.find(item => item.name === option.name);
@@ -366,7 +368,7 @@ const AddInspectionScreen = ({ route }) => {
           product: formData.product,
           ingredients: {
             name: formData.name,
-            quantity: formData.quantity,
+            quantity: formData.suppliesQuantity,
             unit: formData.unit
           },
           note: formData.SuppliesNote
@@ -379,7 +381,7 @@ const AddInspectionScreen = ({ route }) => {
             from: formData.from,
             to: formData.to
           },
-          quantity: formData.quantity,
+          quantity: formData.treatmentQuantity,
           doses: formData.doses,
           note: formData.BeeHealthNote
         },
@@ -409,17 +411,61 @@ const AddInspectionScreen = ({ route }) => {
         Hive: hiveData._id
       };
 
+
+      // Validate required fields
+
+
+      if (!formattedData.Colony.strength || !formattedData.Colony.temperament || formattedData.Colony.deadBees === undefined) {
+        return Alert.alert('Erreur', 'Les informations de la colonie sont requises');
+      }
+      if (!formattedData.Brood.state || !formattedData.Brood.maleBrood || formattedData.Brood.totalBrood === undefined || formattedData.DronesSeen === undefined) {
+        return Alert.alert('Erreur', 'Les informations concernant la couvée ou la présence de drones sont requises');
+      }
+
+      if (!formattedData.HoneyStores) {
+        return Alert.alert('Erreur', 'Les réserves de miel sont requises');
+      }
+      if (!formattedData.PollenStores) {
+        return Alert.alert('Erreur', 'Les réserves de pollen sont requises');
+      }
+      if (!formattedData.Weather.condition || formattedData.Weather.temperature === undefined || formattedData.Weather.humidity === undefined || formattedData.Weather.pressure === undefined || formattedData.Weather.windSpeed === undefined || formattedData.Weather.windDirection === undefined) {
+        return Alert.alert('Erreur', 'Les informations météorologiques sont requises');
+      }
+      if (!formattedData.Hive) {
+        return Alert.alert('Erreur', 'La ruche est requise');
+      }
+
       const response = await axios.post('http://192.168.1.15:3000/api/inspection/create', formattedData);
 
       if (response.status === 201) {
-        Alert.alert('Success', 'Inspection created successfully');
+        Alert.alert('Succès', 'Inspection ajoutée avec succès', [
+          {
+            text: 'OK',
+            onPress: () => {
+              navigation.navigate('Accueil');
+            }
+          }
+        ]);
       } else {
-        Alert.alert('Error', 'Failed to create inspection');
+        Alert.alert('Erreur', "Échec de l'ajout de l'inspection");
       }
+
     } catch (error) {
       console.error('Error creating inspection:', error);
-      Alert.alert('Error', 'Failed to create inspection');
+      Alert.alert('Error', "Échec de l'ajout de l'inspection");
     }
+  };
+
+  const handleSeenToggle = (value) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      seen: value,
+      isMarked: value ? hiveData.Queen.isMarked : undefined,
+      color: value ? hiveData.Queen.color : '',
+      clipped: value ? hiveData.Queen.clipped : undefined,
+      isSwarmed: value ? hiveData.Queen.isSwarmed : undefined,
+    }));
+    setShowQueenDetails(value);
   };
 
   return (
@@ -500,104 +546,114 @@ const AddInspectionScreen = ({ route }) => {
           {/* Queen Details*/}
           <View style={styles.fieldset}>
             <Text style={styles.fieldsetTitle}>Reine</Text>
-            <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Observée</Text>
-              <Switch
-                trackColor={{ false: "#767577", true: "#81b0ff" }}
-                thumbColor={formData.seen ? "#f4f3f4" : "#f4f3f4"}
-                ios_backgroundColor="#3e3e3e"
-                onValueChange={(value) => handleInputChange('seen', value)}
-                value={formData.seen}
-              />
-            </View>
 
-            <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Clippée</Text>
-              <Switch
-                trackColor={{ false: "#767577", true: "#81b0ff" }}
-                thumbColor={formData.clipped ? "#f4f3f4" : "#f4f3f4"}
-                ios_backgroundColor="#3e3e3e"
-                onValueChange={(value) => handleInputChange('clipped', value)}
-                value={formData.clipped}
-              />
-            </View>
 
-            <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Essaimé</Text>
-              <Switch
-                trackColor={{ false: "#767577", true: "#81b0ff" }}
-                thumbColor={formData.isSwarmed ? "#f4f3f4" : "#f4f3f4"}
-                ios_backgroundColor="#3e3e3e"
-                onValueChange={(value) => handleInputChange('isSwarmed', value)}
-                value={formData.isSwarmed}
-              />
-            </View>
-
-            <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Marquée</Text>
-              <Switch
-                trackColor={{ false: "#767577", true: "#81b0ff" }}
-                thumbColor={formData.isMarked ? "#f4f3f4" : "#f4f3f4"}
-                ios_backgroundColor="#3e3e3e"
-                onValueChange={(value) => handleInputChange('isMarked', value)}
-                value={formData.isMarked}
-              />
-            </View>
-
-            {formData.isMarked && (
-              <View style={[styles.detailItem, styles.inline]}>
-                <Text style={styles.label}>Couleur</Text>
-                <Picker
-                  style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                  selectedValue={formData.color}
-                  onValueChange={(value) => handleInputChange('color', value)}
-                >
-                  {colors.map((color, index) => (
-                    <Picker.Item key={index} label={color} value={color} />
-                  ))}
-                </Picker>
+            <View>
+              <View style={styles.inline}>
+                <Text style={styles.label}>Observée</Text>
+                <Switch
+                  trackColor={{ false: "#767577", true: "#81b0ff" }}
+                  thumbColor={showQueenDetails ? "#f4f3f4" : "#f4f3f4"}
+                  ios_backgroundColor="#3e3e3e"
+                  onValueChange={(value) => {
+                    handleInputChange('seen', value);
+                    handleSeenToggle(value);
+                  }}
+                  value={showQueenDetails}
+                />
               </View>
-            )}
 
-            <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Tempérament</Text>
-              <Picker
-                style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                selectedValue={formData.q_temperament}
 
-                onValueChange={(value) => handleInputChange('q_temperament', value)}
-              >
-                {temperament.map((state, index) => (
-                  <Picker.Item key={index} label={state} value={state} />
-                ))}
-              </Picker>
-            </View>
+              {showQueenDetails && (
+                <>
+                  <View style={[styles.detailItem, styles.inline]}>
+                    <Text style={styles.label}>Clippée</Text>
+                    <Switch
+                      trackColor={{ false: "#767577", true: "#81b0ff" }}
+                      thumbColor={formData.clipped ? "#f4f3f4" : "#f4f3f4"}
+                      ios_backgroundColor="#3e3e3e"
+                      onValueChange={(value) => handleInputChange('clipped', value)}
+                      value={formData.clipped}
+                    />
+                  </View>
 
-            <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Cellules royales</Text>
-              <Picker
-                style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                selectedValue={formData.queenCells}
+                  <View style={[styles.detailItem, styles.inline]}>
+                    <Text style={styles.label}>Essaimé</Text>
+                    <Switch
+                      trackColor={{ false: "#767577", true: "#81b0ff" }}
+                      thumbColor={formData.isSwarmed ? "#f4f3f4" : "#f4f3f4"}
+                      ios_backgroundColor="#3e3e3e"
+                      onValueChange={(value) => handleInputChange('isSwarmed', value)}
+                      value={formData.isSwarmed}
+                    />
+                  </View>
 
-                onValueChange={(value) => handleInputChange('queenCells', value)}
-              >
+                  <View style={[styles.detailItem, styles.inline]}>
+                    <Text style={styles.label}>Marquée</Text>
+                    <Switch
+                      trackColor={{ false: "#767577", true: "#81b0ff" }}
+                      thumbColor={formData.isMarked ? "#f4f3f4" : "#f4f3f4"}
+                      ios_backgroundColor="#3e3e3e"
+                      onValueChange={(value) => handleInputChange('isMarked', value)}
+                      value={formData.isMarked}
+                    />
+                  </View>
 
-                {queen_cells.map((state, index) => (
-                  <Picker.Item key={index} label={state} value={state} />
-                ))}
-              </Picker>
-            </View>
+                  {formData.isMarked && (
+                    <View style={[styles.detailItem, styles.inline]}>
+                      <Text style={styles.label}>Couleur</Text>
+                      <Picker
+                        style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
+                        selectedValue={formData.color}
+                        onValueChange={(value) => handleInputChange('color', value)}
+                      >
+                        {colors.map((color, index) => (
+                          <Picker.Item key={index} label={color} value={color} />
+                        ))}
+                      </Picker>
+                    </View>
+                  )}
 
-            <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Note</Text>
-              <TextInput
-                style={[styles.textInput, styles.inlineInput, styles.textArea]}
-                multiline={true}
-                numberOfLines={4}
-                value={formData.queenNote}
-                onChangeText={(value) => handleInputChange('queenNote', value)}
+                  <View style={[styles.detailItem, styles.inline]}>
+                    <Text style={styles.label}>Tempérament</Text>
+                    <Picker
+                      style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
+                      selectedValue={formData.q_temperament}
+                      onValueChange={(value) => handleInputChange('q_temperament', value)}
+                    >
+                      <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                      {temperament.map((state, index) => (
+                        <Picker.Item key={index} label={state} value={state} />
+                      ))}
+                    </Picker>
+                  </View>
 
-              />
+                  <View style={[styles.detailItem, styles.inline]}>
+                    <Text style={styles.label}>Cellules royales</Text>
+                    <Picker
+                      style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
+                      selectedValue={formData.queenCells}
+                      onValueChange={(value) => handleInputChange('queenCells', value)}
+                    >
+                      <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                      {queen_cells.map((state, index) => (
+                        <Picker.Item key={index} label={state} value={state} />
+                      ))}
+                    </Picker>
+                  </View>
+
+                  <View style={[styles.detailItem, styles.inline]}>
+                    <Text style={styles.label}>Note</Text>
+                    <TextInput
+                      style={[styles.textInput, styles.inlineInput, styles.textArea]}
+                      multiline={true}
+                      numberOfLines={4}
+                      value={formData.queenNote}
+                      onChangeText={(value) => handleInputChange('queenNote', value)}
+                    />
+                  </View>
+                </>
+              )}
             </View>
           </View>
           {/* End of Queen Details*/}
@@ -655,6 +711,9 @@ const AddInspectionScreen = ({ route }) => {
                 selectedValue={formData.product}
                 onValueChange={(value) => handleInputChange('product', value)}
               >
+                {/* Adding the default disabled option */}
+                <Picker.Item label="Sélectionner..." value="" enabled={false} />
+
                 {supplies.map((state, index) => (
                   <Picker.Item key={index} label={state} value={state} />
                 ))}
@@ -688,6 +747,9 @@ const AddInspectionScreen = ({ route }) => {
                 selectedValue={formData.unit}
                 onValueChange={(value) => handleInputChange('unit', value)}
               >
+                {/* Adding the default disabled option */}
+                <Picker.Item label="Sélectionner..." value="" enabled={false} />
+
                 {units.map((state, index) => (
                   <Picker.Item key={index} label={state} value={state} />
                 ))}
@@ -720,6 +782,9 @@ const AddInspectionScreen = ({ route }) => {
                 onValueChange={(value) => handleInputChange('state', value)}
 
               >
+                {/* Adding the default disabled option */}
+                <Picker.Item label="Sélectionner..." value="" enabled={false} />
+
                 {brood.map((state, index) => (
                   <Picker.Item key={index} label={state} value={state} />
                 ))}
@@ -745,6 +810,9 @@ const AddInspectionScreen = ({ route }) => {
                 selectedValue={formData.maleBrood}
                 onValueChange={(value) => handleInputChange('maleBrood', value)}
               >
+                {/* Adding the default disabled option */}
+                <Picker.Item label="Sélectionner..." value="" enabled={false} />
+
                 {malebrood.map((state, index) => (
                   <Picker.Item key={index} label={state} value={state} />
                 ))}
@@ -790,6 +858,9 @@ const AddInspectionScreen = ({ route }) => {
                 selectedValue={formData.c_temperament}
                 onValueChange={(value) => handleInputChange('c_temperament', value)}
               >
+                {/* Adding the default disabled option */}
+                <Picker.Item label="Sélectionner..." value="" enabled={false} />
+
                 {temperament.map((state, index) => (
                   <Picker.Item key={index} label={state} value={state} />
                 ))}
@@ -804,6 +875,9 @@ const AddInspectionScreen = ({ route }) => {
                 selectedValue={formData.strength}
                 onValueChange={(value) => handleInputChange('strength', value)}
               >
+                {/* Adding the default disabled option */}
+                <Picker.Item label="Sélectionner..." value="" enabled={false} />
+
                 {force.map((state, index) => (
                   <Picker.Item key={index} label={state} value={state} />
                 ))}
@@ -837,6 +911,9 @@ const AddInspectionScreen = ({ route }) => {
                 selectedValue={formData.disease}
                 onValueChange={(value) => handleInputChange('disease', value)}
               >
+                {/* Adding the default disabled option */}
+                <Picker.Item label="Sélectionner..." value="" enabled={false} />
+
                 {diseases.map((state, index) => (
                   <Picker.Item key={index} label={state} value={state} />
                 ))}
@@ -850,6 +927,9 @@ const AddInspectionScreen = ({ route }) => {
                 selectedValue={formData.treatment}
                 onValueChange={(value) => handleInputChange('treatment', value)}
               >
+                {/* Adding the default disabled option */}
+                <Picker.Item label="Sélectionner..." value="" enabled={false} />
+
                 {treatments.map((state, index) => (
                   <Picker.Item key={index} label={state} value={state} />
                 ))}
@@ -863,14 +943,14 @@ const AddInspectionScreen = ({ route }) => {
                   <Text style={styles.label}>À partir de</Text>
                   <Pressable onPress={togglePickerFrom}>
                     <Text style={[styles.textInput, styles.inlineInput]}>
-                      {formData.from.toLocaleDateString('fr-FR')}
+                      {formData.from ? formData.from.toLocaleDateString('fr-FR') : 'Sélectionner une date'}
                     </Text>
                   </Pressable>
                 </View>
                 {showPickerFrom && (
                   <DateTimePicker
                     testID="dateTimePickerFrom"
-                    value={formData.from}
+                    value={formData.from || new Date()}
                     mode="date"
                     is24Hour={true}
                     display="default"
@@ -885,14 +965,14 @@ const AddInspectionScreen = ({ route }) => {
                   <Text style={styles.label}>À</Text>
                   <Pressable onPress={togglePickerTo}>
                     <Text style={[styles.textInput, styles.inlineInput]}>
-                      {formData.to.toLocaleDateString('fr-FR')}
+                      {formData.to ? formData.to.toLocaleDateString('fr-FR') : 'Sélectionner une date'}
                     </Text>
                   </Pressable>
                 </View>
                 {showPickerTo && (
                   <DateTimePicker
                     testID="dateTimePickerTo"
-                    value={formData.to}
+                    value={formData.to || new Date()}
                     mode="date"
                     is24Hour={true}
                     display="default"
@@ -902,7 +982,6 @@ const AddInspectionScreen = ({ route }) => {
                 )}
               </View>
             </View>
-
 
             <View style={[styles.detailItem, styles.inline]}>
               <Text style={styles.label}>Quantité</Text>
@@ -922,6 +1001,9 @@ const AddInspectionScreen = ({ route }) => {
                 selectedValue={formData.doses}
                 onValueChange={(value) => handleInputChange('doses', value)}
               >
+                {/* Adding the default disabled option */}
+                <Picker.Item label="Sélectionner..." value="" enabled={false} />
+
                 {doses.map((state, index) => (
                   <Picker.Item key={index} label={state} value={state} />
                 ))}
@@ -954,6 +1036,9 @@ const AddInspectionScreen = ({ route }) => {
                 selectedValue={formData.HoneyStores}
                 onValueChange={(value) => handleInputChange('HoneyStores', value)}
               >
+                {/* Adding the default disabled option */}
+                <Picker.Item label="Sélectionner..." value="" enabled={false} />
+
                 {HoneyPollenHarvest.map((state, index) => (
                   <Picker.Item key={index} label={state} value={state} />
                 ))}
@@ -967,6 +1052,9 @@ const AddInspectionScreen = ({ route }) => {
                 selectedValue={formData.PollenStores}
                 onValueChange={(value) => handleInputChange('PollenStores', value)}
               >
+                {/* Adding the default disabled option */}
+                <Picker.Item label="Sélectionner..." value="" enabled={false} />
+
                 {HoneyPollenHarvest.map((state, index) => (
                   <Picker.Item key={index} label={state} value={state} />
                 ))}
@@ -1087,10 +1175,10 @@ const AddInspectionScreen = ({ route }) => {
           <View style={styles.fieldset}>
             <Text style={styles.fieldsetTitle}>Note</Text>
 
-            
+
 
             <View style={[styles.detailItem, styles.inline]}>
-               <TextInput
+              <TextInput
                 style={[styles.textInput, styles.inlineInput, styles.textArea]}
                 multiline={true}
                 numberOfLines={5}
