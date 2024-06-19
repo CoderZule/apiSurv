@@ -1,17 +1,24 @@
 import React, { useState } from 'react';
-import { StyleSheet, ScrollView, View, Text, TouchableOpacity, Modal, TouchableWithoutFeedback, ImageBackground } from 'react-native';
+import { StyleSheet, ScrollView, View, Text, TouchableOpacity, Modal, TouchableWithoutFeedback, ImageBackground, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native'; // Import useNavigation hook
 
 const HiveDetailsScreen = ({ route }) => {
-    const { hiveData } = route.params;
+    const { hiveData, InspectionsHistoryData } = route.params;
+
+    const navigation = useNavigation();
+
     const [showOwnerModal, setShowOwnerModal] = useState(false);
     const [showApiaryModal, setShowApiaryModal] = useState(false);
     const [showHiveModal, setShowHiveModal] = useState(false);
+    const navigateToInspectionsHistory = () => {
+        navigation.navigate('InspectionsHistoryScreen', { InspectionsHistoryData });
+    };
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
-         return date.toLocaleString('fr', { day: '2-digit', month: 'long', year: 'numeric' });
-      };
+        return date.toLocaleString('fr', { day: '2-digit', month: 'long', year: 'numeric' });
+    };
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
@@ -28,10 +35,18 @@ const HiveDetailsScreen = ({ route }) => {
                         <Text style={[styles.buttonText, { marginTop: 5 }]}>Rucher</Text>
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity onPress={() => setShowHiveModal(true)} style={[styles.button, styles.centerButton]}>
-                    <Ionicons name='archive-outline' size={30} color="#fff" />
-                    <Text style={[styles.buttonText, { marginTop: 5 }]}>Ruche</Text>
-                </TouchableOpacity>
+                <View style={styles.buttonsRow}>
+                    <TouchableOpacity onPress={() => setShowHiveModal(true)} style={[styles.button]}>
+                        <Ionicons name='archive-outline' size={30} color="#fff" />
+                        <Text style={[styles.buttonText, { marginTop: 5 }]}>Ruche</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={navigateToInspectionsHistory} style={[styles.button]}>
+                        <Ionicons name='archive-outline' size={30} color="#fff" />
+                        <Text style={[styles.buttonText, { marginTop: 5 }]}>Historique des Inspections</Text>
+                    </TouchableOpacity>
+                </View>
+
             </ImageBackground>
 
             {/* Owner Details Modal */}
@@ -120,7 +135,7 @@ const HiveDetailsScreen = ({ route }) => {
                                         <Text style={styles.label}>Date d'ajout</Text>
                                         <Text style={styles.text}>{formatDate(hiveData.Added)}</Text>
                                     </View>
-                                
+
                                     <View style={styles.detailItem}>
                                         <Text style={styles.label}>Force de la Colonie</Text>
                                         <Text style={styles.text}>{hiveData.Colony.strength}</Text>
@@ -194,7 +209,7 @@ const HiveDetailsScreen = ({ route }) => {
                                             </View>
 
 
- 
+
 
                                         </View>
                                     )}
@@ -204,6 +219,7 @@ const HiveDetailsScreen = ({ route }) => {
                     </View>
                 </TouchableWithoutFeedback>
             </Modal>
+          
         </ScrollView>
     );
 };
@@ -222,7 +238,7 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         color: '#2EB922',
         textAlign: 'center',
-        marginTop: 60, // Add margin top here
+        marginTop: 60,
         textShadowColor: 'rgba(0, 0, 0, 0.75)',
         textShadowOffset: { width: -1, height: 1 },
         textShadowRadius: 2
@@ -230,7 +246,7 @@ const styles = StyleSheet.create({
     detailsContainer: {
         borderRadius: 20,
         padding: 20,
-        marginTop: 80, // Add margin top here
+        marginTop: 80,
     },
     buttonsRow: {
         flexDirection: 'row',
@@ -238,15 +254,12 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     button: {
-        backgroundColor: 'rgba(90, 65, 0, 0.7)', // Darker brown color with 70% opacity
-        width: '48%', // Adjust width to fit two buttons in a row
-        aspectRatio: 1, // Square aspect ratio
+        backgroundColor: 'rgba(90, 65, 0, 0.7)',
+        width: '48%',
+        aspectRatio: 1,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 10,
-    },
-    centerButton: {
-        alignSelf: 'center'
     },
     buttonText: {
         fontSize: 16,
@@ -272,7 +285,7 @@ const styles = StyleSheet.create({
     groupTitle: {
         fontSize: 20,
         fontWeight: 'bold',
-    color: '#977700',
+        color: '#977700',
 
         textAlign: 'center',
         marginBottom: 10,
@@ -291,7 +304,7 @@ const styles = StyleSheet.create({
     },
     scrollContainer: {
         maxHeight: 400,
-    },
+    } 
 });
 
 

@@ -146,7 +146,7 @@ export default function HomeScreen({ navigation }) {
             <Text style={styles.modalTitle}>Scanner le code QR</Text>
             <TouchableOpacity style={styles.modalButton} onPress={openScannerInspDetails}>
               <Ionicons name="archive-outline" size={20} color="#977700"  />
-              <Text style={styles.modalButtonText}>Détails de la ruche</Text>
+              <Text style={styles.modalButtonText}>Détails Ruche/Inspections</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.modalButton} onPress={openScannerAddInspec}>
               <Ionicons name="create-outline" size={20} color="#977700" />

@@ -544,118 +544,120 @@ const AddInspectionScreen = ({ route }) => {
 
 
           {/* Queen Details*/}
-          <View style={styles.fieldset}>
-            <Text style={styles.fieldsetTitle}>Reine</Text>
+          {hiveData.Queen && (
+            <View style={styles.fieldset}>
+              <Text style={styles.fieldsetTitle}>Reine</Text>
 
 
-            <View>
-              <View style={styles.inline}>
-                <Text style={styles.label}>Observée</Text>
-                <Switch
-                  trackColor={{ false: "#767577", true: "#81b0ff" }}
-                  thumbColor={showQueenDetails ? "#f4f3f4" : "#f4f3f4"}
-                  ios_backgroundColor="#3e3e3e"
-                  onValueChange={(value) => {
-                    handleInputChange('seen', value);
-                    handleSeenToggle(value);
-                  }}
-                  value={showQueenDetails}
-                />
-              </View>
+              <View>
+                <View style={styles.inline}>
+                  <Text style={styles.label}>Observée</Text>
+                  <Switch
+                    trackColor={{ false: "#767577", true: "#81b0ff" }}
+                    thumbColor={showQueenDetails ? "#f4f3f4" : "#f4f3f4"}
+                    ios_backgroundColor="#3e3e3e"
+                    onValueChange={(value) => {
+                      handleInputChange('seen', value);
+                      handleSeenToggle(value);
+                    }}
+                    value={showQueenDetails}
+                  />
+                </View>
 
 
-              {showQueenDetails && (
-                <>
-                  <View style={[styles.detailItem, styles.inline]}>
-                    <Text style={styles.label}>Clippée</Text>
-                    <Switch
-                      trackColor={{ false: "#767577", true: "#81b0ff" }}
-                      thumbColor={formData.clipped ? "#f4f3f4" : "#f4f3f4"}
-                      ios_backgroundColor="#3e3e3e"
-                      onValueChange={(value) => handleInputChange('clipped', value)}
-                      value={formData.clipped}
-                    />
-                  </View>
-
-                  <View style={[styles.detailItem, styles.inline]}>
-                    <Text style={styles.label}>Essaimé</Text>
-                    <Switch
-                      trackColor={{ false: "#767577", true: "#81b0ff" }}
-                      thumbColor={formData.isSwarmed ? "#f4f3f4" : "#f4f3f4"}
-                      ios_backgroundColor="#3e3e3e"
-                      onValueChange={(value) => handleInputChange('isSwarmed', value)}
-                      value={formData.isSwarmed}
-                    />
-                  </View>
-
-                  <View style={[styles.detailItem, styles.inline]}>
-                    <Text style={styles.label}>Marquée</Text>
-                    <Switch
-                      trackColor={{ false: "#767577", true: "#81b0ff" }}
-                      thumbColor={formData.isMarked ? "#f4f3f4" : "#f4f3f4"}
-                      ios_backgroundColor="#3e3e3e"
-                      onValueChange={(value) => handleInputChange('isMarked', value)}
-                      value={formData.isMarked}
-                    />
-                  </View>
-
-                  {formData.isMarked && (
+                {showQueenDetails && (
+                  <>
                     <View style={[styles.detailItem, styles.inline]}>
-                      <Text style={styles.label}>Couleur</Text>
+                      <Text style={styles.label}>Clippée</Text>
+                      <Switch
+                        trackColor={{ false: "#767577", true: "#81b0ff" }}
+                        thumbColor={formData.clipped ? "#f4f3f4" : "#f4f3f4"}
+                        ios_backgroundColor="#3e3e3e"
+                        onValueChange={(value) => handleInputChange('clipped', value)}
+                        value={formData.clipped}
+                      />
+                    </View>
+
+                    <View style={[styles.detailItem, styles.inline]}>
+                      <Text style={styles.label}>Essaimé</Text>
+                      <Switch
+                        trackColor={{ false: "#767577", true: "#81b0ff" }}
+                        thumbColor={formData.isSwarmed ? "#f4f3f4" : "#f4f3f4"}
+                        ios_backgroundColor="#3e3e3e"
+                        onValueChange={(value) => handleInputChange('isSwarmed', value)}
+                        value={formData.isSwarmed}
+                      />
+                    </View>
+
+                    <View style={[styles.detailItem, styles.inline]}>
+                      <Text style={styles.label}>Marquée</Text>
+                      <Switch
+                        trackColor={{ false: "#767577", true: "#81b0ff" }}
+                        thumbColor={formData.isMarked ? "#f4f3f4" : "#f4f3f4"}
+                        ios_backgroundColor="#3e3e3e"
+                        onValueChange={(value) => handleInputChange('isMarked', value)}
+                        value={formData.isMarked}
+                      />
+                    </View>
+
+                    {formData.isMarked && (
+                      <View style={[styles.detailItem, styles.inline]}>
+                        <Text style={styles.label}>Couleur</Text>
+                        <Picker
+                          style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
+                          selectedValue={formData.color}
+                          onValueChange={(value) => handleInputChange('color', value)}
+                        >
+                          {colors.map((color, index) => (
+                            <Picker.Item key={index} label={color} value={color} />
+                          ))}
+                        </Picker>
+                      </View>
+                    )}
+
+                    <View style={[styles.detailItem, styles.inline]}>
+                      <Text style={styles.label}>Tempérament</Text>
                       <Picker
                         style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                        selectedValue={formData.color}
-                        onValueChange={(value) => handleInputChange('color', value)}
+                        selectedValue={formData.q_temperament}
+                        onValueChange={(value) => handleInputChange('q_temperament', value)}
                       >
-                        {colors.map((color, index) => (
-                          <Picker.Item key={index} label={color} value={color} />
+                        <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                        {temperament.map((state, index) => (
+                          <Picker.Item key={index} label={state} value={state} />
                         ))}
                       </Picker>
                     </View>
-                  )}
 
-                  <View style={[styles.detailItem, styles.inline]}>
-                    <Text style={styles.label}>Tempérament</Text>
-                    <Picker
-                      style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                      selectedValue={formData.q_temperament}
-                      onValueChange={(value) => handleInputChange('q_temperament', value)}
-                    >
-                      <Picker.Item label="Sélectionner..." value="" enabled={false} />
-                      {temperament.map((state, index) => (
-                        <Picker.Item key={index} label={state} value={state} />
-                      ))}
-                    </Picker>
-                  </View>
+                    <View style={[styles.detailItem, styles.inline]}>
+                      <Text style={styles.label}>Cellules royales</Text>
+                      <Picker
+                        style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
+                        selectedValue={formData.queenCells}
+                        onValueChange={(value) => handleInputChange('queenCells', value)}
+                      >
+                        <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                        {queen_cells.map((state, index) => (
+                          <Picker.Item key={index} label={state} value={state} />
+                        ))}
+                      </Picker>
+                    </View>
 
-                  <View style={[styles.detailItem, styles.inline]}>
-                    <Text style={styles.label}>Cellules royales</Text>
-                    <Picker
-                      style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                      selectedValue={formData.queenCells}
-                      onValueChange={(value) => handleInputChange('queenCells', value)}
-                    >
-                      <Picker.Item label="Sélectionner..." value="" enabled={false} />
-                      {queen_cells.map((state, index) => (
-                        <Picker.Item key={index} label={state} value={state} />
-                      ))}
-                    </Picker>
-                  </View>
+                    <View style={[styles.detailItem, styles.inline]}>
+                      <Text style={styles.label}>Note</Text>
+                      <TextInput
+                        style={[styles.textInput, styles.inlineInput, styles.textArea]}
+                        multiline={true}
+                        numberOfLines={4}
+                        value={formData.queenNote}
+                        onChangeText={(value) => handleInputChange('queenNote', value)}
+                      />
+                    </View>
+                  </>
+                )}
+              </View>
+            </View>)}
 
-                  <View style={[styles.detailItem, styles.inline]}>
-                    <Text style={styles.label}>Note</Text>
-                    <TextInput
-                      style={[styles.textInput, styles.inlineInput, styles.textArea]}
-                      multiline={true}
-                      numberOfLines={4}
-                      value={formData.queenNote}
-                      onChangeText={(value) => handleInputChange('queenNote', value)}
-                    />
-                  </View>
-                </>
-              )}
-            </View>
-          </View>
           {/* End of Queen Details*/}
 
 
@@ -702,7 +704,7 @@ const AddInspectionScreen = ({ route }) => {
 
           {/* Supplies Details  */}
           <View style={styles.fieldset}>
-            <Text style={styles.fieldsetTitle}>Fournitures</Text>
+            <Text style={styles.fieldsetTitle}>Nourritures</Text>
 
             <View style={[styles.detailItem, styles.inline]}>
               <Text style={styles.label}>Produit</Text>
@@ -734,7 +736,7 @@ const AddInspectionScreen = ({ route }) => {
               <TextInput
                 style={[styles.textInput, styles.inlineInput]}
                 keyboardType='numeric'
-                onChangeText={(value) => handleInputChange('quantity', value)}
+                onChangeText={(value) => handleInputChange('suppliesQuantity', value)}
                 value={formData.quantity}
               />
             </View>
@@ -988,8 +990,8 @@ const AddInspectionScreen = ({ route }) => {
               <TextInput
                 style={[styles.textInput, styles.inlineInput]}
                 keyboardType='numeric'
-                onChangeText={(value) => handleInputChange('quantity', value)}
-                value={formData.quantity}
+                onChangeText={(value) => handleInputChange('treatmentQuantity', value)}
+                value={formData.treatmentQuantity}
               />
             </View>
 
