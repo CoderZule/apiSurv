@@ -46,7 +46,7 @@ export default function DrawerContent(props) {
                 <DrawerItem
                     label="Accueil"
                     icon={() => <Ionicons name='home-outline' size={24} color="#977700" />}
-                    onPress={() => props.navigation.navigate('Accueil')}
+                    onPress={() => props.navigation.navigate('Home')}
                     labelStyle={styles.drawerItemLabel}
                 />
                 <DrawerItem
@@ -55,12 +55,7 @@ export default function DrawerContent(props) {
                     onPress={() => props.navigation.navigate('Profil')}
                     labelStyle={styles.drawerItemLabel}
                 />
-                <DrawerItem
-                    label="Liste d'inspections"
-                    icon={() => <Ionicons name='create-outline' size={24} color="#977700" />}
-                    onPress={() => props.navigation.navigate('Inspections')}
-                    labelStyle={styles.drawerItemLabel}
-                />
+               
                 <DrawerItem
                     label="Tâches"
                     icon={() => <Ionicons name='checkbox-outline' size={24} color="#977700" />}
@@ -77,7 +72,7 @@ export default function DrawerContent(props) {
                 <DrawerItem
                     label="Récolte"
                     icon={() => <Ionicons name='flask-outline' size={24} color="#977700" />}
-                    onPress={() => props.navigation.navigate('Recolte')}
+                    onPress={() => props.navigation.navigate('Harvest')}
                     labelStyle={styles.drawerItemLabel}
                 />
 

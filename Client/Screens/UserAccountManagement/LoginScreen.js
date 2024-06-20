@@ -60,7 +60,7 @@ export default function LoginScreen() {
             <Image
               resizeMode="contain"
               style={styles.headerImg}
-              source={require('../assets/logo.png')}
+              source={require('../../assets/logo.png')}
             />
             <Text style={styles.subtitle}>
               Connectez-vous à votre compte

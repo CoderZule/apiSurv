@@ -3,8 +3,8 @@ import {
   Text
 } from 'react-native';
 
-export default function RecolteScreen() {
+export default function HarvestScreen() {
   return (
-    <Text>Récolte Screen</Text>
+    <Text>Harvest Screen</Text>
   )
 }

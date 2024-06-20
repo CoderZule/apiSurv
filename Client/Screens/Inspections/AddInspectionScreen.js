@@ -21,7 +21,7 @@ import {
   options,
   weather_conditions,
   weather_wind_direction
-} from './Data';
+} from '../Data';
 import { useNavigation } from '@react-navigation/native';
 
 const Option = React.memo(({ option, isSelected, onPressHandler, quantity, onQuantityChange }) => (
@@ -442,7 +442,7 @@ const AddInspectionScreen = ({ route }) => {
           {
             text: 'OK',
             onPress: () => {
-              navigation.navigate('Accueil');
+              navigation.navigate('Home');
             }
           }
         ]);

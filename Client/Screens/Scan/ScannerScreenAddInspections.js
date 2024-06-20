@@ -26,12 +26,12 @@ export default function ScannerScreenAddInspections({ navigation }) {
             />
 
             <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.goBack()}>
-                 <Image  source={require('../assets/back.png')} style={styles.customIcon2} />
+                 <Image  source={require('../../assets/back.png')} style={styles.customIcon2} />
 
             </TouchableOpacity>
 
             <View style={styles.imageContainer}>
-                <Image source={require('../assets/scanme.gif')} style={styles.customIcon1} />
+                <Image source={require('../../assets/scanme.gif')} style={styles.customIcon1} />
             </View>
         </View>
     );

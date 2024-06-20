@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
-import { StyleSheet, ScrollView, View, Text, TouchableOpacity, Modal, TouchableWithoutFeedback, ImageBackground, FlatList } from 'react-native';
+import { StyleSheet, ScrollView, View, Text, TouchableOpacity, Modal, ImageBackground,  TouchableWithoutFeedback } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native'; // Import useNavigation hook
 
-const HiveDetailsScreen = ({ route }) => {
+const HiveDetailsScreen = ({ route, navigation }) => {
     const { hiveData, InspectionsHistoryData } = route.params;
 
-    const navigation = useNavigation();
 
     const [showOwnerModal, setShowOwnerModal] = useState(false);
     const [showApiaryModal, setShowApiaryModal] = useState(false);
     const [showHiveModal, setShowHiveModal] = useState(false);
+
     const navigateToInspectionsHistory = () => {
         navigation.navigate('InspectionsHistoryScreen', { InspectionsHistoryData });
     };
@@ -24,7 +23,7 @@ const HiveDetailsScreen = ({ route }) => {
         <ScrollView contentContainerStyle={styles.container}>
             <Text style={styles.title}>Ruche {hiveData.Type}{'\n'}Détails</Text>
             <ImageBackground imageStyle={{ borderRadius: 20 }}
-                source={require('../assets/bg-hive.jpeg')} style={styles.detailsContainer}>
+                source={require('../../assets/bg-hive.jpeg')} style={styles.detailsContainer}>
                 <View style={styles.buttonsRow}>
                     <TouchableOpacity onPress={() => setShowOwnerModal(true)} style={styles.button}>
                         <Ionicons name='person-outline' size={30} color="#fff" />
@@ -219,7 +218,7 @@ const HiveDetailsScreen = ({ route }) => {
                     </View>
                 </TouchableWithoutFeedback>
             </Modal>
-          
+
         </ScrollView>
     );
 };
@@ -304,7 +303,7 @@ const styles = StyleSheet.create({
     },
     scrollContainer: {
         maxHeight: 400,
-    } 
+    }
 });
 
 
