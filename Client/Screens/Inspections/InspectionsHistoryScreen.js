@@ -4,7 +4,6 @@ import { View, Text, ScrollView, FlatList, StyleSheet, TouchableOpacity } from '
 const InspectionsHistoryScreen = ({ route, navigation }) => {
     const { InspectionsHistoryData } = route.params;
 
-
     if (!InspectionsHistoryData || InspectionsHistoryData.length === 0) {
         return (
             <View style={[styles.container, styles.centeredView]}>
@@ -13,22 +12,26 @@ const InspectionsHistoryScreen = ({ route, navigation }) => {
         );
     }
 
+    // Identify the last item in the data
+    const lastItemIndex = InspectionsHistoryData.length - 1;
+
     return (
         <View style={styles.container}>
             <ScrollView horizontal={true}>
-
                 <View style={styles.tableContainer}>
                     <View style={styles.tableHeader}>
                         <Text style={styles.headerCell}>Inspecteur</Text>
                         <Text style={styles.headerCell}>Date et Heure</Text>
-
                     </View>
                     <FlatList
                         data={InspectionsHistoryData}
                         keyExtractor={(item, index) => index.toString()}
-                        renderItem={({ item }) => (
+                        renderItem={({ item, index }) => (
                             <TouchableOpacity
-                                style={styles.tableRow}
+                                style={[
+                                    styles.tableRow,
+                                    index === lastItemIndex ? styles.lastTableRow : null,
+                                ]}
                                 activeOpacity={0.6}
                                 onPress={() => navigation.navigate('InspectionDetailsScreen', { inspectionData: item })}
                             >
@@ -36,14 +39,16 @@ const InspectionsHistoryScreen = ({ route, navigation }) => {
                                     {item.Inspector.firstName} {item.Inspector.lastName}{'\n'}
                                     <Text style={{ color: '#977700' }}>Cin: </Text>{item.Inspector.cin}
                                 </Text>
-                                <Text style={styles.cell}>
+                                <Text style={[styles.cell, index === lastItemIndex ? styles.lastCell : null]}>
                                     {new Date(item.InspectionDateTime).toLocaleDateString('fr-FR')}{'\n'}
-                                    {new Date(item.InspectionDateTime).toLocaleTimeString('fr-FR')}
+                                    {new Date(item.InspectionDateTime).toLocaleTimeString('fr-FR')}{'\n'}
                                 </Text>
+                                {index === lastItemIndex && (
+                                    <View style={styles.badge}>
+                                        <Text style={{ color: 'white', fontSize: 9, fontWeight: 'bold' }}>Dernière inspection</Text>
+                                    </View>
+                                )}
                             </TouchableOpacity>
-
-
-
 
                         )}
                     />
@@ -71,26 +76,21 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginTop: 50,
     },
-
     tableContainer: {
-        borderTopWidth: 1,
+        borderTopWidth: 0.5,
         borderColor: '#ccc',
         marginTop: 30,
-
     },
     tableHeader: {
         flexDirection: 'row',
         backgroundColor: '#f1f1f1',
-        borderBottomWidth: 1,
+        borderBottomWidth: 0.5,
         borderBottomColor: '#ccc',
-
-
     },
     tableRow: {
         flexDirection: 'row',
-        borderBottomWidth: 1,
+        borderBottomWidth: 0.5,
         backgroundColor: '#fff',
-
         borderBottomColor: '#ccc',
         minHeight: 50,
     },
@@ -100,28 +100,41 @@ const styles = StyleSheet.create({
         width: 100,
         flex: 1,
         textAlign: 'center',
-        borderRightWidth: 1,
+        borderRightWidth: 0.5,
         borderRightColor: '#ccc',
-        borderLeftWidth: 1,
+        borderLeftWidth: 0.5,
         borderLeftColor: '#ccc',
         fontSize: 18,
-
     },
     cell: {
         padding: 10,
         flex: 1,
         width: 150,
-        borderRightWidth: 1,
+        borderRightWidth: 0.5,
         borderRightColor: '#ccc',
-        borderLeftWidth: 1,
+        borderLeftWidth: 0.5,
         borderLeftColor: '#ccc',
         textAlign: 'center',
         fontSize: 15,
-
-
-
-
     },
+    lastTableRow: {
+        borderBottomWidth: 2, // Increase border for last row
+    },
+    lastCell: {
+        position: 'relative', // Ensure badge is positioned correctly
+    },
+  badge: {
+    position: 'absolute',
+    bottom: 4, // Adjust the bottom position as needed
+    right: 4, // Adjust the right position as needed
+    backgroundColor: 'blue',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 10,
+    zIndex: 1,
+}
+
+
 });
 
 export default InspectionsHistoryScreen;

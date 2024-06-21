@@ -23,18 +23,82 @@ const InspectionDetails = ({ route }) => {
     }
   }
 
-  const renderIconAndText = (text, condition, color) => {
+  const renderIconAndText = (text, condition) => {
     if (condition) {
       return (
         <View style={styles.iconContainer}>
           <Text style={styles.highlight}>{text}</Text>
-          <Ionicons name="checkmark-outline" size={20} color={color} style={styles.icon} />
+          <Ionicons name="checkmark-outline" size={20} color="green" style={styles.icon} />
         </View>
       );
     } else {
-      return null; // Render nothing if condition is false
+      return (
+        <View style={styles.iconContainer}>
+          <Text style={styles.highlight}>{text}</Text>
+          <Ionicons name="close-outline" size={20} color="red" style={styles.icon} />
+        </View>
+      );
     }
   };
+
+  const weatherConditionMapping = {
+    Thunderstorm: 'Orage',
+    Drizzle: 'Bruine',
+    Rain: 'Pluie',
+    Snow: 'Neige',
+    Mist: 'Brume',
+    Smoke: 'Fumée',
+    Haze: 'Brume sèche',
+    Dust: 'Poussière',
+    Fog: 'Brouillard',
+    Sand: 'Sable',
+    Ash: 'Cendre',
+    Squall: 'Rafale',
+    Tornado: 'Tornade',
+    Clear: 'Dégagé',
+    Clouds: 'Nuages',
+  };
+
+  const translateCondition = (condition) => {
+    for (const key in weatherConditionMapping) {
+      if (condition.includes(key)) {
+        return weatherConditionMapping[key];
+      }
+    }
+    return condition; // Default to the original if no match is found
+  };
+
+  const renderWeatherIcon = (condition) => {
+    if (condition.includes('Thunderstorm')) {
+      return <Ionicons name="thunderstorm-outline" size={20} color="black" style={styles.icon} />;
+    } else if (condition.includes('Drizzle')) {
+      return <Ionicons name="rainy-outline" size={20} color="blue" style={styles.icon} />;
+    } else if (condition.includes('Rain')) {
+      return <Ionicons name="rainy-outline" size={20} color="blue" style={styles.icon} />;
+    } else if (condition.includes('Snow')) {
+      return <Ionicons name="snow-outline" size={20} color="white" style={styles.icon} />;
+    } else if (
+      condition.includes('Mist') ||
+      condition.includes('Smoke') ||
+      condition.includes('Haze') ||
+      condition.includes('Dust') ||
+      condition.includes('Fog') ||
+      condition.includes('Sand') ||
+      condition.includes('Ash') ||
+      condition.includes('Squall') ||
+      condition.includes('Tornado')
+    ) {
+      return <Ionicons name="cloud-outline" size={20} color="gray" style={styles.icon} />;
+    } else if (condition.includes('Clear')) {
+      return <Ionicons name="sunny-outline" size={20} color="orange" style={styles.icon} />;
+    } else if (condition.includes('Clouds')) {
+      return <Ionicons name="cloudy-outline" size={20} color="gray" style={styles.icon} />;
+    } else {
+      return <Ionicons name="help-outline" size={20} color="red" style={styles.icon} />;
+    }
+  };
+
+  const translatedCondition = translateCondition(inspectionData.Weather.condition);
 
   return (
     <ScrollView style={styles.container}>
@@ -67,19 +131,21 @@ const InspectionDetails = ({ route }) => {
           <Text style={styles.header}>Reine</Text>
           <Text style={styles.value}>
             {renderIconAndTextSeen(inspectionData.Queen.seen)}{'\n\n'}
-            {renderIconAndText('Marquée', inspectionData.Queen.isMarked, 'green')}
+            {renderIconAndText('Marquée', inspectionData.Queen.isMarked)}
+
             {'\n\n'}
             {inspectionData.Queen.color && (
               <>
                 <Text style={styles.highlight}>Couleur: </Text>{inspectionData.Queen.color} <Ionicons name="color-palette-outline" size={20} color="fuchsia" style={styles.icon} /> {'\n\n'}
               </>
             )}
-            {renderIconAndText('Clippée', inspectionData.Queen.clipped, 'green')}
+            {renderIconAndText('Clippée', inspectionData.Queen.clipped)}
             {'\n\n'}
-            {renderIconAndText('Essaimée', inspectionData.Queen.isSwarmed, 'green')}
+            {renderIconAndText('Essaimée', inspectionData.Queen.isSwarmed)}
+            {'\n\n'}
             {inspectionData.Queen.queenCells && (
               <>
-                <Text style={styles.highlight}>Cellules royales: </Text>{inspectionData.Queen.queenCells + '\n\n'}
+                <Text style={styles.highlight}>Cellules royales: </Text>{inspectionData.Queen.queenCells} <Ionicons name="keypad-outline" size={20} color="blue" style={styles.icon} />{'\n\n'}
               </>
             )}
             {inspectionData.Queen.temperament && (
@@ -99,12 +165,12 @@ const InspectionDetails = ({ route }) => {
         <View style={styles.section}>
           <Text style={styles.header}>Colonie</Text>
           <Text style={styles.value}>
-            {inspectionData.Colony.deadBees ? 'Des abeilles mortes sont présentes' : 'Aucune abeille morte'}{'\n\n'}
+            <Ionicons name="return-down-forward-outline" size={20} color="brown" style={styles.icon} /> {inspectionData.Colony.deadBees ? 'Des abeilles mortes sont présentes' : 'Aucune abeille morte'}{'\n\n'}
             <Text style={styles.highlight}>Force: </Text>{inspectionData.Colony.strength} <Ionicons name="fitness-outline" size={20} color="blue" style={styles.icon} />{'\n\n'}
             <Text style={styles.highlight}>Tempérament: </Text>{inspectionData.Colony.temperament} <Ionicons name="happy-outline" size={20} color="gray" style={styles.icon} />{'\n\n'}
-            <Text style={styles.highlight}>Supers: </Text>{inspectionData.Colony.supers} <Ionicons name="calculator-outline" size={20} color="brown" style={styles.icon} />{'\n\n'}
-            <Text style={styles.highlight}>Cadres de pollen: </Text>{inspectionData.Colony.pollenFrames} <Ionicons name="calculator-outline" size={20} color="brown" style={styles.icon} />{'\n\n'}
-            <Text style={styles.highlight}>Cadres au total: </Text>{inspectionData.Colony.TotalFrames} <Ionicons name="calculator-outline" size={20} color="brown" style={styles.icon} />{'\n\n'}
+            <Text style={styles.highlight}>Supers: </Text>{inspectionData.Colony.supers} <Ionicons name="file-tray-stacked-outline" size={20} color="orange" style={styles.icon} />{'\n\n'}
+            <Text style={styles.highlight}>Cadres de pollen: </Text>{inspectionData.Colony.pollenFrames} <Ionicons name="file-tray-outline" size={20} color="orange" style={styles.icon} />{'\n\n'}
+            <Text style={styles.highlight}>Cadres au total: </Text>{inspectionData.Colony.TotalFrames} <Ionicons name="file-tray-full-outline" size={20} color="orange" style={styles.icon} />{'\n\n'}
             {inspectionData.Colony.note && (
               <>
                 <Text style={styles.highlight}>Note: </Text>{inspectionData.Colony.note} <Ionicons name="receipt-outline" size={20} color="pink" style={styles.icon} />{'\n'}
@@ -117,8 +183,8 @@ const InspectionDetails = ({ route }) => {
         <View style={styles.section}>
           <Text style={styles.header}>Couvain et Mâles</Text>
           <Text style={styles.value}>
-            <Text style={styles.highlight}>État: </Text>{inspectionData.Brood.state}{'\n\n'}
-            <Text style={styles.highlight}>Nombre total du couvain: </Text>{inspectionData.Brood.totalBrood} <Ionicons name="calculator-outline" size={20} color="brown" style={styles.icon} />{'\n\n'}
+            <Text style={styles.highlight}>État: </Text>{inspectionData.Brood.state} <Ionicons name="shield-checkmark-outline" size={20} color="gray" style={styles.icon} />{'\n\n'}
+            <Text style={styles.highlight}>Nombre total du couvain: </Text>{inspectionData.Brood.totalBrood} <Ionicons name="keypad-outline" size={20} color="blue" style={styles.icon} />{'\n\n'}
             <Text style={styles.highlight}>Couvain mâle: </Text>{inspectionData.Brood.maleBrood === 'Régulièr' ? (
               <><Text>{inspectionData.Brood.maleBrood}</Text> <Ionicons name="thumbs-up-outline" size={20} color="green" style={styles.icon} /></>
 
@@ -140,7 +206,14 @@ const InspectionDetails = ({ route }) => {
               <Text style={styles.highlight}>Ingrédients: </Text>{inspectionData.Supplies.ingredients.name} <Ionicons name="extension-puzzle-outline" size={20} color="green" style={styles.icon} />{'\n\n'}
               <Text style={styles.highlight}>Quantité: </Text>{inspectionData.Supplies.ingredients.quantity} <Ionicons name="layers-outline" size={20} color="brown" style={styles.icon} />{'\n\n'}
               <Text style={styles.highlight}>Unité: </Text>{inspectionData.Supplies.ingredients.unit} <Ionicons name="eyedrop-outline" size={20} color="aqua" style={styles.icon} />{'\n\n'}
-              <Text style={styles.highlight}>Note: </Text>{inspectionData.Supplies.note} <Ionicons name="receipt-outline" size={20} color="pink" style={styles.icon} />{'\n\n'}
+              {inspectionData.Supplies.note && (
+                <>
+                  <Text style={styles.highlight}>
+                    Note:</Text> {inspectionData.Supplies.note} <Ionicons name="receipt-outline" size={20} color="pink" style={styles.icon} />
+
+                  {'\n\n'}
+                </>
+              )}
             </Text>
           </View>
         ) : (<Text style={styles.value}>-</Text>)}
@@ -159,7 +232,12 @@ const InspectionDetails = ({ route }) => {
               {'\n\n'}
               <Text style={styles.highlight}>Quantité: </Text>{inspectionData.BeeHealth.quantity} <Ionicons name="layers-outline" size={20} color="brown" style={styles.icon} />{'\n\n'}
               <Text style={styles.highlight}>Doses: </Text>{inspectionData.BeeHealth.doses} <Ionicons name="color-fill-outline" size={20} color="aqua" style={styles.icon} />{'\n\n'}
-              <Text style={styles.highlight}>Note: </Text>{inspectionData.BeeHealth.note ? inspectionData.BeeHealth.note : '-'} <Ionicons name="receipt-outline" size={20} color="pink" style={styles.icon} />
+              {inspectionData.BeeHealth.note && (
+                <>
+                  <Text style={styles.highlight}>
+                    Note:</Text> {inspectionData.BeeHealth.note} <Ionicons name="receipt-outline" size={20} color="pink" style={styles.icon} />
+                </>
+              )}
             </Text>
           </View>
         ) : (<Text style={styles.value}>-</Text>)}
@@ -169,7 +247,7 @@ const InspectionDetails = ({ route }) => {
           <Text style={styles.header}>Récoltes</Text>
           <Text style={styles.value}>
             <Text style={styles.highlight}>Réserves de miel: </Text>{inspectionData.HoneyStores} <Ionicons name="flask-outline" size={20} color="orange" style={styles.icon} /> {'\n\n'}
-            <Text style={styles.highlight}>Réserves de pollen: </Text>{inspectionData.PollenStores} <Ionicons name="file-tray-full-outline" size={20} color="orange" style={styles.icon} />
+            <Text style={styles.highlight}>Réserves de pollen: </Text>{inspectionData.PollenStores} <Ionicons name="file-tray-outline" size={20} color="orange" style={styles.icon} />
           </Text>
         </View>
         <View style={styles.divider} />
@@ -199,7 +277,8 @@ const InspectionDetails = ({ route }) => {
         <View style={styles.section}>
           <Text style={styles.header}>Météo</Text>
           <Text style={styles.value}>
-            <Text style={styles.highlight}>Condition: </Text>{inspectionData.Weather.condition}{'\n\n'}
+            <Text style={styles.highlight}>Condition: </Text>{translatedCondition} {renderWeatherIcon(inspectionData.Weather.condition)}
+            {'\n\n'}
             <Text style={styles.highlight}>Température: </Text>{inspectionData.Weather.temperature}°C <Ionicons name="thermometer-outline" size={20} color="red" style={styles.icon} />{'\n\n'}
             <Text style={styles.highlight}>Humidité: </Text>{inspectionData.Weather.humidity}% <Ionicons name="water-outline" size={20} color="aqua" style={styles.icon} />{'\n\n'}
             <Text style={styles.highlight}>Pression: </Text>{inspectionData.Weather.pressure} hPa <Ionicons name="speedometer-outline" size={20} color="gray" style={styles.icon} />{'\n\n'}
@@ -209,16 +288,15 @@ const InspectionDetails = ({ route }) => {
         </View>
         <View style={styles.divider} />
 
-        <View style={styles.section}>
-          <Text style={styles.header}>Note</Text>
-          <Text style={styles.value}>
-            {inspectionData.Note ? (
-              <Text>{inspectionData.Note}</Text>
-            ) : (
-              <Text>-</Text>
-            )} <Ionicons name="receipt-outline" size={20} color="pink" style={styles.icon} />
-          </Text>
-        </View>
+        {inspectionData.Note ? (
+          <View style={styles.section}>
+            <Text style={styles.header}>Note</Text>
+            <Text style={styles.value}>
+              {inspectionData.Note} <Ionicons name="receipt-outline" size={20} color="pink" style={styles.icon} />
+            </Text>
+          </View>
+        ) : null}
+
       </View>
       <View style={styles.divider} />
 
