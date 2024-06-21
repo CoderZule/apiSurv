@@ -1,9 +1,9 @@
 import React from 'react';
-import { ScrollView, View, Text, StyleSheet } from 'react-native';
+import { ScrollView, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-const InspectionDetails = ({ route }) => {
-  const { inspectionData } = route.params;
+const InspectionDetails = ({ route, navigation }) => {
+  const { inspectionData, badge } = route.params;
 
   const renderIconAndTextSeen = (condition) => {
     if (condition) {
@@ -65,7 +65,7 @@ const InspectionDetails = ({ route }) => {
         return weatherConditionMapping[key];
       }
     }
-    return condition; // Default to the original if no match is found
+    return condition;  
   };
 
   const renderWeatherIcon = (condition) => {
@@ -100,9 +100,29 @@ const InspectionDetails = ({ route }) => {
 
   const translatedCondition = translateCondition(inspectionData.Weather.condition);
 
+  const renderBadge = () => {
+    if (badge) {
+      return (
+        <View style={styles.badge}>
+          <Text style={{ color: 'white', fontSize: 12 }}>Dernière inspection</Text>
+        </View>
+      );
+    }
+    return null;
+  };
   return (
     <ScrollView style={styles.container}>
+
+
       <View style={styles.card}>
+        {renderBadge()}
+        <TouchableOpacity
+          style={styles.editButton}
+          onPress={() => navigation.navigate('EditInspectionScreen', { inspectionData })}
+        >
+          <Ionicons name="create-outline" size={40} color="orange" style={styles.icon} />
+
+        </TouchableOpacity>
         <View style={styles.row}>
           <Text style={styles.label}>Inspecteur</Text>
           <Text style={styles.value}>{inspectionData.Inspector.firstName} {inspectionData.Inspector.lastName}</Text>
@@ -363,6 +383,31 @@ const styles = StyleSheet.create({
   icon: {
     marginRight: 5,
   },
+
+  editButton: {
+    alignSelf: 'flex-end',  
+    alignItems: 'center',
+    alignSelf: 'flex-end',  
+    marginTop: 10,
+    marginBottom: 20,
+  },
+  editButtonText: {
+    fontSize: 18,
+    color: 'blue',
+    marginLeft: 5,
+  },
+
+  badge: {
+    position: 'absolute',
+    top: 10,  
+    left: 4,  
+    backgroundColor: "#5188C7",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 10,
+    zIndex: 1,
+  }
+  
 });
 
 export default InspectionDetails;

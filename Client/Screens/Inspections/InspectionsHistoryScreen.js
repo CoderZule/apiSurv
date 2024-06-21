@@ -12,8 +12,7 @@ const InspectionsHistoryScreen = ({ route, navigation }) => {
         );
     }
 
-    // Identify the last item in the data
-    const lastItemIndex = InspectionsHistoryData.length - 1;
+     const lastItemIndex = InspectionsHistoryData.length - 1;
 
     return (
         <View style={styles.container}>
@@ -33,7 +32,13 @@ const InspectionsHistoryScreen = ({ route, navigation }) => {
                                     index === lastItemIndex ? styles.lastTableRow : null,
                                 ]}
                                 activeOpacity={0.6}
-                                onPress={() => navigation.navigate('InspectionDetailsScreen', { inspectionData: item })}
+                                onPress={() => {
+                                    const params = {
+                                        inspectionData: item,
+                                        badge: index === lastItemIndex ? true : false,  
+                                    };
+                                    navigation.navigate('InspectionDetailsScreen', params);
+                                }}
                             >
                                 <Text style={styles.cell}>
                                     {item.Inspector.firstName} {item.Inspector.lastName}{'\n'}
@@ -43,7 +48,7 @@ const InspectionsHistoryScreen = ({ route, navigation }) => {
                                     {new Date(item.InspectionDateTime).toLocaleDateString('fr-FR')}{'\n'}
                                     {new Date(item.InspectionDateTime).toLocaleTimeString('fr-FR')}{'\n'}
                                 </Text>
-                                {index === lastItemIndex && (
+                                 {index === lastItemIndex && (
                                     <View style={styles.badge}>
                                         <Text style={{ color: 'white', fontSize: 9, fontWeight: 'bold' }}>Dernière inspection</Text>
                                     </View>
@@ -53,8 +58,8 @@ const InspectionsHistoryScreen = ({ route, navigation }) => {
                         )}
                     />
                 </View>
-            </ScrollView>
-        </View>
+            </ScrollView >
+        </View >
     );
 };
 
@@ -118,21 +123,21 @@ const styles = StyleSheet.create({
         fontSize: 15,
     },
     lastTableRow: {
-        borderBottomWidth: 2, // Increase border for last row
+        borderBottomWidth: 2,  
     },
     lastCell: {
-        position: 'relative', // Ensure badge is positioned correctly
+        position: 'relative',  
     },
-  badge: {
-    position: 'absolute',
-    bottom: 4, // Adjust the bottom position as needed
-    right: 4, // Adjust the right position as needed
-    backgroundColor: 'blue',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 10,
-    zIndex: 1,
-}
+    badge: {
+        position: 'absolute',
+        bottom: 4,  
+        right: 4,  
+        backgroundColor: "#5188C7",
+        paddingHorizontal: 8,
+        paddingVertical: 4,
+        borderRadius: 10,
+        zIndex: 1,
+    }
 
 
 });

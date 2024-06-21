@@ -442,7 +442,7 @@ const AddInspectionScreen = ({ route }) => {
           {
             text: 'OK',
             onPress: () => {
-              navigation.navigate('Home');
+              navigation.navigate('InspectionsHistoryScreen');
             }
           }
         ]);
@@ -1173,7 +1173,7 @@ const AddInspectionScreen = ({ route }) => {
 
 
 
-          {/* Supplies Details  */}
+          {/* Note Details  */}
           <View style={styles.fieldset}>
             <Text style={styles.fieldsetTitle}>Note</Text>
 
@@ -1189,7 +1189,7 @@ const AddInspectionScreen = ({ route }) => {
               />
             </View>
           </View>
-          {/* End of Supplies Details*/}
+          {/* End of Note*/}
 
           <TouchableOpacity style={styles.addButton} onPress={handleAddInspection}>
             <Text style={styles.addButtonText}>Ajouter</Text>
