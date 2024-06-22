@@ -15,8 +15,7 @@ import AddInspectionScreen from '../Screens/Inspections/AddInspectionScreen';
 import ScannerScreenAddInspections from '../Screens/Scan/ScannerScreenAddInspections';
 import InspectionsHistoryScreen from '../Screens/Inspections/InspectionsHistoryScreen';
 import InspectionDetailsScreen from '../Screens/Inspections/InspectionDetailsScreen';
-import EditInspectionScreen from '../Screens/Inspections/EditInspectionScreen';
-
+ 
 const Stack = createNativeStackNavigator();
 
 export function IntroStack() {
@@ -51,8 +50,7 @@ export function IntroStack() {
           <Stack.Screen name="InspectionDetailsScreen" component={InspectionDetailsScreen} options={{ title: 'Inspection Details Screen' }} />
 
           <Stack.Screen name="AddInspectionScreen" component={AddInspectionScreen} options={{ title: 'Add Hive Inspection' }} />
-          <Stack.Screen name="EditInspectionScreen" component={EditInspectionScreen} options={{ title: 'Edit Hive Inspection' }} />
-
+ 
         </>
       )}
     </Stack.Navigator>

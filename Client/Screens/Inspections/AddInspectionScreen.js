@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, ScrollView, View, Text, TextInput, TouchableOpacity, Switch, Button, Pressable, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, ScrollView, View, Text, TextInput, TouchableOpacity, Switch, Pressable, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -19,8 +19,7 @@ import {
   doses,
   HoneyPollenHarvest,
   options,
-  weather_conditions,
-  weather_wind_direction
+ 
 } from '../Data';
 import { useNavigation } from '@react-navigation/native';
 

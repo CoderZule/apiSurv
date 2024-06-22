@@ -1,9 +1,29 @@
-import React from 'react';
-import { ScrollView, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { ScrollView, View, Text, StyleSheet, TouchableOpacity, Modal, Switch, Button, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import EditInspectionModal from './EditInspectionModal';
 
 const InspectionDetails = ({ route, navigation }) => {
   const { inspectionData, badge } = route.params;
+  const [modalVisible, setModalVisible] = useState(false);
+  const [formData, setFormData] = useState({ ...inspectionData });
+
+  const handleModalInputChange = (section, field, value) => {
+    setFormData(prevData => ({
+      ...prevData,
+      [section]: {
+        ...prevData[section],
+        [field]: value,
+      },
+    }));
+  };
+
+  const handleSave = () => {
+    // Save the edited data (you can also perform any API call here to save the data on the server)
+    // In this example, we simply close the modal and log the updated formData
+    setModalVisible(false);
+    console.log(formData);
+  };
 
   const renderIconAndTextSeen = (condition) => {
     if (condition) {
@@ -65,7 +85,7 @@ const InspectionDetails = ({ route, navigation }) => {
         return weatherConditionMapping[key];
       }
     }
-    return condition;  
+    return condition;
   };
 
   const renderWeatherIcon = (condition) => {
@@ -118,11 +138,11 @@ const InspectionDetails = ({ route, navigation }) => {
         {renderBadge()}
         <TouchableOpacity
           style={styles.editButton}
-          onPress={() => navigation.navigate('EditInspectionScreen', { inspectionData })}
+          onPress={() => setModalVisible(true)}
         >
           <Ionicons name="create-outline" size={40} color="orange" style={styles.icon} />
-
         </TouchableOpacity>
+
         <View style={styles.row}>
           <Text style={styles.label}>Inspecteur</Text>
           <Text style={styles.value}>{inspectionData.Inspector.firstName} {inspectionData.Inspector.lastName}</Text>
@@ -320,6 +340,14 @@ const InspectionDetails = ({ route, navigation }) => {
       </View>
       <View style={styles.divider} />
 
+      <EditInspectionModal
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        formData={formData}
+        handleModalInputChange={handleModalInputChange}
+        handleSave={handleSave}
+      />
+
     </ScrollView>
   );
 };
@@ -385,9 +413,9 @@ const styles = StyleSheet.create({
   },
 
   editButton: {
-    alignSelf: 'flex-end',  
+    alignSelf: 'flex-end',
     alignItems: 'center',
-    alignSelf: 'flex-end',  
+    alignSelf: 'flex-end',
     marginTop: 10,
     marginBottom: 20,
   },
@@ -399,15 +427,16 @@ const styles = StyleSheet.create({
 
   badge: {
     position: 'absolute',
-    top: 10,  
-    left: 4,  
+    top: 10,
+    left: 4,
     backgroundColor: "#5188C7",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 10,
     zIndex: 1,
-  }
-  
+  },
+
+
 });
 
 export default InspectionDetails;
