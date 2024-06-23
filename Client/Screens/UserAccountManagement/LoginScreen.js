@@ -34,14 +34,18 @@ export default function LoginScreen() {
           Password: form.password,
         }
       );
- 
-  
-      const currentUser = response.data.currentUser;
+
+
        AsyncStorage.multiSet([
         ['token', response.data.token],
         ['currentUser', JSON.stringify(response.data.currentUser)]
       ]);
-            navigation.navigate('DrawerNavigator', currentUser);
+     
+      //Prevent user from going back to login screen after login
+       navigation.reset({
+        index: 0,
+        routes: [{ name: 'DrawerNavigator', params: { currentUser: response.data.currentUser } }],
+      });
 
     } catch (error) {
       Alert.alert('Échec de connexion', 'Identifiants invalides. Veuillez réessayer.');
