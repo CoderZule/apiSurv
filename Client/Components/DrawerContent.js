@@ -114,8 +114,8 @@ const styles = StyleSheet.create({
         height: 150,
     },
     logoImage: {
-        width: 120,
-        height: 120,
+        width: 140,
+        height: 140,
     },
     drawerItemLabel: {
         fontSize: 15,

@@ -117,7 +117,7 @@ export default function HomeScreen({ navigation }) {
 
       <View style={styles.propertiesContainer}>
         {propertiesData.map((item) => (
-          <View key={item.id} style={[styles.smallCard, { backgroundColor: '#fff' }]}>
+          <View key={item.id}  >
             <Image style={styles.image} source={item.img} />
             <View style={styles.propertyInfo}>
               <Text style={styles.nameText}>{item.name}</Text>
@@ -211,9 +211,9 @@ const styles = StyleSheet.create({
     width: 75,
   },
   image: {
-    width: 30,
-    height: 30,
-    marginBottom: 5,
+    width: 90,
+    height: 90,
+   // marginBottom: 5,
   },
   propertyInfo: {
     flexDirection: 'column',
@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
   },
   centeredContainer: {
     alignItems: 'center',
-    marginTop: 20,
+    //marginTop: 20,
   },
   qrScan: {
     width: 260,
@@ -249,8 +249,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20,
-  },
+   // marginTop: 15,
+   },
   buttonText: {
     fontSize: 17,
     color: '#373737',

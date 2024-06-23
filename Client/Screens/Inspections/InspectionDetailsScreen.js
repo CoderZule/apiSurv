@@ -62,7 +62,7 @@ const InspectionDetails = ({ route }) => {
     } else {
       return (
         <View style={styles.iconContainer}>
-          <Text style={styles.highlight}>Non observée</Text>
+          <Text style={styles.highlight}>Observée</Text>
           <Ionicons name="close-outline" size={20} color="red" style={styles.icon} />
         </View>
       );
