@@ -1,12 +1,11 @@
-// ScannerScreen.js
-
-import React from 'react';
+import React, {useEffect} from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { CameraView } from 'expo-camera';
 import axios from 'axios';
-
+ 
 export default function ScannerScreenInspectionsDetails({ navigation }) {
 
+  
     const handleBarCodeScanned = async ({ type, data }) => {
         try {
             const response = await axios.get(`http://192.168.1.17:3000/api/hive/getHiveById/${data}`);

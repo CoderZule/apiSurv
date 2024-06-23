@@ -417,6 +417,9 @@ const AddInspectionScreen = ({ route }) => {
       if (!formattedData.Colony.strength || !formattedData.Colony.temperament || formattedData.Colony.deadBees === undefined) {
         return Alert.alert('Erreur', 'Les informations de la colonie sont requises');
       }
+      if ( !formattedData.Colony.supers | !formattedData.Colony.pollenFrames | !formattedData.Colony.TotalFrames ) {
+        return Alert.alert('Erreur', 'Les informations concernant les équipements sont requises');
+    }
       if (!formattedData.Brood.state || !formattedData.Brood.maleBrood || formattedData.Brood.totalBrood === undefined || formattedData.DronesSeen === undefined) {
         return Alert.alert('Erreur', 'Les informations concernant la couvée ou la présence de drones sont requises');
       }
@@ -441,7 +444,7 @@ const AddInspectionScreen = ({ route }) => {
           {
             text: 'OK',
             onPress: () => {
-              navigation.navigate('InspectionsHistoryScreen');
+              navigation.navigate('Home');
             }
           }
         ]);

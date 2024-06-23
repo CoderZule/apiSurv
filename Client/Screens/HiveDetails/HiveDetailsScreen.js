@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, ScrollView, View, Text, TouchableOpacity, Modal, ImageBackground,  TouchableWithoutFeedback } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import _ from 'lodash'; // Import lodash for debounce
 
 const HiveDetailsScreen = ({ route, navigation }) => {
     const { hiveData, InspectionsHistoryData } = route.params;
@@ -10,9 +11,10 @@ const HiveDetailsScreen = ({ route, navigation }) => {
     const [showApiaryModal, setShowApiaryModal] = useState(false);
     const [showHiveModal, setShowHiveModal] = useState(false);
 
-    const navigateToInspectionsHistory = () => {
+    const navigateToInspectionsHistory = _.debounce(() => {
         navigation.navigate('InspectionsHistoryScreen', { InspectionsHistoryData });
-    };
+    }, 300);  
+
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -41,8 +43,8 @@ const HiveDetailsScreen = ({ route, navigation }) => {
                     </TouchableOpacity>
 
                     <TouchableOpacity onPress={navigateToInspectionsHistory} style={[styles.button]}>
-                        <Ionicons name='archive-outline' size={30} color="#fff" />
-                        <Text style={[styles.buttonText, { marginTop: 5 }]}>Historique des Inspections</Text>
+                        <Ionicons name='create-outline' size={30} color="#fff" />
+                        <Text style={[styles.buttonText, { marginTop: 5 }]}>Inspections</Text>
                     </TouchableOpacity>
                 </View>
 

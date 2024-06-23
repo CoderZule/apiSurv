@@ -24,7 +24,7 @@ const InspectionDetails = ({ route }) => {
   const handleModalInputChange = (section, fieldOrValue, value) => {
     // Create a copy of the current state to avoid mutation
     const updatedFormData = { ...formData };
-  
+
     // Handle straightforward fields like Note, HoneyStores, etc.
     if (section === 'Note' || section === 'HoneyStores' || section === 'PollenStores' || section === 'DronesSeen') {
       updatedFormData[section] = fieldOrValue;;
@@ -44,11 +44,11 @@ const InspectionDetails = ({ route }) => {
         [fieldOrValue]: value
       };
     }
-  
+
     // Update the state with the new formData
     setFormData(updatedFormData);
   };
-  
+
 
 
   const renderIconAndTextSeen = (condition) => {
@@ -191,41 +191,48 @@ const InspectionDetails = ({ route }) => {
           <Text style={styles.label}>Heure</Text>
           <Text style={styles.value}>{new Date(inspectionData.InspectionDateTime).toLocaleTimeString('fr-FR')}</Text>
         </View>
-        <View style={styles.divider} />
 
-        <View style={styles.section}>
-          <Text style={styles.header}>Reine</Text>
-          <Text style={styles.value}>
-            {renderIconAndTextSeen(inspectionData.Queen.seen)}{'\n\n'}
-            {renderIconAndText('Marquée', inspectionData.Queen.isMarked)}
+        {inspectionData.Queen && (
+          <>
+            <View style={styles.divider} />
 
-            {'\n\n'}
-            {inspectionData.Queen.color && (
-              <>
-                <Text style={styles.highlight}>Couleur: </Text>{inspectionData.Queen.color} <Ionicons name="color-palette-outline" size={20} color="fuchsia" style={styles.icon} /> {'\n\n'}
-              </>
-            )}
-            {renderIconAndText('Clippée', inspectionData.Queen.clipped)}
-            {'\n\n'}
-            {renderIconAndText('Essaimée', inspectionData.Queen.isSwarmed)}
-            {'\n\n'}
-            {inspectionData.Queen.queenCells && (
-              <>
-                <Text style={styles.highlight}>Cellules royales: </Text>{inspectionData.Queen.queenCells} <Ionicons name="keypad-outline" size={20} color="blue" style={styles.icon} />{'\n\n'}
-              </>
-            )}
-            {inspectionData.Queen.temperament && (
-              <>
-                <Text style={styles.highlight}>Tempérament: </Text>{inspectionData.Queen.temperament} <Ionicons name="happy-outline" size={20} color="gray" style={styles.icon} /> {'\n\n'}
-              </>
-            )}
-            {inspectionData.Queen.note && (
-              <>
-                <Text style={styles.highlight}>Note: </Text>{inspectionData.Queen.note} <Ionicons name="receipt-outline" size={20} color="pink" style={styles.icon} />
-              </>
-            )}
-          </Text>
-        </View>
+            <View style={styles.section}>
+              <Text style={styles.header}>Reine</Text>
+              <Text style={styles.value}>
+                {renderIconAndTextSeen(inspectionData.Queen.seen)}{'\n\n'}
+                {renderIconAndText('Marquée', inspectionData.Queen.isMarked)}
+
+                {'\n\n'}
+                {inspectionData.Queen.color && (
+                  <>
+                    <Text style={styles.highlight}>Couleur: </Text>{inspectionData.Queen.color} <Ionicons name="color-palette-outline" size={20} color="fuchsia" style={styles.icon} /> {'\n\n'}
+                  </>
+                )}
+                {renderIconAndText('Clippée', inspectionData.Queen.clipped)}
+                {'\n\n'}
+                {renderIconAndText('Essaimée', inspectionData.Queen.isSwarmed)}
+                {'\n\n'}
+                {inspectionData.Queen.queenCells && (
+                  <>
+                    <Text style={styles.highlight}>Cellules royales: </Text>{inspectionData.Queen.queenCells} <Ionicons name="keypad-outline" size={20} color="blue" style={styles.icon} />{'\n\n'}
+                  </>
+                )}
+                {inspectionData.Queen.temperament && (
+                  <>
+                    <Text style={styles.highlight}>Tempérament: </Text>{inspectionData.Queen.temperament} <Ionicons name="happy-outline" size={20} color="gray" style={styles.icon} /> {'\n\n'}
+                  </>
+                )}
+                {inspectionData.Queen.note && (
+                  <>
+                    <Text style={styles.highlight}>Note: </Text>{inspectionData.Queen.note} <Ionicons name="receipt-outline" size={20} color="pink" style={styles.icon} />
+                  </>
+                )}
+              </Text>
+            </View>
+          </>
+        )}
+
+
         <View style={styles.divider} />
 
         <View style={styles.section}>
@@ -244,6 +251,7 @@ const InspectionDetails = ({ route }) => {
             )}
           </Text>
         </View>
+
         <View style={styles.divider} />
 
         <View style={styles.section}>
@@ -262,16 +270,17 @@ const InspectionDetails = ({ route }) => {
             }{'\n\n'}
           </Text>
         </View>
-        <View style={styles.divider} />
 
-        {inspectionData.Supplies ? (
+        <View style={styles.divider} />
+        {inspectionData.Supplies && (
+
           <View style={styles.section}>
             <Text style={styles.header}>Nourritures</Text>
             <Text style={styles.value}>
               <Text style={styles.highlight}>Produit: </Text>{inspectionData.Supplies.product} <Ionicons name="flower-outline" size={20} color="orange" style={styles.icon} />{'\n\n'}
               <Text style={styles.highlight}>Ingrédients: </Text>{inspectionData.Supplies.ingredients.name} <Ionicons name="extension-puzzle-outline" size={20} color="green" style={styles.icon} />{'\n\n'}
               <Text style={styles.highlight}>Quantité: </Text>{inspectionData.Supplies.ingredients.quantity} <Ionicons name="layers-outline" size={20} color="brown" style={styles.icon} />{'\n\n'}
-              <Text style={styles.highlight}>Unité: </Text>{inspectionData.Supplies.ingredients.unit} <Ionicons name="eyedrop-outline" size={20} color="aqua" style={styles.icon} />{'\n\n'}
+              <Text style={styles.highlight}>Unité: </Text>{inspectionData.Supplies.ingredients.unit} <Ionicons name="eyedrop-outline" size={20} color="#5188C7" style={styles.icon} />{'\n\n'}
               {inspectionData.Supplies.note && (
                 <>
                   <Text style={styles.highlight}>
@@ -282,32 +291,40 @@ const InspectionDetails = ({ route }) => {
               )}
             </Text>
           </View>
-        ) : (<Text style={styles.value}>-</Text>)}
-        <View style={styles.divider} />
 
-        {inspectionData.BeeHealth ? (
-          <View style={styles.section}>
-            <Text style={styles.header}>Maladie et Traitement </Text>
-            <Text style={styles.value}>
-              <Text style={styles.highlight}>Maladie: </Text>{inspectionData.BeeHealth.disease} <Ionicons name="color-filter-outline" size={20} color="red" style={styles.icon} />{'\n\n'}
-              <Text style={styles.highlight}>Traitement: </Text>{inspectionData.BeeHealth.treatment} <Ionicons name="pulse-outline" size={20} color="green" style={styles.icon} />{'\n\n'}
-              <Text style={styles.highlight}>Durée: </Text>
-              {inspectionData.BeeHealth.duration.from && new Date(inspectionData.BeeHealth.duration.from).toLocaleDateString('fr-FR')}
-              {' '} à {' '}
-              {inspectionData.BeeHealth.duration.to && new Date(inspectionData.BeeHealth.duration.to).toLocaleDateString('fr-FR')} <Ionicons name="calendar-number-outline" size={20} color="gray" style={styles.icon} />
-              {'\n\n'}
-              <Text style={styles.highlight}>Quantité: </Text>{inspectionData.BeeHealth.quantity} <Ionicons name="layers-outline" size={20} color="brown" style={styles.icon} />{'\n\n'}
-              <Text style={styles.highlight}>Doses: </Text>{inspectionData.BeeHealth.doses} <Ionicons name="color-fill-outline" size={20} color="aqua" style={styles.icon} />{'\n\n'}
-              {inspectionData.BeeHealth.note && (
-                <>
-                  <Text style={styles.highlight}>
-                    Note:</Text> {inspectionData.BeeHealth.note} <Ionicons name="receipt-outline" size={20} color="pink" style={styles.icon} />
-                </>
-              )}
-            </Text>
-          </View>
-        ) : (<Text style={styles.value}>-</Text>)}
-        <View style={styles.divider} />
+
+        )}
+
+
+
+        {inspectionData.BeeHealth && (
+          <>
+            <View style={styles.divider} />
+            <View style={styles.section}>
+              <Text style={styles.header}>Maladie et Traitement </Text>
+              <Text style={styles.value}>
+                <Text style={styles.highlight}>Maladie: </Text>{inspectionData.BeeHealth.disease} <Ionicons name="color-filter-outline" size={20} color="red" style={styles.icon} />{'\n\n'}
+                <Text style={styles.highlight}>Traitement: </Text>{inspectionData.BeeHealth.treatment} <Ionicons name="pulse-outline" size={20} color="green" style={styles.icon} />{'\n\n'}
+                <Text style={styles.highlight}>Durée: </Text>
+                {inspectionData.BeeHealth.duration.from && new Date(inspectionData.BeeHealth.duration.from).toLocaleDateString('fr-FR')}
+                {' '} à {' '}
+                {inspectionData.BeeHealth.duration.to && new Date(inspectionData.BeeHealth.duration.to).toLocaleDateString('fr-FR')} <Ionicons name="calendar-number-outline" size={20} color="gray" style={styles.icon} />
+                {'\n\n'}
+                <Text style={styles.highlight}>Quantité: </Text>{inspectionData.BeeHealth.quantity} <Ionicons name="layers-outline" size={20} color="brown" style={styles.icon} />{'\n\n'}
+                <Text style={styles.highlight}>Doses: </Text>{inspectionData.BeeHealth.doses} <Ionicons name="color-fill-outline" size={20} color="#5188C7" style={styles.icon} />{'\n\n'}
+                {inspectionData.BeeHealth.note && (
+                  <>
+                    <Text style={styles.highlight}>
+                      Note:</Text> {inspectionData.BeeHealth.note} <Ionicons name="receipt-outline" size={20} color="pink" style={styles.icon} />
+                  </>
+                )}
+              </Text>
+            </View>
+            <View style={styles.divider} />
+          </>
+        )}
+
+
 
         <View style={styles.section}>
           <Text style={styles.header}>Récoltes</Text>
@@ -316,28 +333,36 @@ const InspectionDetails = ({ route }) => {
             <Text style={styles.highlight}>Réserves de pollen: </Text>{inspectionData.PollenStores} <Ionicons name="file-tray-outline" size={20} color="orange" style={styles.icon} />
           </Text>
         </View>
-        <View style={styles.divider} />
 
-        {inspectionData.Adding ? (
-          <View style={styles.section}>
-            <Text style={styles.header}>Ajouts  </Text>
-            <Text style={styles.value}>
-              {inspectionData.Adding.ActivityAdd} <Ionicons name="checkmark-circle-outline" size={20} color="green" style={styles.icon} />{'\n\n'}
-              <Text style={styles.highlight}>Quantité ajoutée: </Text>{inspectionData.Adding.QuantityAdded} <Ionicons name="layers-outline" size={20} color="brown" style={styles.icon} />
-            </Text>
-          </View>
-        ) : (<Text style={styles.value}>-</Text>)}
-        <View style={styles.divider} />
 
-        {inspectionData.Removing ? (
-          <View style={styles.section}>
-            <Text style={styles.header}>Enlévements </Text>
-            <Text style={styles.value}>
-              {inspectionData.Removing.ActivityRemove} <Ionicons name="close-circle-outline" size={20} color="red" style={styles.icon} />{'\n\n'}
-              <Text style={styles.highlight}>Quantité retirée: </Text>{inspectionData.Removing.QuantityRemoved} <Ionicons name="layers-outline" size={20} color="brown" style={styles.icon} />
-            </Text>
-          </View>
-        ) : (<Text style={styles.value}>-</Text>)}
+        {inspectionData.Adding && (
+          <>
+            <View style={styles.divider} />
+            <View style={styles.section}>
+              <Text style={styles.header}>Ajouts  </Text>
+              <Text style={styles.value}>
+                {inspectionData.Adding.ActivityAdd} <Ionicons name="checkmark-circle-outline" size={20} color="green" style={styles.icon} />{'\n\n'}
+                <Text style={styles.highlight}>Quantité ajoutée: </Text>{inspectionData.Adding.QuantityAdded} <Ionicons name="layers-outline" size={20} color="brown" style={styles.icon} />
+              </Text>
+            </View>
+          </>
+        ) }
+
+
+        {inspectionData.Removing && (
+          <>
+            <View style={styles.divider} />
+            <View style={styles.section}>
+              <Text style={styles.header}>Enlévements </Text>
+              <Text style={styles.value}>
+                {inspectionData.Removing.ActivityRemove} <Ionicons name="close-circle-outline" size={20} color="red" style={styles.icon} />{'\n\n'}
+                <Text style={styles.highlight}>Quantité retirée: </Text>{inspectionData.Removing.QuantityRemoved} <Ionicons name="layers-outline" size={20} color="brown" style={styles.icon} />
+              </Text>
+            </View>
+          </>
+
+        )}
+        
         <View style={styles.divider} />
 
         <View style={styles.section}>
@@ -346,7 +371,7 @@ const InspectionDetails = ({ route }) => {
             <Text style={styles.highlight}>Condition: </Text>{translatedCondition} {renderWeatherIcon(inspectionData.Weather.condition)}
             {'\n\n'}
             <Text style={styles.highlight}>Température: </Text>{inspectionData.Weather.temperature}°C <Ionicons name="thermometer-outline" size={20} color="red" style={styles.icon} />{'\n\n'}
-            <Text style={styles.highlight}>Humidité: </Text>{inspectionData.Weather.humidity}% <Ionicons name="water-outline" size={20} color="aqua" style={styles.icon} />{'\n\n'}
+            <Text style={styles.highlight}>Humidité: </Text>{inspectionData.Weather.humidity}% <Ionicons name="water-outline" size={20} color="#5188C7" style={styles.icon} />{'\n\n'}
             <Text style={styles.highlight}>Pression: </Text>{inspectionData.Weather.pressure} hPa <Ionicons name="speedometer-outline" size={20} color="gray" style={styles.icon} />{'\n\n'}
             <Text style={styles.highlight}>Vitesse du vent: </Text>{inspectionData.Weather.windSpeed} m/s <Ionicons name="flash-outline" size={20} color="green" style={styles.icon} />{'\n\n'}
             <Text style={styles.highlight}>Direction du vent: </Text>{inspectionData.Weather.windDirection}° <Ionicons name="compass-outline" size={20} color="orange" style={styles.icon} />

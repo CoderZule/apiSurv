@@ -19,6 +19,7 @@ import {
     options,
 
 } from '../Data';
+import { useNavigation } from '@react-navigation/native';
 
 const Option = React.memo(({ option, isSelected, onPressHandler, quantity, onQuantityChange }) => (
     <TouchableOpacity
@@ -56,6 +57,7 @@ const EditInspectionModal = ({
     const [showPickerFrom, setShowPickerFrom] = useState(false);
     const [showPickerTo, setShowPickerTo] = useState(false);
 
+    const navigation = useNavigation();
 
     const togglePickerFrom = () => {
         setShowPickerFrom(!showPickerFrom);
@@ -89,22 +91,27 @@ const EditInspectionModal = ({
 
     useEffect(() => {
         if (modalVisible) {
-            const initialAjouts = formData.Adding.ActivityAdd
-                ? formData.Adding.ActivityAdd.split(', ').map(item => {
-                    const [name, quantity] = item.split(': ');
-                    return { name, quantity: parseInt(quantity) };
-                })
-                : [];
+            if (formData.Adding) {
+                const initialAjouts = formData.Adding.ActivityAdd && formData.Adding.ActivityAdd
+                    ? formData.Adding.ActivityAdd.split(', ').map(item => {
+                        const [name, quantity] = item.split(': ');
+                        return { name, quantity: parseInt(quantity) };
+                    })
+                    : [];
+                setSelectedAjouts(initialAjouts);
 
-            const initialEnlevements = formData.Removing.ActivityRemove
-                ? formData.Removing.ActivityRemove.split(', ').map(item => {
-                    const [name, quantity] = item.split(': ');
-                    return { name, quantity: parseInt(quantity) };
-                })
-                : [];
+            }
+            if (formData.Removing) {
+                const initialEnlevements = formData.Removing.ActivityRemove && formData.Removing.ActivityRemove
+                    ? formData.Removing.ActivityRemove.split(', ').map(item => {
+                        const [name, quantity] = item.split(': ');
+                        return { name, quantity: parseInt(quantity) };
+                    })
+                    : [];
 
-            setSelectedAjouts(initialAjouts);
-            setSelectedEnlevements(initialEnlevements);
+                setSelectedEnlevements(initialEnlevements);
+            }
+
         }
     }, [modalVisible]);
 
@@ -155,31 +162,32 @@ const EditInspectionModal = ({
     useEffect(() => {
         const activitiesAdd = selectedAjouts.map(activity => `${activity.name}: ${activity.quantity}`);
         const quantityAdded = selectedAjouts.reduce((total, item) => total + item.quantity, 0);
-    
+
         const activitiesRemove = selectedEnlevements.map(activity => `${activity.name}: ${activity.quantity}`);
         const quantityRemoved = selectedEnlevements.reduce((total, item) => total + item.quantity, 0);
-    
+
         handleModalInputChange('Adding', 'ActivityAdd', activitiesAdd.join(', '));
         handleModalInputChange('Adding', 'QuantityAdded', quantityAdded);
-    
+
         handleModalInputChange('Removing', 'ActivityRemove', activitiesRemove.join(', '));
         handleModalInputChange('Removing', 'QuantityRemoved', quantityRemoved);
-    
-        
-    
+
+
+
     }, [selectedAjouts, selectedEnlevements]);
-    
+
 
     const handleSave = async () => {
-        const filteredAjouts = selectedAjouts.filter(activity => activity.quantity > 0);
-        const filteredEnlevements = selectedEnlevements.filter(activity => activity.quantity > 0);
-    
+        const filteredAjouts = selectedAjouts ? selectedAjouts.filter(activity => activity.quantity > 0) : [];
+        const filteredEnlevements = selectedEnlevements ? selectedEnlevements.filter(activity => activity.quantity > 0) : [];
+
+
         const activitiesAdd = filteredAjouts.map(activity => `${activity.name}: ${activity.quantity}`).join(', ');
         const quantityAdded = filteredAjouts.reduce((total, item) => total + item.quantity, 0);
-    
+
         const activitiesRemove = filteredEnlevements.map(activity => `${activity.name}: ${activity.quantity}`).join(', ');
         const quantityRemoved = filteredEnlevements.reduce((total, item) => total + item.quantity, 0);
-    
+
         const updatedFormData = { ...formData };
         updatedFormData.Adding = {
             ActivityAdd: activitiesAdd,
@@ -189,10 +197,26 @@ const EditInspectionModal = ({
             ActivityRemove: activitiesRemove,
             QuantityRemoved: quantityRemoved
         };
-    
+
         try {
+            if (!updatedFormData.Colony.strength || !updatedFormData.Colony.temperament || updatedFormData.Colony.deadBees === undefined) {
+                return Alert.alert('Erreur', 'Les informations de la colonie sont requises');
+            }
+            if (!updatedFormData.Colony.supers | !updatedFormData.Colony.pollenFrames | !updatedFormData.Colony.TotalFrames) {
+                return Alert.alert('Erreur', 'Les informations concernant les équipements sont requises');
+            }
+            if (!updatedFormData.Brood.state || !updatedFormData.Brood.maleBrood || updatedFormData.Brood.totalBrood === undefined || updatedFormData.DronesSeen === undefined) {
+                return Alert.alert('Erreur', 'Les informations concernant la couvée ou la présence de drones sont requises');
+            }
+
+            if (!updatedFormData.HoneyStores) {
+                return Alert.alert('Erreur', 'Les réserves de miel sont requises');
+            }
+            if (!updatedFormData.PollenStores) {
+                return Alert.alert('Erreur', 'Les réserves de pollen sont requises');
+            }
             const response = await axios.post('http://192.168.1.17:3000/api/inspection/editInspection', updatedFormData);
-    
+
             if (response.status === 200) {
                 Alert.alert(
                     'Succès',
@@ -210,8 +234,10 @@ const EditInspectionModal = ({
                 );
                 console.error('Failed to update inspection', response);
             }
-    
+
             setModalVisible(false);
+            navigation.navigate("Home");
+
         } catch (error) {
             Alert.alert(
                 'Erreur',
@@ -226,96 +252,98 @@ const EditInspectionModal = ({
     return (
         <Modal visible={modalVisible} animationType="slide">
             <View style={styles.modalContainer}>
-                <Text style={styles.modalTitle}>Modifier les détails de l'inspection</Text>
+                <Text style={styles.modalTitle}>Modifier l'inspection</Text>
 
                 <ScrollView style={styles.modalContent}>
 
                     {/* Queen section */}
-                    <View style={styles.fieldset}>
-                        <Text style={styles.fieldsetTitle}>Reine</Text>
-                        <View style={[styles.detailItem, styles.inline]}>
-                            <Text style={styles.label}>
-                                Observée</Text>
-                            <Switch
-                                value={formData.Queen.seen}
-                                onValueChange={(value) => handleModalInputChange('Queen', 'seen', value)}
-                            />
-                        </View>
-                        {formData.Queen.seen && (
-                            <>
-                                <View style={[styles.detailItem, styles.inline]}>
-                                    <Text style={styles.label}>Clippée</Text>
-                                    <Switch
-                                        value={formData.Queen.clipped}
-                                        onValueChange={(value) => handleModalInputChange('Queen', 'clipped', value)}
-                                    />
-                                </View>
-                                <View style={[styles.detailItem, styles.inline]}>
-                                    <Text style={styles.label}>Essaimé</Text>
-                                    <Switch
-                                        value={formData.Queen.isSwarmed}
-                                        onValueChange={(value) => handleModalInputChange('Queen', 'isSwarmed', value)}
-                                    />
-                                </View>
-                                <View style={[styles.detailItem, styles.inline]}>
-                                    <Text style={styles.label}>Marquée</Text>
-                                    <Switch
-                                        value={formData.Queen.isMarked}
-                                        onValueChange={(value) => handleModalInputChange('Queen', 'isMarked', value)}
-                                    />
-                                </View>
-                                {formData.Queen.isMarked && (
+                    {formData.Queen && (
+                        <View style={styles.fieldset}>
+                            <Text style={styles.fieldsetTitle}>Reine</Text>
+                            <View style={[styles.detailItem, styles.inline]}>
+                                <Text style={styles.label}>
+                                    Observée</Text>
+                                <Switch
+                                    value={formData.Queen.seen}
+                                    onValueChange={(value) => handleModalInputChange('Queen', 'seen', value)}
+                                />
+                            </View>
+                            {formData.Queen.seen && (
+                                <>
+                                    <View style={[styles.detailItem, styles.inline]}>
+                                        <Text style={styles.label}>Clippée</Text>
+                                        <Switch
+                                            value={formData.Queen.clipped}
+                                            onValueChange={(value) => handleModalInputChange('Queen', 'clipped', value)}
+                                        />
+                                    </View>
+                                    <View style={[styles.detailItem, styles.inline]}>
+                                        <Text style={styles.label}>Essaimé</Text>
+                                        <Switch
+                                            value={formData.Queen.isSwarmed}
+                                            onValueChange={(value) => handleModalInputChange('Queen', 'isSwarmed', value)}
+                                        />
+                                    </View>
+                                    <View style={[styles.detailItem, styles.inline]}>
+                                        <Text style={styles.label}>Marquée</Text>
+                                        <Switch
+                                            value={formData.Queen.isMarked}
+                                            onValueChange={(value) => handleModalInputChange('Queen', 'isMarked', value)}
+                                        />
+                                    </View>
+                                    {formData.Queen.isMarked && (
+                                        <View style={styles.modalRow}>
+                                            <Text style={styles.modalLabel}>Couleur</Text>
+                                            <Picker
+                                                selectedValue={formData.Queen.color}
+                                                style={[styles.modalInput, { backgroundColor: '#FBF5E0' }]}
+                                                onValueChange={(value) => handleModalInputChange('Queen', 'color', value)}
+                                            >
+                                                {/* Add color options dynamically */}
+                                                {colors.map((color, index) => (
+                                                    <Picker.Item key={index} label={color} value={color} />
+                                                ))}
+                                            </Picker>
+                                        </View>
+                                    )}
                                     <View style={styles.modalRow}>
-                                        <Text style={styles.modalLabel}>Couleur</Text>
+                                        <Text style={styles.modalLabel}>Tempérament</Text>
                                         <Picker
-                                            selectedValue={formData.Queen.color}
+                                            selectedValue={formData.Queen.temperament}
                                             style={[styles.modalInput, { backgroundColor: '#FBF5E0' }]}
-                                            onValueChange={(value) => handleModalInputChange('Queen', 'color', value)}
+                                            onValueChange={(value) => handleModalInputChange('Queen', 'temperament', value)}
                                         >
-                                            {/* Add color options dynamically */}
-                                            {colors.map((color, index) => (
-                                                <Picker.Item key={index} label={color} value={color} />
+                                            {temperament.map((state, index) => (
+                                                <Picker.Item key={index} label={state} value={state} />
                                             ))}
                                         </Picker>
                                     </View>
-                                )}
-                                <View style={styles.modalRow}>
-                                    <Text style={styles.modalLabel}>Tempérament</Text>
-                                    <Picker
-                                        selectedValue={formData.Queen.temperament}
-                                        style={[styles.modalInput, { backgroundColor: '#FBF5E0' }]}
-                                        onValueChange={(value) => handleModalInputChange('Queen', 'temperament', value)}
-                                    >
-                                        {temperament.map((state, index) => (
-                                            <Picker.Item key={index} label={state} value={state} />
-                                        ))}
-                                    </Picker>
-                                </View>
-                                <View style={styles.modalRow}>
-                                    <Text style={styles.modalLabel}>Cellules royales</Text>
-                                    <Picker
-                                        selectedValue={formData.Queen.queenCells}
-                                        style={[styles.modalInput, { backgroundColor: '#FBF5E0' }]}
-                                        onValueChange={(value) => handleModalInputChange('Queen', 'queenCells', value)}
-                                    >
-                                        {queen_cells.map((state, index) => (
-                                            <Picker.Item key={index} label={state} value={state} />
-                                        ))}
-                                    </Picker>
-                                </View>
-                                <View style={styles.modalRow}>
-                                    <Text style={styles.modalLabel}>Note</Text>
-                                    <TextInput
-                                        style={[styles.modalInput, styles.modalTextArea]}
-                                        multiline
-                                        numberOfLines={4}
-                                        value={formData.Queen.note}
-                                        onChangeText={(value) => handleModalInputChange('Queen', 'note', value)}
-                                    />
-                                </View>
-                            </>
-                        )}
-                    </View>
+                                    <View style={styles.modalRow}>
+                                        <Text style={styles.modalLabel}>Cellules royales</Text>
+                                        <Picker
+                                            selectedValue={formData.Queen.queenCells}
+                                            style={[styles.modalInput, { backgroundColor: '#FBF5E0' }]}
+                                            onValueChange={(value) => handleModalInputChange('Queen', 'queenCells', value)}
+                                        >
+                                            {queen_cells.map((state, index) => (
+                                                <Picker.Item key={index} label={state} value={state} />
+                                            ))}
+                                        </Picker>
+                                    </View>
+                                    <View style={styles.modalRow}>
+                                        <Text style={styles.modalLabel}>Note</Text>
+                                        <TextInput
+                                            style={[styles.modalInput, styles.modalTextArea]}
+                                            multiline
+                                            numberOfLines={4}
+                                            value={formData.Queen.note}
+                                            onChangeText={(value) => handleModalInputChange('Queen', 'note', value)}
+                                        />
+                                    </View>
+                                </>
+                            )}
+                        </View>)}
+
 
                     {/* Equipment section */}
 
@@ -350,8 +378,9 @@ const EditInspectionModal = ({
                         </View>
                     </View>
 
+
                     {/* Supplies section */}
-                    <View style={styles.fieldset}>
+                    {formData.Supplies && (<View style={styles.fieldset}>
                         <Text style={styles.fieldsetTitle}>Nourritures</Text>
                         <View style={styles.modalRow}>
                             <Text style={styles.modalLabel}>Produit</Text>
@@ -404,7 +433,8 @@ const EditInspectionModal = ({
                                 onChangeText={(value) => handleModalInputChange('Supplies', 'note', value)}
                             />
                         </View>
-                    </View>
+                    </View>)}
+
 
                     {/* Brood Details */}
                     <View style={styles.fieldset}>
@@ -511,7 +541,7 @@ const EditInspectionModal = ({
 
 
                     {/* Treatment Details */}
-                    <View style={styles.fieldset}>
+                    {formData.BeeHealth && (<View style={styles.fieldset}>
                         <Text style={styles.fieldsetTitle}>Maladie et traitement</Text>
 
                         <View style={[styles.detailItem, styles.inline]}>
@@ -628,7 +658,8 @@ const EditInspectionModal = ({
                                 value={formData.BeeHealth.note}
                             />
                         </View>
-                    </View>
+                    </View>)}
+
                     {/* End of Treatment Details */}
 
                     {/* Honey and Pollen stores Details */}
@@ -669,27 +700,38 @@ const EditInspectionModal = ({
 
 
                     {/* Actions Taken */}
-                    <View style={styles.fieldset}>
-                        <Text style={styles.fieldsetTitle}>Actions entreprises</Text>
-                        <View style={styles.frameContainer}>
-                            <View style={styles.frame}>
-                                <Text style={styles.frameTitle}>Ajouts</Text>
-                                <View style={styles.optionsContainer}>
-                                    {options.map((option) => renderOption(option, selectedAjouts, handleActionChange, 'Adding'))}
-                                </View>
-                            </View>
-                            <View style={styles.frame}>
-                                <Text style={styles.frameTitle}>Enlèvements</Text>
-                                <View style={styles.optionsContainer}>
-                                    {options.map((option) => renderOption(option, selectedEnlevements, handleActionChange, 'Removing'))}
-                                </View>
+                    
+                        <View style={styles.fieldset}>
+                            <Text style={styles.fieldsetTitle}>Actions entreprises</Text>
+                            <View style={styles.frameContainer}>
+                              
+                                    <View style={styles.frame}>
+                                        <Text style={styles.frameTitle}>Ajouts</Text>
+                                        <View style={styles.optionsContainer}>
+                                            {options.map((option) => renderOption(option, selectedAjouts, handleActionChange, 'Adding'))}
+                                        </View>
+                                    </View>
+
+                           
+
+                                
+                                    <View style={styles.frame}>
+                                        <Text style={styles.frameTitle}>Enlèvements</Text>
+                                        <View style={styles.optionsContainer}>
+                                            {options.map((option) => renderOption(option, selectedEnlevements, handleActionChange, 'Removing'))}
+                                        </View>
+                                    </View>
+                                   
+
+
+
                             </View>
                         </View>
-                    </View>
+                  
                     {/* End of Actions Taken */}
 
 
-                    <View style={styles.fieldset}>
+                  <View style={styles.fieldset}>
                         <Text style={styles.fieldsetTitle}>Note</Text>
                         <View style={styles.modalRow}>
                             <TextInput
@@ -701,6 +743,7 @@ const EditInspectionModal = ({
                             />
                         </View>
                     </View>
+
 
 
                 </ScrollView>

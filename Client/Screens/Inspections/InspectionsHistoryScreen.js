@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, ScrollView, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
-
+ 
 const InspectionsHistoryScreen = ({ route, navigation }) => {
     const { InspectionsHistoryData } = route.params;
 
@@ -12,10 +12,13 @@ const InspectionsHistoryScreen = ({ route, navigation }) => {
         );
     }
 
-     const lastItemIndex = InspectionsHistoryData.length - 1;
+    const lastItemIndex = InspectionsHistoryData.length - 1;
 
+    
     return (
         <View style={styles.container}>
+            <Text style={styles.title}>Historique des inspections</Text>
+
             <ScrollView horizontal={true}>
                 <View style={styles.tableContainer}>
                     <View style={styles.tableHeader}>
@@ -35,8 +38,9 @@ const InspectionsHistoryScreen = ({ route, navigation }) => {
                                 onPress={() => {
                                     const params = {
                                         inspectionData: item,
-                                        badge: index === lastItemIndex ? true : false,  
+                                        badge: index === lastItemIndex ? true : false,
                                     };
+                                    
                                     navigation.navigate('InspectionDetailsScreen', params);
                                 }}
                             >
@@ -48,7 +52,7 @@ const InspectionsHistoryScreen = ({ route, navigation }) => {
                                     {new Date(item.InspectionDateTime).toLocaleDateString('fr-FR')}{'\n'}
                                     {new Date(item.InspectionDateTime).toLocaleTimeString('fr-FR')}{'\n'}
                                 </Text>
-                                 {index === lastItemIndex && (
+                                {index === lastItemIndex && (
                                     <View style={styles.badge}>
                                         <Text style={{ color: 'white', fontSize: 9, fontWeight: 'bold' }}>Dernière inspection</Text>
                                     </View>
@@ -71,6 +75,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         textAlign: 'center',
+    },
+    title: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 20,
+        marginTop:50,
+        color: '#977700',
+
     },
     centeredView: {
         justifyContent: 'center',
@@ -109,7 +121,7 @@ const styles = StyleSheet.create({
         borderRightColor: '#ccc',
         borderLeftWidth: 0.5,
         borderLeftColor: '#ccc',
-        fontSize: 18,
+        fontSize: 16,
     },
     cell: {
         padding: 10,
@@ -123,15 +135,15 @@ const styles = StyleSheet.create({
         fontSize: 15,
     },
     lastTableRow: {
-        borderBottomWidth: 2,  
+        borderBottomWidth: 2,
     },
     lastCell: {
-        position: 'relative',  
+        position: 'relative',
     },
     badge: {
         position: 'absolute',
-        bottom: 4,  
-        right: 4,  
+        bottom: 4,
+        right: 4,
         backgroundColor: "#5188C7",
         paddingHorizontal: 8,
         paddingVertical: 4,

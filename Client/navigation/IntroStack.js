@@ -46,7 +46,7 @@ export function IntroStack() {
 
 
           <Stack.Screen name="HiveDetailsScreen" component={HiveDetailsScreen} options={{ title: 'Hive Details' }} />
-          <Stack.Screen name="InspectionsHistoryScreen" component={InspectionsHistoryScreen} options={{ title: 'Inspections History Screen' }} />
+          <Stack.Screen name="InspectionsHistoryScreen" component={InspectionsHistoryScreen}/>
           <Stack.Screen name="InspectionDetailsScreen" component={InspectionDetailsScreen} options={{ title: 'Inspection Details Screen' }} />
 
           <Stack.Screen name="AddInspectionScreen" component={AddInspectionScreen} options={{ title: 'Add Hive Inspection' }} />
