@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ScrollView, View, Text, StyleSheet, Modal, Switch,   TextInput, Pressable, Platform, TouchableHighlight, TouchableOpacity } from 'react-native'; // Added Pressable and Platform
+import { ScrollView, View, Text, StyleSheet, Modal, Switch, Alert, TextInput, Pressable, Platform, TouchableHighlight, TouchableOpacity } from 'react-native'; // Added Pressable and Platform
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
+import axios from 'axios';
+
 import {
     colors,
     queen_cells,
@@ -43,17 +45,18 @@ const Option = React.memo(({ option, isSelected, onPressHandler, quantity, onQua
         )}
     </TouchableOpacity>
 ));
+
+
 const EditInspectionModal = ({
     modalVisible,
     setModalVisible,
     formData,
     handleModalInputChange,
-    handleSave,
 }) => {
     // Function to toggle date picker visibility
     const [showPickerFrom, setShowPickerFrom] = useState(false);
     const [showPickerTo, setShowPickerTo] = useState(false);
-
+ 
 
     const togglePickerFrom = () => {
         setShowPickerFrom(!showPickerFrom);
@@ -165,6 +168,43 @@ const EditInspectionModal = ({
         });
     }, [selectedAjouts, selectedEnlevements]);
 
+    const handleSave = async () => {
+        try {
+            // Make the API call to save the edited data
+            const response = await axios.post('http://192.168.1.15:3000/api/inspection/editInspection', formData);
+
+            // Check if the request was successful
+            if (response.status === 200) {
+                Alert.alert(
+                    'Succès',
+                    'Inspection mise à jour avec succès',
+                    [{ text: 'OK' }],
+                    { cancelable: false }
+                );
+                console.log('Inspection updated successfully');
+            } else {
+                Alert.alert(
+                    'Erreur',
+                    'Échec de la mise à jour de l\'inspection',
+                    [{ text: 'OK' }],
+                    { cancelable: false }
+                );
+                console.error('Failed to update inspection', response);
+            }
+
+            // Close the modal
+            setModalVisible(false);
+        } catch (error) {
+            Alert.alert(
+                'Erreur',
+                'Une erreur s\'est produite lors de la mise à jour de l\'inspection',
+                [{ text: 'OK' }],
+                { cancelable: false }
+            );
+            console.error('Error updating inspection:', error);
+        }
+    };
+
     return (
         <Modal visible={modalVisible} animationType="slide">
             <View style={styles.modalContainer}>
@@ -269,7 +309,7 @@ const EditInspectionModal = ({
                                 style={[styles.textInput, styles.inlineInput]}
                                 keyboardType="numeric"
                                 value={formData.Colony.supers.toString()}
-                                onChangeText={(value) => handleModalInputChange('supers', value)}
+                                onChangeText={(value) => handleModalInputChange('Colony','supers', value)}
                             />
                         </View>
                         <View style={styles.modalRow}>
@@ -278,7 +318,7 @@ const EditInspectionModal = ({
                                 style={[styles.textInput, styles.inlineInput]}
                                 keyboardType="numeric"
                                 value={formData.Colony.pollenFrames.toString()}
-                                onChangeText={(value) => handleModalInputChange('pollenFrames', value)}
+                                onChangeText={(value) => handleModalInputChange('Colony','pollenFrames', value)}
                             />
                         </View>
                         <View style={styles.modalRow}>
@@ -287,7 +327,7 @@ const EditInspectionModal = ({
                                 style={[styles.textInput, styles.inlineInput]}
                                 keyboardType="numeric"
                                 value={formData.Colony.TotalFrames.toString()}
-                                onChangeText={(value) => handleModalInputChange('totalFrames', value)}
+                                onChangeText={(value) => handleModalInputChange('Colony','TotalFrames', value)}
                             />
                         </View>
                     </View>
@@ -312,8 +352,8 @@ const EditInspectionModal = ({
                             <TextInput
                                 style={styles.modalInput}
                                 value={formData.Supplies.ingredients.name}
-                                onChangeText={(value) => handleModalInputChange('Supplies', 'ingredients', value)}
-                            />
+                                onChangeText={(value) => handleModalInputChange('Supplies', 'ingredients', { name: value })}
+                                />
                         </View>
                         <View style={styles.modalRow}>
                             <Text style={styles.modalLabel}>Quantité totale</Text>
@@ -321,16 +361,16 @@ const EditInspectionModal = ({
                                 style={styles.modalInput}
                                 keyboardType="numeric"
                                 value={formData.Supplies.ingredients.quantity.toString()}
-                                onChangeText={(value) => handleModalInputChange('Supplies', 'quantity', value)}
-                            />
+                                onChangeText={(value) => handleModalInputChange('Supplies', 'ingredients', { quantity: value })}
+                                />
                         </View>
                         <View style={styles.modalRow}>
                             <Text style={styles.modalLabel}>Unité</Text>
                             <Picker
                                 selectedValue={formData.Supplies.ingredients.unit}
                                 style={[styles.modalInput, { backgroundColor: '#FBF5E0' }]}
-                                onValueChange={(value) => handleModalInputChange('Supplies', 'unit', value)}
-                            >
+                                onValueChange={(value) => handleModalInputChange('Supplies', 'ingredients', { unit: value })}
+                                >
                                 {units.map((unit, index) => (
                                     <Picker.Item key={index} label={unit} value={unit} />
                                 ))}

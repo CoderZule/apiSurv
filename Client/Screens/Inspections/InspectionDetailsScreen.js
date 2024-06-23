@@ -1,29 +1,55 @@
-import React, { useState } from 'react';
-import { ScrollView, View, Text, StyleSheet, TouchableOpacity, Modal, Switch, Button, TextInput } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { ScrollView, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import EditInspectionModal from './EditInspectionModal';
 
-const InspectionDetails = ({ route, navigation }) => {
+const InspectionDetails = ({ route }) => {
   const { inspectionData, badge } = route.params;
   const [modalVisible, setModalVisible] = useState(false);
   const [formData, setFormData] = useState({ ...inspectionData });
 
-  const handleModalInputChange = (section, field, value) => {
-    setFormData(prevData => ({
-      ...prevData,
-      [section]: {
-        ...prevData[section],
-        [field]: value,
-      },
-    }));
+  useEffect(() => {
+    if (!formData.Queen.isMarked) {
+        setFormData(prevData => ({
+            ...prevData,
+            Queen: {
+                ...prevData.Queen,
+                color: '', 
+            }
+        }));
+    }
+}, [formData.Queen.isMarked]);
+  
+ 
+  const handleModalInputChange = (section, fieldOrValue, value) => {
+    // Create a copy of the current state to avoid mutation
+    const updatedFormData = { ...formData };
+
+    if (section === 'Note' || section === 'HoneyStores' || section === 'PollenStores' || section==='DronesSeen') {
+      if (value === undefined) {
+        // Two parameters provided: section and fieldOrValue represent section and value directly
+        updatedFormData[section] = fieldOrValue;
+      }
+
+    } else {
+      // Three parameters provided: section, fieldOrValue, and value
+      if (section === 'Supplies' && fieldOrValue === 'ingredients') {
+        // Handle nested objects within formData for Supplies.ingredients
+        updatedFormData.Supplies.ingredients = {
+          ...updatedFormData.Supplies.ingredients,
+          ...value  // Assuming value is an object containing name, quantity, and unit
+        };
+      } else {
+        // Default case: update section.fieldOrValue with the provided value
+        updatedFormData[section][fieldOrValue] = value;
+      }
+    }
+
+    // Update the state with the new formData
+    setFormData(updatedFormData);
   };
 
-  const handleSave = () => {
-    // Save the edited data (you can also perform any API call here to save the data on the server)
-    // In this example, we simply close the modal and log the updated formData
-    setModalVisible(false);
-    console.log(formData);
-  };
+
 
   const renderIconAndTextSeen = (condition) => {
     if (condition) {
@@ -345,7 +371,7 @@ const InspectionDetails = ({ route, navigation }) => {
         setModalVisible={setModalVisible}
         formData={formData}
         handleModalInputChange={handleModalInputChange}
-        handleSave={handleSave}
+
       />
 
     </ScrollView>
