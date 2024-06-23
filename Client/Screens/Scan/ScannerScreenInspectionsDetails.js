@@ -9,11 +9,11 @@ export default function ScannerScreenInspectionsDetails({ navigation }) {
 
     const handleBarCodeScanned = async ({ type, data }) => {
         try {
-            const response = await axios.get(`http://192.168.1.15:3000/api/hive/getHiveById/${data}`);
+            const response = await axios.get(`http://192.168.1.17:3000/api/hive/getHiveById/${data}`);
             const hiveData = response.data;
 
             try {
-                const response2 = await axios.get(`http://192.168.1.15:3000/api/inspection/getInspectionByHiveId/${data}`);
+                const response2 = await axios.get(`http://192.168.1.17:3000/api/inspection/getInspectionByHiveId/${data}`);
                 const InspectionsHistoryData = response2.data;
 
                 // Check if InspectionsHistoryData is an array and not empty

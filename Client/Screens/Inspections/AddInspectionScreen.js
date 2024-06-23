@@ -434,7 +434,7 @@ const AddInspectionScreen = ({ route }) => {
         return Alert.alert('Erreur', 'La ruche est requise');
       }
 
-      const response = await axios.post('http://192.168.1.15:3000/api/inspection/create', formattedData);
+      const response = await axios.post('http://192.168.1.17:3000/api/inspection/create', formattedData);
 
       if (response.status === 201) {
         Alert.alert('Succès', 'Inspection ajoutée avec succès', [

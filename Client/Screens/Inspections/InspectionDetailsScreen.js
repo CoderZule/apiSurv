@@ -10,45 +10,45 @@ const InspectionDetails = ({ route }) => {
 
   useEffect(() => {
     if (!formData.Queen.isMarked) {
-        setFormData(prevData => ({
-            ...prevData,
-            Queen: {
-                ...prevData.Queen,
-                color: '', 
-            }
-        }));
+      setFormData(prevData => ({
+        ...prevData,
+        Queen: {
+          ...prevData.Queen,
+          color: '',
+        }
+      }));
     }
-}, [formData.Queen.isMarked]);
-  
- 
+  }, [formData.Queen.isMarked]);
+
+
   const handleModalInputChange = (section, fieldOrValue, value) => {
     // Create a copy of the current state to avoid mutation
     const updatedFormData = { ...formData };
-
-    if (section === 'Note' || section === 'HoneyStores' || section === 'PollenStores' || section==='DronesSeen') {
-      if (value === undefined) {
-        // Two parameters provided: section and fieldOrValue represent section and value directly
-        updatedFormData[section] = fieldOrValue;
-      }
-
-    } else {
-      // Three parameters provided: section, fieldOrValue, and value
-      if (section === 'Supplies' && fieldOrValue === 'ingredients') {
-        // Handle nested objects within formData for Supplies.ingredients
-        updatedFormData.Supplies.ingredients = {
+  
+    // Handle straightforward fields like Note, HoneyStores, etc.
+    if (section === 'Note' || section === 'HoneyStores' || section === 'PollenStores' || section === 'DronesSeen') {
+      updatedFormData[section] = fieldOrValue;;
+    } else if (section === 'Supplies' && fieldOrValue === 'ingredients') {
+      // Handle nested objects within Supplies.ingredients
+      updatedFormData.Supplies = {
+        ...updatedFormData.Supplies,
+        ingredients: {
           ...updatedFormData.Supplies.ingredients,
-          ...value  // Assuming value is an object containing name, quantity, and unit
-        };
-      } else {
-        // Default case: update section.fieldOrValue with the provided value
-        updatedFormData[section][fieldOrValue] = value;
-      }
+          ...value // Assuming value is an object containing name, quantity, and unit
+        }
+      };
+    } else {
+      // Handle other sections or fields, including Adding and Removing
+      updatedFormData[section] = {
+        ...updatedFormData[section],
+        [fieldOrValue]: value
+      };
     }
-
+  
     // Update the state with the new formData
     setFormData(updatedFormData);
   };
-
+  
 
 
   const renderIconAndTextSeen = (condition) => {

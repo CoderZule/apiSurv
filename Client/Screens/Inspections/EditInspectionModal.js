@@ -3,7 +3,6 @@ import { ScrollView, View, Text, StyleSheet, Modal, Switch, Alert, TextInput, Pr
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
-
 import {
     colors,
     queen_cells,
@@ -56,7 +55,7 @@ const EditInspectionModal = ({
     // Function to toggle date picker visibility
     const [showPickerFrom, setShowPickerFrom] = useState(false);
     const [showPickerTo, setShowPickerTo] = useState(false);
- 
+
 
     const togglePickerFrom = () => {
         setShowPickerFrom(!showPickerFrom);
@@ -110,8 +109,8 @@ const EditInspectionModal = ({
     }, [modalVisible]);
 
     const handleActionChange = (type, itemName, quantity) => {
-        const selectedItems = type === 'Ajouts' ? selectedAjouts : selectedEnlevements;
-        const setSelectedItems = type === 'Ajouts' ? setSelectedAjouts : setSelectedEnlevements;
+        const selectedItems = type === 'Adding' ? selectedAjouts : selectedEnlevements;
+        const setSelectedItems = type === 'Adding' ? setSelectedAjouts : setSelectedEnlevements;
         const index = selectedItems.findIndex(item => item.name === itemName);
 
         if (index !== -1) {
@@ -155,25 +154,45 @@ const EditInspectionModal = ({
 
     useEffect(() => {
         const activitiesAdd = selectedAjouts.map(activity => `${activity.name}: ${activity.quantity}`);
+        const quantityAdded = selectedAjouts.reduce((total, item) => total + item.quantity, 0);
+    
         const activitiesRemove = selectedEnlevements.map(activity => `${activity.name}: ${activity.quantity}`);
-
-        handleModalInputChange('Adding', {
-            ActivityAdd: activitiesAdd.join(', '),
-            QuantityAdded: selectedAjouts.reduce((total, item) => total + item.quantity, 0),
-        });
-
-        handleModalInputChange('Removing', {
-            ActivityRemove: activitiesRemove.join(', '),
-            QuantityRemoved: selectedEnlevements.reduce((total, item) => total + item.quantity, 0),
-        });
+        const quantityRemoved = selectedEnlevements.reduce((total, item) => total + item.quantity, 0);
+    
+        handleModalInputChange('Adding', 'ActivityAdd', activitiesAdd.join(', '));
+        handleModalInputChange('Adding', 'QuantityAdded', quantityAdded);
+    
+        handleModalInputChange('Removing', 'ActivityRemove', activitiesRemove.join(', '));
+        handleModalInputChange('Removing', 'QuantityRemoved', quantityRemoved);
+    
+        
+    
     }, [selectedAjouts, selectedEnlevements]);
+    
 
     const handleSave = async () => {
+        const filteredAjouts = selectedAjouts.filter(activity => activity.quantity > 0);
+        const filteredEnlevements = selectedEnlevements.filter(activity => activity.quantity > 0);
+    
+        const activitiesAdd = filteredAjouts.map(activity => `${activity.name}: ${activity.quantity}`).join(', ');
+        const quantityAdded = filteredAjouts.reduce((total, item) => total + item.quantity, 0);
+    
+        const activitiesRemove = filteredEnlevements.map(activity => `${activity.name}: ${activity.quantity}`).join(', ');
+        const quantityRemoved = filteredEnlevements.reduce((total, item) => total + item.quantity, 0);
+    
+        const updatedFormData = { ...formData };
+        updatedFormData.Adding = {
+            ActivityAdd: activitiesAdd,
+            QuantityAdded: quantityAdded
+        };
+        updatedFormData.Removing = {
+            ActivityRemove: activitiesRemove,
+            QuantityRemoved: quantityRemoved
+        };
+    
         try {
-            // Make the API call to save the edited data
-            const response = await axios.post('http://192.168.1.15:3000/api/inspection/editInspection', formData);
-
-            // Check if the request was successful
+            const response = await axios.post('http://192.168.1.17:3000/api/inspection/editInspection', updatedFormData);
+    
             if (response.status === 200) {
                 Alert.alert(
                     'Succès',
@@ -191,8 +210,7 @@ const EditInspectionModal = ({
                 );
                 console.error('Failed to update inspection', response);
             }
-
-            // Close the modal
+    
             setModalVisible(false);
         } catch (error) {
             Alert.alert(
@@ -309,7 +327,7 @@ const EditInspectionModal = ({
                                 style={[styles.textInput, styles.inlineInput]}
                                 keyboardType="numeric"
                                 value={formData.Colony.supers.toString()}
-                                onChangeText={(value) => handleModalInputChange('Colony','supers', value)}
+                                onChangeText={(value) => handleModalInputChange('Colony', 'supers', value)}
                             />
                         </View>
                         <View style={styles.modalRow}>
@@ -318,7 +336,7 @@ const EditInspectionModal = ({
                                 style={[styles.textInput, styles.inlineInput]}
                                 keyboardType="numeric"
                                 value={formData.Colony.pollenFrames.toString()}
-                                onChangeText={(value) => handleModalInputChange('Colony','pollenFrames', value)}
+                                onChangeText={(value) => handleModalInputChange('Colony', 'pollenFrames', value)}
                             />
                         </View>
                         <View style={styles.modalRow}>
@@ -327,7 +345,7 @@ const EditInspectionModal = ({
                                 style={[styles.textInput, styles.inlineInput]}
                                 keyboardType="numeric"
                                 value={formData.Colony.TotalFrames.toString()}
-                                onChangeText={(value) => handleModalInputChange('Colony','TotalFrames', value)}
+                                onChangeText={(value) => handleModalInputChange('Colony', 'TotalFrames', value)}
                             />
                         </View>
                     </View>
@@ -353,7 +371,7 @@ const EditInspectionModal = ({
                                 style={styles.modalInput}
                                 value={formData.Supplies.ingredients.name}
                                 onChangeText={(value) => handleModalInputChange('Supplies', 'ingredients', { name: value })}
-                                />
+                            />
                         </View>
                         <View style={styles.modalRow}>
                             <Text style={styles.modalLabel}>Quantité totale</Text>
@@ -362,7 +380,7 @@ const EditInspectionModal = ({
                                 keyboardType="numeric"
                                 value={formData.Supplies.ingredients.quantity.toString()}
                                 onChangeText={(value) => handleModalInputChange('Supplies', 'ingredients', { quantity: value })}
-                                />
+                            />
                         </View>
                         <View style={styles.modalRow}>
                             <Text style={styles.modalLabel}>Unité</Text>
@@ -370,7 +388,7 @@ const EditInspectionModal = ({
                                 selectedValue={formData.Supplies.ingredients.unit}
                                 style={[styles.modalInput, { backgroundColor: '#FBF5E0' }]}
                                 onValueChange={(value) => handleModalInputChange('Supplies', 'ingredients', { unit: value })}
-                                >
+                            >
                                 {units.map((unit, index) => (
                                     <Picker.Item key={index} label={unit} value={unit} />
                                 ))}
@@ -657,13 +675,13 @@ const EditInspectionModal = ({
                             <View style={styles.frame}>
                                 <Text style={styles.frameTitle}>Ajouts</Text>
                                 <View style={styles.optionsContainer}>
-                                    {options.map((option) => renderOption(option, selectedAjouts, handleActionChange, 'Ajouts'))}
+                                    {options.map((option) => renderOption(option, selectedAjouts, handleActionChange, 'Adding'))}
                                 </View>
                             </View>
                             <View style={styles.frame}>
                                 <Text style={styles.frameTitle}>Enlèvements</Text>
                                 <View style={styles.optionsContainer}>
-                                    {options.map((option) => renderOption(option, selectedEnlevements, handleActionChange, 'Enlèvements'))}
+                                    {options.map((option) => renderOption(option, selectedEnlevements, handleActionChange, 'Removing'))}
                                 </View>
                             </View>
                         </View>
