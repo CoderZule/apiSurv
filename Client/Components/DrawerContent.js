@@ -23,7 +23,12 @@ export default function DrawerContent(props) {
                         try {
                             // Clear the stored token from AsyncStorage
                             await AsyncStorage.removeItem('token');
-                            navigation.navigate('Login');
+                            await AsyncStorage.removeItem('currentUser');
+                            // Reset the navigation stack
+                            navigation.reset({
+                                index: 0,
+                                routes: [{ name: 'Login' }],
+                            });
                         } catch (error) {
                             console.log('Error logging out:', error);
                         }
@@ -33,6 +38,7 @@ export default function DrawerContent(props) {
             { cancelable: false }
         );
     };
+    
 
 
     return (

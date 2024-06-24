@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { useCameraPermissions } from 'expo-camera';
-
+import ChangePasswordOnFirstLogin from './UserAccountManagement/ChangePasswordOnFirstLogin';
 
 export default function HomeScreen({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
@@ -13,12 +13,19 @@ export default function HomeScreen({ navigation }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [apiariesCount, setApiariesCount] = useState(0);
   const [hivesCount, setHivesCount] = useState(0);
+  const [passwordModalVisible, setPasswordModalVisible] = useState(false);
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
         const currentUserString = await AsyncStorage.getItem('currentUser');
-        setCurrentUser(JSON.parse(currentUserString));
+        const user = JSON.parse(currentUserString);
+        setCurrentUser(user)
+ 
+        if (user && user.FirstTimeLogin) {
+          setPasswordModalVisible(true);
+        }
+
       } catch (error) {
         console.error('Error retrieving current user:', error);
       }
@@ -33,16 +40,16 @@ export default function HomeScreen({ navigation }) {
         if (currentUser) {
           const response = await axios.get('http://192.168.1.17:3000/api/apiary/getAllApiaries');
           const apiaries = response.data.data;
-          
+
           const userApiaries = apiaries.filter(apiary => apiary.Owner._id === currentUser._id);
-           setApiariesCount(userApiaries.length);
+          setApiariesCount(userApiaries.length);
         }
       } catch (error) {
-       
+
         console.error('Error fetching apiaries count:', error);
       }
     };
-    
+
     fetchApiariesCount();
   }, [currentUser]);
 
@@ -51,23 +58,23 @@ export default function HomeScreen({ navigation }) {
       if (currentUser) {
         const response = await axios.get('http://192.168.1.17:3000/api/hive/getAllHives');
         const hives = response.data.data;
-  
+
         // Fetch all apiaries owned by the current user
         const apiariesResponse = await axios.get('http://192.168.1.17:3000/api/apiary/getAllApiaries');
         const userApiaries = apiariesResponse.data.data.filter(apiary => apiary.Owner._id === currentUser._id);
-  
+
         // Filter hives based on the apiaries owned by the current user
         const userHives = hives.filter(hive => userApiaries.some(apiary => apiary._id === hive.Apiary._id));
-        
-         setHivesCount(userHives.length);
+
+        setHivesCount(userHives.length);
       }
     } catch (error) {
       console.error('Error fetching hives count:', error);
     }
   };
-  
+
   fetchHivesCount();
-  
+
 
   const propertiesData = [
     { id: 1, name: 'Ruchers', value: apiariesCount.toString(), img: require('../assets/rucher.png') },
@@ -145,7 +152,7 @@ export default function HomeScreen({ navigation }) {
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Scanner le code QR</Text>
             <TouchableOpacity style={styles.modalButton} onPress={openScannerInspDetails}>
-              <Ionicons name="archive-outline" size={20} color="#977700"  />
+              <Ionicons name="archive-outline" size={20} color="#977700" />
               <Text style={styles.modalButtonText}>Détails Ruche/Inspections</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.modalButton} onPress={openScannerAddInspec}>
@@ -158,6 +165,13 @@ export default function HomeScreen({ navigation }) {
           </View>
         </View>
       </Modal>
+      <ChangePasswordOnFirstLogin
+        visible={passwordModalVisible}
+        onClose={() => setPasswordModalVisible(false)}
+        userId={currentUser ? currentUser._id : null}
+      />
+
+
     </View>
   );
 }
@@ -213,7 +227,7 @@ const styles = StyleSheet.create({
   image: {
     width: 90,
     height: 90,
-   // marginBottom: 5,
+    // marginBottom: 5,
   },
   propertyInfo: {
     flexDirection: 'column',
@@ -249,8 +263,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
-   // marginTop: 15,
-   },
+    // marginTop: 15,
+  },
   buttonText: {
     fontSize: 17,
     color: '#373737',
@@ -289,7 +303,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#373737',
     fontSize: 16,
-    fontWeight:"bold",
+    fontWeight: "bold",
     marginLeft: 10,
   },
   closeButton: {
