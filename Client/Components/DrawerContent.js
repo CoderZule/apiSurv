@@ -38,7 +38,7 @@ export default function DrawerContent(props) {
             { cancelable: false }
         );
     };
-    
+
 
 
     return (
@@ -61,7 +61,7 @@ export default function DrawerContent(props) {
                     onPress={() => props.navigation.navigate('Profil')}
                     labelStyle={styles.drawerItemLabel}
                 />
-               
+
                 <DrawerItem
                     label="Tâches"
                     icon={() => <Ionicons name='checkbox-outline' size={24} color="#977700" />}
@@ -95,6 +95,7 @@ export default function DrawerContent(props) {
                     onPress={() => props.navigation.navigate('AboutApp')}
                     labelStyle={styles.drawerItemLabel}
                 />
+                <View style={styles.divider} />
 
                 <TouchableOpacity onPress={handleLogout} style={styles.logoutContainer}>
                     <Ionicons name="exit-outline" size={24} color="#977700" style={styles.iconStyle} />
@@ -108,11 +109,18 @@ export default function DrawerContent(props) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#FBF5E0'
+
     },
     contentContainer: {
         paddingTop: 20,
     },
-
+    divider: {
+        borderBottomColor: '#977700',
+        borderBottomWidth: 0.2,
+        marginTop:10
+ 
+    },
     logoContainer: {
         backgroundColor: '#977700',
         alignItems: 'center',
@@ -138,6 +146,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row', // Arrange items horizontally
         alignItems: 'center', // Centers the content vertically
         justifyContent: 'center', // Centers the content horizontally
-        paddingTop: 80, // Adjust the top padding as needed
+        paddingTop: 60, // Adjust the top padding as needed
     },
 });

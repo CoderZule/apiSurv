@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Modal, Alert } from 'react-native';
 import axios from 'axios';
 import { FontAwesome5 } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function ChangePasswordOnFirstLogin({ visible, onClose, userId}) {
+export default function ChangePasswordOnFirstLogin({ visible, onClose, userId }) {
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
@@ -21,14 +22,21 @@ export default function ChangePasswordOnFirstLogin({ visible, onClose, userId}) 
             setError("Les mots de passe ne correspondent pas.");
             return;
         }
-    
+
         try {
             const response = await axios.post('http://192.168.1.17:3000/api/user/changePassword', {
                 userId,
                 newPassword
             });
-    
+
             if (response.data.success) {
+                // Update FirstTimeLogin to false
+                const currentUserString = await AsyncStorage.getItem('currentUser');
+                if (currentUserString) {
+                    const user = JSON.parse(currentUserString);
+                    const updatedUser = { ...user, FirstTimeLogin: false };
+                    await AsyncStorage.setItem('currentUser', JSON.stringify(updatedUser));
+                }
                 Alert.alert(
                     "Succès",
                     "Le mot de passe a été changé avec succès.",
@@ -56,62 +64,62 @@ export default function ChangePasswordOnFirstLogin({ visible, onClose, userId}) 
 
     return (
         <Modal
-        animationType="slide"
-        transparent={true}
-        visible={visible}
-        onRequestClose={() => { }}
-    >
-        <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-                <Text style={styles.modalTitle}>Changer mot de passe</Text>
-                <Text style={styles.modalSubTitle}>Votre mot de passe a expiré. Veuillez saisir un nouveau mot de passe</Text>
-                <View style={styles.inputContainer}>
-                    <View style={styles.input}>
-                     
-                        <TextInput
-                            placeholder="Nouveau mot de passe"
-                            secureTextEntry={hideNewPassword}
-                            value={newPassword}
-                            onChangeText={setNewPassword}
-                            style={{ flex: 1 }}
-                        />
-                        <TouchableOpacity onPress={toggleNewPasswordVisibility}>
-                            <FontAwesome5
-                                name={hideNewPassword ? 'eye-slash' : 'eye'}
-                                size={20}
-                                color="#6b7280"
-                                style={styles.inputIcon}
+            animationType="slide"
+            transparent={true}
+            visible={visible}
+            onRequestClose={() => { }}
+        >
+            <View style={styles.modalContainer}>
+                <View style={styles.modalContent}>
+                    <Text style={styles.modalTitle}>Changer mot de passe</Text>
+                    <Text style={styles.modalSubTitle}>Votre mot de passe a expiré. Veuillez saisir un nouveau mot de passe</Text>
+                    <View style={styles.inputContainer}>
+                        <View style={styles.input}>
+
+                            <TextInput
+                                placeholder="Nouveau mot de passe"
+                                secureTextEntry={hideNewPassword}
+                                value={newPassword}
+                                onChangeText={setNewPassword}
+                                style={{ flex: 1 }}
                             />
-                        </TouchableOpacity>
+                            <TouchableOpacity onPress={toggleNewPasswordVisibility}>
+                                <FontAwesome5
+                                    name={hideNewPassword ? 'eye-slash' : 'eye'}
+                                    size={20}
+                                    color="#6b7280"
+                                    style={styles.inputIcon}
+                                />
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                </View>
-                <View style={styles.inputContainer}>
-                    <View style={styles.input}>
-                   
-                        <TextInput
-                            placeholder="Confirmer le mot de passe"
-                            secureTextEntry={hideConfirmPassword}
-                            value={confirmPassword}
-                            onChangeText={setConfirmPassword}
-                            style={{ flex: 1 }}
-                        />
-                        <TouchableOpacity onPress={toggleConfirmPasswordVisibility}>
-                            <FontAwesome5
-                                name={hideConfirmPassword ? 'eye-slash' : 'eye'}
-                                size={20}
-                                color="#6b7280"
-                                style={styles.inputIcon}
+                    <View style={styles.inputContainer}>
+                        <View style={styles.input}>
+
+                            <TextInput
+                                placeholder="Confirmer le mot de passe"
+                                secureTextEntry={hideConfirmPassword}
+                                value={confirmPassword}
+                                onChangeText={setConfirmPassword}
+                                style={{ flex: 1 }}
                             />
-                        </TouchableOpacity>
+                            <TouchableOpacity onPress={toggleConfirmPasswordVisibility}>
+                                <FontAwesome5
+                                    name={hideConfirmPassword ? 'eye-slash' : 'eye'}
+                                    size={20}
+                                    color="#6b7280"
+                                    style={styles.inputIcon}
+                                />
+                            </TouchableOpacity>
+                        </View>
                     </View>
+                    {error ? <Text style={styles.errorText}>{error}</Text> : null}
+                    <TouchableOpacity style={styles.modalButton} onPress={handlePasswordChange}>
+                        <Text style={styles.modalButtonText}>Changer</Text>
+                    </TouchableOpacity>
                 </View>
-                {error ? <Text style={styles.errorText}>{error}</Text> : null}
-                <TouchableOpacity style={styles.modalButton} onPress={handlePasswordChange}>
-                    <Text style={styles.modalButtonText}>Changer</Text>
-                </TouchableOpacity>
             </View>
-        </View>
-    </Modal>
+        </Modal>
     );
 }
 
@@ -152,7 +160,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         flex: 1,
-        padding: 10,
+        paddingLeft: 8,
+        padding: 3,
         borderColor: '#ccc',
         borderWidth: 1,
         borderRadius: 5,
@@ -171,7 +180,8 @@ const styles = StyleSheet.create({
     },
     modalButtonText: {
         color: '#373737',
-        fontWeight: 'bold',
+        fontWeight: 'bold'
+
     },
     inputIcon: {
         padding: 10,

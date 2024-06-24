@@ -59,16 +59,16 @@ const HiveDetailsScreen = ({ route, navigation }) => {
                             <View style={styles.modalContent}>
                                 <Text style={styles.groupTitle}>Détails du propriétaire</Text>
                                 <View style={styles.detailItem}>
-                                    <Text style={styles.label}>Nom et prénom</Text>
-                                    <Text style={styles.text}>{hiveData.Apiary.Owner.Firstname} {hiveData.Apiary.Owner.Lastname}</Text>
+                                    <Text style={styles.labelGeneralInfo}>Nom et prénom</Text>
+                                    <Text style={styles.textGeneralInfo}>{hiveData.Apiary.Owner.Firstname} {hiveData.Apiary.Owner.Lastname}</Text>
                                 </View>
                                 <View style={styles.detailItem}>
-                                    <Text style={styles.label}>Cin</Text>
-                                    <Text style={styles.text}>{hiveData.Apiary.Owner.Cin}</Text>
+                                    <Text style={styles.labelGeneralInfo}>Cin</Text>
+                                    <Text style={styles.textGeneralInfo}>{hiveData.Apiary.Owner.Cin}</Text>
                                 </View>
                                 <View style={styles.detailItem}>
-                                    <Text style={styles.label}>Tel</Text>
-                                    <Text style={styles.text}>{hiveData.Apiary.Owner.Phone}</Text>
+                                    <Text style={styles.labelGeneralInfo}>Tel</Text>
+                                    <Text style={styles.textGeneralInfo}>{hiveData.Apiary.Owner.Phone}</Text>
                                 </View>
                             </View>
                         </TouchableWithoutFeedback>
@@ -85,20 +85,20 @@ const HiveDetailsScreen = ({ route, navigation }) => {
                             <View style={styles.modalContent}>
                                 <Text style={styles.groupTitle}>Détails du rucher</Text>
                                 <View style={styles.detailItem}>
-                                    <Text style={styles.label}>Nom du rucher</Text>
-                                    <Text style={styles.text}>{hiveData.Apiary.Name}</Text>
+                                    <Text style={styles.labelGeneralInfo}>Nom du rucher</Text>
+                                    <Text style={styles.textGeneralInfo}>{hiveData.Apiary.Name}</Text>
                                 </View>
                                 <View style={styles.detailItem}>
-                                    <Text style={styles.label}>Type</Text>
-                                    <Text style={styles.text}>{hiveData.Apiary.Type}</Text>
+                                    <Text style={styles.labelGeneralInfo}>Type</Text>
+                                    <Text style={styles.textGeneralInfo}>{hiveData.Apiary.Type}</Text>
                                 </View>
                                 <View style={styles.detailItem}>
-                                    <Text style={styles.label}>Gouvernorat</Text>
-                                    <Text style={styles.text}>{hiveData.Apiary.Location.governorate}</Text>
+                                    <Text style={styles.labelGeneralInfo}>Gouvernorat</Text>
+                                    <Text style={styles.textGeneralInfo}>{hiveData.Apiary.Location.governorate}</Text>
                                 </View>
                                 <View style={styles.detailItem}>
-                                    <Text style={styles.label}>Délégation</Text>
-                                    <Text style={styles.text}>{hiveData.Apiary.Location.city}</Text>
+                                    <Text style={styles.labelGeneralInfo}>Délégation</Text>
+                                    <Text style={styles.textGeneralInfo}>{hiveData.Apiary.Location.city}</Text>
                                 </View>
                             </View>
                         </TouchableWithoutFeedback>
@@ -118,26 +118,25 @@ const HiveDetailsScreen = ({ route, navigation }) => {
                                 <ScrollView style={styles.scrollContainer}>
 
                                     <View style={styles.section}>
-                                        <Text style={styles.header}>Générales</Text>
-                                        <View style={styles.detailItem}>
-                                            <Text style={styles.label}>Couleur</Text>
-                                            <Text style={styles.text}>{hiveData.Color}</Text>
+                                         <View style={styles.detailItem}>
+                                            <Text style={styles.labelGeneralInfo}>Couleur</Text>
+                                            <Text style={styles.textGeneralInfo}>{hiveData.Color}</Text>
                                         </View>
-                                        <View style={styles.detailItem}>
-                                            <Text style={styles.label}>Type</Text>
-                                            <Text style={styles.text}>{hiveData.Type}</Text>
+                                        <View style={styles.detailItemGeneralInfo}>
+                                            <Text style={styles.labelGeneralInfo}>Type</Text>
+                                            <Text style={styles.textGeneralInfo}>{hiveData.Type}</Text>
                                         </View>
-                                        <View style={styles.detailItem}>
-                                            <Text style={styles.label}>Source</Text>
-                                            <Text style={styles.text}>{hiveData.Source}</Text>
+                                        <View style={styles.detailItemGeneralInfo}>
+                                            <Text style={styles.labelGeneralInfo}>Source</Text>
+                                            <Text style={styles.textGeneralInfo}>{hiveData.Source}</Text>
                                         </View>
-                                        <View style={styles.detailItem}>
-                                            <Text style={styles.label}>But</Text>
-                                            <Text style={styles.text}>{hiveData.Purpose}</Text>
+                                        <View style={styles.detailItemGeneralInfo}>
+                                            <Text style={styles.labelGeneralInfo}>But</Text>
+                                            <Text style={styles.textGeneralInfo}>{hiveData.Purpose}</Text>
                                         </View>
-                                        <View style={styles.detailItem}>
-                                            <Text style={styles.label}>Date d'ajout</Text>
-                                            <Text style={styles.text}>{formatDate(hiveData.Added)}</Text>
+                                        <View style={styles.detailItemGeneralInfo}>
+                                            <Text style={styles.labelGeneralInfo}>Date d'ajout</Text>
+                                            <Text style={styles.textGeneralInfo}>{formatDate(hiveData.Added)}</Text>
                                         </View>
                                     </View>
 
@@ -307,15 +306,29 @@ const styles = StyleSheet.create({
         width: '80%',
         maxHeight: '80%',
     },
-    detailItem: {
-        marginBottom: 15,
-    },
+
     groupTitle: {
         fontSize: 20,
         fontWeight: 'bold',
         color: '#977700',
         textAlign: 'center',
         marginBottom: 20,
+    },
+ 
+    scrollContainer: {
+        maxHeight: 400,
+    },
+    divider: {
+        borderBottomColor: '#cccccc',
+        borderBottomWidth: 1,
+        marginVertical: 10,
+    },
+    section: {
+        marginBottom: 20,
+    },
+
+    detailItem: {
+        marginBottom: 15,
     },
     label: {
         fontSize: 14,
@@ -329,17 +342,21 @@ const styles = StyleSheet.create({
         fontWeight: '400',
         color: '#797979',
     },
-    scrollContainer: {
-        maxHeight: 400,
+
+    labelGeneralInfo: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#626262',
+        marginBottom: 8,
+        textAlign: 'center',  
     },
-    divider: {
-        borderBottomColor: '#cccccc',
-        borderBottomWidth: 1,
-        marginVertical: 10,
+    textGeneralInfo: {
+        fontSize: 12,
+        fontWeight: '400',
+        color: '#797979',
+        textAlign: 'center',  
     },
-    section: {
-        marginBottom: 20,
-    },
+    
     header: {
         fontSize: 18,
         fontWeight: 'bold',

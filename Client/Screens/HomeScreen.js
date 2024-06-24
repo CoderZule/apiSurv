@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { useCameraPermissions } from 'expo-camera';
 import ChangePasswordOnFirstLogin from './UserAccountManagement/ChangePasswordOnFirstLogin';
-
+ 
 export default function HomeScreen({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [permission, requestPermission] = useCameraPermissions();
@@ -19,13 +19,14 @@ export default function HomeScreen({ navigation }) {
     const fetchCurrentUser = async () => {
       try {
         const currentUserString = await AsyncStorage.getItem('currentUser');
-        const user = JSON.parse(currentUserString);
-        setCurrentUser(user)
- 
-        if (user && user.FirstTimeLogin) {
-          setPasswordModalVisible(true);
-        }
+        if (currentUserString) {
+          const user = JSON.parse(currentUserString);
+          setCurrentUser(user);
 
+          if (user && user.FirstTimeLogin) {
+            setPasswordModalVisible(true);
+          }
+        }
       } catch (error) {
         console.error('Error retrieving current user:', error);
       }
@@ -33,6 +34,7 @@ export default function HomeScreen({ navigation }) {
 
     fetchCurrentUser();
   }, []);
+
 
   useEffect(() => {
     const fetchApiariesCount = async () => {
@@ -170,6 +172,7 @@ export default function HomeScreen({ navigation }) {
         onClose={() => setPasswordModalVisible(false)}
         userId={currentUser ? currentUser._id : null}
       />
+      
 
 
     </View>
@@ -180,8 +183,6 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
-
     backgroundColor: '#FBF5E0'
   },
   headerTextView: {
@@ -205,13 +206,17 @@ const styles = StyleSheet.create({
   },
   headerText2: {
     color: '#977700',
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
 
   },
+  image: {
+    width: 70, // Adjust this based on your design needs
+    height: 70, // Maintain aspect ratio or adjust as necessary
+  },
   propertiesContainer: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-around', // Or 'space-between', adjust as needed
     alignItems: 'center',
     marginTop: 10,
   },
@@ -224,11 +229,7 @@ const styles = StyleSheet.create({
     height: 80,
     width: 75,
   },
-  image: {
-    width: 90,
-    height: 90,
-    // marginBottom: 5,
-  },
+ 
   propertyInfo: {
     flexDirection: 'column',
     justifyContent: 'center',
@@ -236,12 +237,12 @@ const styles = StyleSheet.create({
   },
   nameText: {
     fontWeight: 'bold',
-    color: '#5e6977',
+    color: '#000000',
     textAlign: 'center',
 
   },
   valueText: {
-    color: '#5e6977',
+    color: '#000000',
     textAlign: 'center',
 
   },
@@ -263,8 +264,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    // marginTop: 15,
-  },
+   },
   buttonText: {
     fontSize: 17,
     color: '#373737',
@@ -303,7 +303,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#373737',
     fontSize: 16,
-    fontWeight: "bold",
     marginLeft: 10,
   },
   closeButton: {

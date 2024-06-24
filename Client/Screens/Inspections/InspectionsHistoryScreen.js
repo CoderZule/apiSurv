@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, FlatList, StyleSheet, TouchableOpacity,Image } from 'react-native';
+import { View, Text, ScrollView, FlatList, StyleSheet, TouchableOpacity, Image } from 'react-native';
 
 const InspectionsHistoryScreen = ({ route, navigation }) => {
     const { InspectionsHistoryData } = route.params;
@@ -7,19 +7,19 @@ const InspectionsHistoryScreen = ({ route, navigation }) => {
     if (!InspectionsHistoryData || InspectionsHistoryData.length === 0) {
         return (
             <View style={[styles.container, styles.centeredView]}>
-                   <Image
-                    source={require('../../assets/notfound.png')} 
+                <Image
+                    source={require('../../assets/notfound.png')}
                     style={styles.image}
                     resizeMode="contain"
                 />
-                <Text style={styles.centeredText}>Aucune inspection ajoutée pour le moment</Text>
+                <Text style={styles.centeredText}>Aucune inspection n'a été ajoutée pour le moment.</Text>
             </View>
         );
     }
 
     const lastItemIndex = InspectionsHistoryData.length - 1;
 
-   
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Historique des inspections</Text>
@@ -29,7 +29,7 @@ const InspectionsHistoryScreen = ({ route, navigation }) => {
                     <View style={styles.tableHeader}>
                         <Text style={styles.headerCell}>Inspecteur</Text>
                         <Text style={styles.headerCell}>Date et Heure</Text>
- 
+
                     </View>
                     <FlatList
                         data={InspectionsHistoryData}
@@ -97,9 +97,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     centeredText: {
-        fontSize: 20,
+        fontSize: 16,
         textAlign: 'center',
-   
+
     },
     tableContainer: {
         borderTopWidth: 0.5,
@@ -159,9 +159,9 @@ const styles = StyleSheet.create({
         zIndex: 1,
     },
     image: {
-        width: 300, 
-        height: 300,  
-        marginBottom: 20,
+        width: 240,
+        height: 200,
+
     },
 
 });
