@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, ScrollView, View, Text, TouchableOpacity, Modal, ImageBackground,  TouchableWithoutFeedback } from 'react-native';
+import { StyleSheet, ScrollView, View, Text, TouchableOpacity, Modal, ImageBackground, TouchableWithoutFeedback } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import _ from 'lodash'; // Import lodash for debounce
 
@@ -13,7 +13,7 @@ const HiveDetailsScreen = ({ route, navigation }) => {
 
     const navigateToInspectionsHistory = _.debounce(() => {
         navigation.navigate('InspectionsHistoryScreen', { InspectionsHistoryData });
-    }, 300);  
+    }, 300);
 
 
     const formatDate = (dateString) => {
@@ -116,103 +116,127 @@ const HiveDetailsScreen = ({ route, navigation }) => {
                             <View style={styles.modalContent}>
                                 <Text style={styles.groupTitle}>Détails de la ruche</Text>
                                 <ScrollView style={styles.scrollContainer}>
-                                    <View style={styles.detailItem}>
-                                        <Text style={styles.label}>Couleur</Text>
-                                        <Text style={styles.text}>{hiveData.Color}</Text>
-                                    </View>
-                                    <View style={styles.detailItem}>
-                                        <Text style={styles.label}>Type</Text>
-                                        <Text style={styles.text}>{hiveData.Type}</Text>
-                                    </View>
-                                    <View style={styles.detailItem}>
-                                        <Text style={styles.label}>Source</Text>
-                                        <Text style={styles.text}>{hiveData.Source}</Text>
-                                    </View>
-                                    <View style={styles.detailItem}>
-                                        <Text style={styles.label}>But</Text>
-                                        <Text style={styles.text}>{hiveData.Purpose}</Text>
-                                    </View>
-                                    <View style={styles.detailItem}>
-                                        <Text style={styles.label}>Date d'ajout</Text>
-                                        <Text style={styles.text}>{formatDate(hiveData.Added)}</Text>
+
+                                    <View style={styles.section}>
+                                        <Text style={styles.header}>Générales</Text>
+                                        <View style={styles.detailItem}>
+                                            <Text style={styles.label}>Couleur</Text>
+                                            <Text style={styles.text}>{hiveData.Color}</Text>
+                                        </View>
+                                        <View style={styles.detailItem}>
+                                            <Text style={styles.label}>Type</Text>
+                                            <Text style={styles.text}>{hiveData.Type}</Text>
+                                        </View>
+                                        <View style={styles.detailItem}>
+                                            <Text style={styles.label}>Source</Text>
+                                            <Text style={styles.text}>{hiveData.Source}</Text>
+                                        </View>
+                                        <View style={styles.detailItem}>
+                                            <Text style={styles.label}>But</Text>
+                                            <Text style={styles.text}>{hiveData.Purpose}</Text>
+                                        </View>
+                                        <View style={styles.detailItem}>
+                                            <Text style={styles.label}>Date d'ajout</Text>
+                                            <Text style={styles.text}>{formatDate(hiveData.Added)}</Text>
+                                        </View>
                                     </View>
 
-                                    <View style={styles.detailItem}>
-                                        <Text style={styles.label}>Force de la Colonie</Text>
-                                        <Text style={styles.text}>{hiveData.Colony.strength}</Text>
+                                    <View style={styles.divider} />
+
+                                    <View style={styles.section}>
+                                        <Text style={styles.header}>Colonie</Text>
+                                        <View style={styles.detailItem}>
+                                            <Text style={styles.label}>Force</Text>
+                                            <Text style={styles.text}>{hiveData.Colony.strength}</Text>
+                                        </View>
+                                        <View style={styles.detailItem}>
+                                            <Text style={styles.label}>Tempérament</Text>
+                                            <Text style={styles.text}>{hiveData.Colony.temperament}</Text>
+                                        </View>
+                                        <View style={styles.detailItem}>
+                                            <Text style={styles.label}>Supers</Text>
+                                            <Text style={styles.text}>{hiveData.Colony.supers}</Text>
+                                        </View>
+
+                                        <View style={styles.detailItem}>
+                                            <Text style={styles.label}>Cadres au total</Text>
+                                            <Text style={styles.text}>{hiveData.Colony.TotalFrames}</Text>
+                                        </View>
                                     </View>
-                                    <View style={styles.detailItem}>
-                                        <Text style={styles.label}>Tempérament de la Colonie</Text>
-                                        <Text style={styles.text}>{hiveData.Colony.temperament}</Text>
-                                    </View>
-                                    <View style={styles.detailItem}>
-                                        <Text style={styles.label}>Nombre de Supers</Text>
-                                        <Text style={styles.text}>{hiveData.Colony.supers}</Text>
-                                    </View>
-                                    <View style={styles.detailItem}>
-                                        <Text style={styles.label}>Nombre de cadres</Text>
-                                        <Text style={styles.text}>{hiveData.Colony.frames}</Text>
-                                    </View>
+
 
                                     {hiveData.Queen && (
-                                        <View>
+                                        <>
 
-                                            {hiveData.Queen.isMarked && (
+                                            <View style={styles.divider} />
+                                            <View style={styles.section}>
+                                                <Text style={styles.header}>Reine</Text>
+
+
                                                 <View style={styles.detailItem}>
-                                                    <Text style={styles.text}>Reine Marquée</Text>
+                                                    <Text style={styles.label}>Clippée?</Text>
+                                                    {hiveData.Queen.clipped ? (
+
+                                                        <Text style={styles.text}>Oui</Text>
+
+                                                    ) : (<Text style={styles.text}>Non</Text>)}
                                                 </View>
-                                            )}
-                                            {hiveData.Queen.color !== "" && (
+
+
+
                                                 <View style={styles.detailItem}>
-                                                    <Text style={styles.label}>Couleur de la reine</Text>
-                                                    <Text style={styles.text}>{hiveData.Queen.color}</Text>
+                                                    <Text style={styles.label}>Marquée?</Text>
+                                                    {hiveData.Queen.isMarked ? (
+
+                                                        <Text style={styles.text}>Oui</Text>
+
+                                                    ) : (<Text style={styles.text}>Non</Text>)}
                                                 </View>
-                                            )}
 
-                                            <View style={styles.detailItem}>
-                                                <Text style={styles.label}>Éclos</Text>
-                                                <Text style={styles.text}>{hiveData.Queen.hatched}</Text>
-                                            </View>
+                                                {hiveData.Queen.color !== "" && (
+                                                    <View style={styles.detailItem}>
+                                                        <Text style={styles.label}>Couleur</Text>
+                                                        <Text style={styles.text}>{hiveData.Queen.color}</Text>
+                                                    </View>
+                                                )}
 
-
-                                            <View style={styles.detailItem}>
-                                                <Text style={styles.label}>Statut de la Reine</Text>
-                                                <Text style={styles.text}>{hiveData.Queen.status}</Text>
-                                            </View>
-
-
-                                            <View style={styles.detailItem}>
-                                                <Text style={styles.label}>Date d'installation</Text>
-                                                <Text style={styles.text}>{formatDate(hiveData.Queen.installed)}</Text>
-                                            </View>
-
-
-                                            <View style={styles.detailItem}>
-                                                <Text style={styles.label}>État de reine</Text>
-                                                <Text style={styles.text}>{hiveData.Queen.queen_state}</Text>
-                                            </View>
-
-
-                                            <View style={styles.detailItem}>
-                                                <Text style={styles.label}>Origine de reine</Text>
-                                                <Text style={styles.text}>{hiveData.Queen.race}</Text>
-                                            </View>
-
-                                            {hiveData.Queen.clipped && (
                                                 <View style={styles.detailItem}>
-                                                    <Text style={styles.text}>Reine Clippée</Text>
+                                                    <Text style={styles.label}>Éclos</Text>
+                                                    <Text style={styles.text}>{hiveData.Queen.hatched}</Text>
                                                 </View>
-                                            )}
 
-                                            <View style={styles.detailItem}>
-                                                <Text style={styles.label}>Reine Origine</Text>
-                                                <Text style={styles.text}>{hiveData.Queen.origin}</Text>
+
+                                                <View style={styles.detailItem}>
+                                                    <Text style={styles.label}>Statut</Text>
+                                                    <Text style={styles.text}>{hiveData.Queen.status}</Text>
+                                                </View>
+
+
+                                                <View style={styles.detailItem}>
+                                                    <Text style={styles.label}>Date d'installation</Text>
+                                                    <Text style={styles.text}>{formatDate(hiveData.Queen.installed)}</Text>
+                                                </View>
+
+
+                                                <View style={styles.detailItem}>
+                                                    <Text style={styles.label}>État</Text>
+                                                    <Text style={styles.text}>{hiveData.Queen.queen_state}</Text>
+                                                </View>
+                                                
+
+                                                <View style={styles.detailItem}>
+                                                    <Text style={styles.label}>Race</Text>
+                                                    <Text style={styles.text}>{hiveData.Queen.race}</Text>
+                                                </View>
+
+                                                <View style={styles.detailItem}>
+                                                    <Text style={styles.label}>Origine</Text>
+                                                    <Text style={styles.text}>{hiveData.Queen.origin}</Text>
+                                                </View>
+
+
                                             </View>
-
-
-
-
-                                        </View>
+                                        </>
                                     )}
                                 </ScrollView>
                             </View>
@@ -287,25 +311,38 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         color: '#977700',
-
         textAlign: 'center',
-        marginBottom: 10,
+        marginBottom: 20,
     },
     label: {
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: 'bold',
         color: '#626262',
 
         marginBottom: 8,
     },
     text: {
-        fontSize: 16,
+        fontSize: 12,
         fontWeight: '400',
         color: '#797979',
     },
     scrollContainer: {
         maxHeight: 400,
-    }
+    },
+    divider: {
+        borderBottomColor: '#cccccc',
+        borderBottomWidth: 1,
+        marginVertical: 10,
+    },
+    section: {
+        marginBottom: 20,
+    },
+    header: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: 30,
+    },
 });
 
 
