@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Text, ScrollView, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
- 
+import { View, Text, ScrollView, FlatList, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+
 const InspectionsHistoryScreen = ({ route, navigation }) => {
     const { InspectionsHistoryData } = route.params;
 
@@ -14,7 +14,7 @@ const InspectionsHistoryScreen = ({ route, navigation }) => {
 
     const lastItemIndex = InspectionsHistoryData.length - 1;
 
-    
+   
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Historique des inspections</Text>
@@ -24,6 +24,7 @@ const InspectionsHistoryScreen = ({ route, navigation }) => {
                     <View style={styles.tableHeader}>
                         <Text style={styles.headerCell}>Inspecteur</Text>
                         <Text style={styles.headerCell}>Date et Heure</Text>
+ 
                     </View>
                     <FlatList
                         data={InspectionsHistoryData}
@@ -40,7 +41,7 @@ const InspectionsHistoryScreen = ({ route, navigation }) => {
                                         inspectionData: item,
                                         badge: index === lastItemIndex ? true : false,
                                     };
-                                    
+
                                     navigation.navigate('InspectionDetailsScreen', params);
                                 }}
                             >
@@ -51,12 +52,14 @@ const InspectionsHistoryScreen = ({ route, navigation }) => {
                                 <Text style={[styles.cell, index === lastItemIndex ? styles.lastCell : null]}>
                                     {new Date(item.InspectionDateTime).toLocaleDateString('fr-FR')}{'\n'}
                                     {new Date(item.InspectionDateTime).toLocaleTimeString('fr-FR')}{'\n'}
+
+                                    {index === lastItemIndex && (
+                                        <View style={styles.badge}>
+                                            <Text style={{ color: 'white', fontSize: 9, fontWeight: 'bold' }}>Dernière inspection</Text>
+                                        </View>
+                                    )}
                                 </Text>
-                                {index === lastItemIndex && (
-                                    <View style={styles.badge}>
-                                        <Text style={{ color: 'white', fontSize: 9, fontWeight: 'bold' }}>Dernière inspection</Text>
-                                    </View>
-                                )}
+
                             </TouchableOpacity>
 
                         )}
@@ -80,7 +83,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 20,
-        marginTop:50,
+        marginTop: 50,
         color: '#977700',
 
     },

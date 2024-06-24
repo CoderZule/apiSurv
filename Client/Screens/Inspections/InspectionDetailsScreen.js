@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { ScrollView, View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import EditInspectionModal from './EditInspectionModal';
 
-const InspectionDetails = ({ route }) => {
+import axios from 'axios';
+
+const InspectionDetails = ({ route, navigation }) => {
   const { inspectionData, badge } = route.params;
   const [modalVisible, setModalVisible] = useState(false);
   const [formData, setFormData] = useState({ ...inspectionData });
@@ -156,18 +158,94 @@ const InspectionDetails = ({ route }) => {
     }
     return null;
   };
+
+  const handleDelete = async (inspectionId) => {
+    try {
+      const response = await axios.post('http://192.168.1.17:3000/api/inspection/deleteInspection', { inspectionId });
+
+      if (response.status === 200) {
+        console.log('Inspection deleted successfully');
+        // Show success alert
+        showAlertAndNavigate('Inspection deleted successfully');
+      } else {
+        console.error('Failed to delete inspection:', response.data.message);
+        showAlert('Failed to delete inspection');
+      }
+    } catch (error) {
+      console.error('Error deleting inspection:', error.message);
+      showAlert('Error deleting inspection');
+    }
+  };
+
+  const showAlertAndNavigate = (message) => {
+    Alert.alert(
+      'Success',
+      message,
+      [
+        {
+          text: 'OK',
+          onPress: () => navigation.navigate('Home'), // Navigate to 'Home' screen
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
+  const showAlert = (message) => {
+    Alert.alert(
+      'Error',
+      message,
+      [
+        { text: 'OK', onPress: () => console.log('OK Pressed') }
+      ],
+      { cancelable: false }
+    );
+  };
+
+  const confirmDelete = (inspectionId) => {
+    Alert.alert(
+      'Confirmation',
+      'Êtes-vous sûr de vouloir supprimer cette inspection?',
+      [
+        { text: 'Annuler', style: 'cancel' },
+        {
+          text: 'Supprimer',
+          onPress: () => handleDelete(inspectionId),
+          style: 'destructive',
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
+
   return (
     <ScrollView style={styles.container}>
 
 
       <View style={styles.card}>
-        {renderBadge()}
-        <TouchableOpacity
-          style={styles.editButton}
-          onPress={() => setModalVisible(true)}
-        >
-          <Ionicons name="create-outline" size={40} color="orange" style={styles.icon} />
-        </TouchableOpacity>
+
+        <View style={styles.badgeContainer}>
+          {renderBadge()}
+        </View>
+
+        <View style={styles.iconsContainer}>
+          <TouchableOpacity
+            style={styles.editButton}
+            onPress={() => confirmDelete(inspectionData._id)}>
+            <Ionicons name="trash-outline" size={30} color="#FF0000" style={styles.icon} />
+          </TouchableOpacity>
+ 
+          <TouchableOpacity
+            style={styles.editButton}
+            onPress={() => setModalVisible(true)}>
+            <Ionicons name="create-outline" size={30} color="orange" style={styles.icon} />
+          </TouchableOpacity>
+        </View>
+
+
+
+
 
         <View style={styles.row}>
           <Text style={styles.label}>Inspecteur</Text>
@@ -346,7 +424,7 @@ const InspectionDetails = ({ route }) => {
               </Text>
             </View>
           </>
-        ) }
+        )}
 
 
         {inspectionData.Removing && (
@@ -362,7 +440,7 @@ const InspectionDetails = ({ route }) => {
           </>
 
         )}
-        
+
         <View style={styles.divider} />
 
         <View style={styles.section}>
@@ -455,10 +533,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     marginVertical: 10,
   },
-  iconContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
+ 
   icon: {
     marginRight: 5,
   },
@@ -467,7 +542,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     alignItems: 'center',
     alignSelf: 'flex-end',
-    marginTop: 10,
+    marginTop: 20,
     marginBottom: 20,
   },
   editButtonText: {
@@ -475,18 +550,31 @@ const styles = StyleSheet.create({
     color: 'blue',
     marginLeft: 5,
   },
+ 
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between', // Adjust as needed for spacing
+    marginBottom: 20, // Optional: Add margin if desired
+  },
 
+  badgeContainer: {
+    position: 'relative', // Ensure absolute positioning of badge is relative to this container
+  },
+  iconsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center', // Align items horizontally
+    marginLeft: 'auto',   // Push icons to the right
+  },
+ 
   badge: {
     position: 'absolute',
     top: 10,
-    left: 4,
     backgroundColor: "#5188C7",
-    paddingHorizontal: 8,
+    paddingHorizontal: 6,
     paddingVertical: 4,
     borderRadius: 10,
     zIndex: 1,
   },
-
 
 });
 
