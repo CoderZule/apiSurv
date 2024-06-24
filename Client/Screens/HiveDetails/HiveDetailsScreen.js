@@ -157,7 +157,10 @@ const HiveDetailsScreen = ({ route, navigation }) => {
                                             <Text style={styles.label}>Supers</Text>
                                             <Text style={styles.text}>{hiveData.Colony.supers}</Text>
                                         </View>
-
+                                        <View style={styles.detailItem}>
+                                            <Text style={styles.label}>Cadres de pollen</Text>
+                                            <Text style={styles.text}>{hiveData.Colony.pollenFrames}</Text>
+                                        </View>
                                         <View style={styles.detailItem}>
                                             <Text style={styles.label}>Cadres au total</Text>
                                             <Text style={styles.text}>{hiveData.Colony.TotalFrames}</Text>
@@ -222,7 +225,7 @@ const HiveDetailsScreen = ({ route, navigation }) => {
                                                     <Text style={styles.label}>État</Text>
                                                     <Text style={styles.text}>{hiveData.Queen.queen_state}</Text>
                                                 </View>
-                                                
+
 
                                                 <View style={styles.detailItem}>
                                                     <Text style={styles.label}>Race</Text>
