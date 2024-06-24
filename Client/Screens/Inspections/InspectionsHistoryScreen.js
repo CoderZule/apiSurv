@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, FlatList, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, ScrollView, FlatList, StyleSheet, TouchableOpacity,Image } from 'react-native';
 
 const InspectionsHistoryScreen = ({ route, navigation }) => {
     const { InspectionsHistoryData } = route.params;
@@ -7,6 +7,11 @@ const InspectionsHistoryScreen = ({ route, navigation }) => {
     if (!InspectionsHistoryData || InspectionsHistoryData.length === 0) {
         return (
             <View style={[styles.container, styles.centeredView]}>
+                   <Image
+                    source={require('../../assets/notfound.png')} 
+                    style={styles.image}
+                    resizeMode="contain"
+                />
                 <Text style={styles.centeredText}>Aucune inspection ajoutée pour le moment</Text>
             </View>
         );
@@ -94,7 +99,7 @@ const styles = StyleSheet.create({
     centeredText: {
         fontSize: 20,
         textAlign: 'center',
-        marginTop: 50,
+   
     },
     tableContainer: {
         borderTopWidth: 0.5,
@@ -152,8 +157,12 @@ const styles = StyleSheet.create({
         paddingVertical: 4,
         borderRadius: 10,
         zIndex: 1,
-    }
-
+    },
+    image: {
+        width: 300, 
+        height: 300,  
+        marginBottom: 20,
+    },
 
 });
 

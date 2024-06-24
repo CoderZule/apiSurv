@@ -622,8 +622,7 @@ const EditInspectionModal = ({
                         </View>
 
 
-
-                        <View style={[styles.detailItem, styles.inline]}>
+                        {formData.BeeHealth.ingredients && formData.BeeHealth.ingredients.quantity ? (<View style={[styles.detailItem, styles.inline]}>
                             <Text style={styles.label}>Quantité</Text>
                             <TextInput
                                 style={[styles.textInput, styles.inlineInput]}
@@ -631,7 +630,17 @@ const EditInspectionModal = ({
                                 onChangeText={(value) => handleModalInputChange('BeeHealth', 'quantity', value)}
                                 value={formData.BeeHealth.quantity.toString()}
                             />
-                        </View>
+                        </View>) : <View style={[styles.detailItem, styles.inline]}>
+                            <Text style={styles.label}>Quantité</Text>
+                            <TextInput
+                                style={[styles.textInput, styles.inlineInput]}
+                                keyboardType='numeric'
+                                onChangeText={(value) => handleModalInputChange('BeeHealth', 'quantity', value)}
+                                value={formData.BeeHealth.quantity}
+                            />
+                        </View>}
+
+
 
                         <View style={[styles.detailItem, styles.inline]}>
                             <Text style={styles.label}>Doses</Text>
@@ -700,38 +709,38 @@ const EditInspectionModal = ({
 
 
                     {/* Actions Taken */}
-                    
-                        <View style={styles.fieldset}>
-                            <Text style={styles.fieldsetTitle}>Actions entreprises</Text>
-                            <View style={styles.frameContainer}>
-                              
-                                    <View style={styles.frame}>
-                                        <Text style={styles.frameTitle}>Ajouts</Text>
-                                        <View style={styles.optionsContainer}>
-                                            {options.map((option) => renderOption(option, selectedAjouts, handleActionChange, 'Adding'))}
-                                        </View>
-                                    </View>
 
-                           
+                    <View style={styles.fieldset}>
+                        <Text style={styles.fieldsetTitle}>Actions entreprises</Text>
+                        <View style={styles.frameContainer}>
 
-                                
-                                    <View style={styles.frame}>
-                                        <Text style={styles.frameTitle}>Enlèvements</Text>
-                                        <View style={styles.optionsContainer}>
-                                            {options.map((option) => renderOption(option, selectedEnlevements, handleActionChange, 'Removing'))}
-                                        </View>
-                                    </View>
-                                   
-
-
-
+                            <View style={styles.frame}>
+                                <Text style={styles.frameTitle}>Ajouts</Text>
+                                <View style={styles.optionsContainer}>
+                                    {options.map((option) => renderOption(option, selectedAjouts, handleActionChange, 'Adding'))}
+                                </View>
                             </View>
+
+
+
+
+                            <View style={styles.frame}>
+                                <Text style={styles.frameTitle}>Enlèvements</Text>
+                                <View style={styles.optionsContainer}>
+                                    {options.map((option) => renderOption(option, selectedEnlevements, handleActionChange, 'Removing'))}
+                                </View>
+                            </View>
+
+
+
+
                         </View>
-                  
+                    </View>
+
                     {/* End of Actions Taken */}
 
 
-                  <View style={styles.fieldset}>
+                    <View style={styles.fieldset}>
                         <Text style={styles.fieldsetTitle}>Note</Text>
                         <View style={styles.modalRow}>
                             <TextInput
