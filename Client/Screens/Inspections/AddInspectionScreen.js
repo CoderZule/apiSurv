@@ -326,6 +326,7 @@ const AddInspectionScreen = ({ route }) => {
           firstName: inspector.Firstname,
           lastName: inspector.Lastname,
           cin: inspector.Cin,
+          phone: inspector.Phone
         }, // the current logged in user(inspector)
 
         InspectionDateTime: date, //Now time
@@ -411,18 +412,53 @@ const AddInspectionScreen = ({ route }) => {
       };
 
 
-      // Validate required fields
 
+      if (formattedData.Queen.seen) {
+        if (formattedData.Queen.isMarked && formattedData.Queen.color === '') {
+          return Alert.alert('Erreur', 'Veuillez choisir une couleur pour la reine');
+        }
+        if (!formattedData.Queen.temperament || !formattedData.Queen.queenCells) {
+          return Alert.alert('Erreur', 'Veuillez compléter les informations sur la reine');
+        }
+      } else {
+        formattedData.Queen.isMarked = false;
+        formattedData.Queen.color = '';
+        formattedData.Queen.clipped = false;
+        formattedData.Queen.temperament = '';
+        formattedData.Queen.note = '';
+        formattedData.Queen.queenCells = '';
+        formattedData.Queen.isSwarmed = false;
+      }
+
+      if (!formattedData.Colony.supers | !formattedData.Colony.pollenFrames | !formattedData.Colony.TotalFrames) {
+        return Alert.alert('Erreur', 'Les informations concernant les équipements sont requises');
+      }
+
+      // Check if one of Supplies fields is filled if yes the user have to fill them all
+      const suppliesFieldsFilled = [formattedData.Supplies.product, formattedData.Supplies.ingredients.name, formattedData.Supplies.ingredients.quantity, formattedData.Supplies.ingredients.unit].some(field => field);
+      const suppliesFieldsIncomplete = [formattedData.Supplies.product, formattedData.Supplies.ingredients.name, formattedData.Supplies.ingredients.quantity, formattedData.Supplies.ingredients.unit].some(field => !field);
+
+      if (suppliesFieldsFilled && suppliesFieldsIncomplete) {
+        return Alert.alert('Erreur', 'Veuillez compléter toutes les informations sur les nourritures');
+      }
+
+
+      if (!formattedData.Brood.state || !formattedData.Brood.maleBrood || formattedData.Brood.totalBrood === undefined || formattedData.DronesSeen === undefined) {
+        return Alert.alert('Erreur', 'Les informations concernant le couvain & mâle sont requises');
+      }
 
       if (!formattedData.Colony.strength || !formattedData.Colony.temperament || formattedData.Colony.deadBees === undefined) {
         return Alert.alert('Erreur', 'Les informations de la colonie sont requises');
       }
-      if (!formattedData.Colony.supers | !formattedData.Colony.pollenFrames | !formattedData.Colony.TotalFrames) {
-        return Alert.alert('Erreur', 'Les informations concernant les équipements sont requises');
+
+      // Check BeeHealth fields
+      const beeHealthFieldsFilled = [formattedData.BeeHealth.disease, formattedData.BeeHealth.treatment, formattedData.BeeHealth.duration.from, formattedData.BeeHealth.duration.to, formattedData.BeeHealth.quantity, formattedData.BeeHealth.doses].some(field => field);
+      const beeHealthFieldsIncomplete = [formattedData.BeeHealth.disease, formattedData.BeeHealth.treatment, formattedData.BeeHealth.duration.from, formattedData.BeeHealth.duration.to, formattedData.BeeHealth.quantity, formattedData.BeeHealth.doses].some(field => !field);
+
+      if (beeHealthFieldsFilled && beeHealthFieldsIncomplete) {
+        return Alert.alert('Erreur', 'Veuillez compléter toutes les informations sur la santé des abeilles');
       }
-      if (!formattedData.Brood.state || !formattedData.Brood.maleBrood || formattedData.Brood.totalBrood === undefined || formattedData.DronesSeen === undefined) {
-        return Alert.alert('Erreur', 'Les informations concernant la couvée ou la présence de drones sont requises');
-      }
+
 
       if (!formattedData.HoneyStores) {
         return Alert.alert('Erreur', 'Les réserves de miel sont requises');
@@ -436,6 +472,10 @@ const AddInspectionScreen = ({ route }) => {
       if (!formattedData.Hive) {
         return Alert.alert('Erreur', 'La ruche est requise');
       }
+
+
+
+
 
       const response = await axios.post('http://192.168.1.17:3000/api/inspection/create', formattedData);
 
@@ -470,6 +510,8 @@ const AddInspectionScreen = ({ route }) => {
     setShowQueenDetails(value);
   };
 
+
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Ajouter une inspection</Text>
@@ -495,6 +537,15 @@ const AddInspectionScreen = ({ route }) => {
                 editable={false}
               />
             </View>
+            <View style={[styles.detailItem, styles.inline]}>
+              <Text style={styles.label}>Tel</Text>
+              <TextInput
+                style={[styles.textInput, styles.inlineInput, styles.disabledTextInput]}
+                value={inspector.Phone}
+                editable={false}
+              />
+            </View>
+
           </View>
           {/* End of Inspector Details*/}
 

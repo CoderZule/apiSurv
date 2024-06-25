@@ -40,7 +40,7 @@ export default function LoginScreen() {
         ['token', response.data.token],
         ['currentUser', JSON.stringify(response.data.currentUser)]
       ]);
-     
+      
       //Prevent user from going back to login screen after login
        navigation.reset({
         index: 0,

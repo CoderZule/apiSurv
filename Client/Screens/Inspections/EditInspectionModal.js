@@ -202,6 +202,26 @@ const EditInspectionModal = ({
             if (!updatedFormData.Colony.strength || !updatedFormData.Colony.temperament || updatedFormData.Colony.deadBees === undefined) {
                 return Alert.alert('Erreur', 'Les informations de la colonie sont requises');
             }
+
+
+            if (updatedFormData.Queen.seen) {
+                if (updatedFormData.Queen.isMarked && updatedFormData.Queen.color === '') {
+                    return Alert.alert('Erreur', 'Veuillez choisir une couleur pour la reine');
+                }
+                if (!updatedFormData.Queen.temperament || !updatedFormData.Queen.queenCells) {
+                    return Alert.alert('Erreur', 'Veuillez compléter les informations sur la reine');
+                }
+            } else {
+                updatedFormData.Queen.isMarked = false;
+                updatedFormData.Queen.color = '';
+                updatedFormData.Queen.clipped = false;
+                updatedFormData.Queen.temperament = '';
+                updatedFormData.Queen.note = '';
+                updatedFormData.Queen.queenCells = '';
+                updatedFormData.Queen.isSwarmed = false;
+            }
+
+
             if (!updatedFormData.Colony.supers | !updatedFormData.Colony.pollenFrames | !updatedFormData.Colony.TotalFrames) {
                 return Alert.alert('Erreur', 'Les informations concernant les équipements sont requises');
             }
@@ -294,21 +314,31 @@ const EditInspectionModal = ({
                                     {formData.Queen.isMarked && (
                                         <View style={styles.modalRow}>
                                             <Text style={styles.modalLabel}>Couleur</Text>
-                                            <Picker
+                                            {formData.Queen.color ? (<Picker
                                                 selectedValue={formData.Queen.color}
                                                 style={[styles.modalInput, { backgroundColor: '#FBF5E0' }]}
                                                 onValueChange={(value) => handleModalInputChange('Queen', 'color', value)}
                                             >
-                                                {/* Add color options dynamically */}
                                                 {colors.map((color, index) => (
                                                     <Picker.Item key={index} label={color} value={color} />
                                                 ))}
-                                            </Picker>
+                                            </Picker>) : (<Picker
+                                                selectedValue={formData.Queen.color}
+                                                style={[styles.modalInput, { backgroundColor: '#FBF5E0' }]}
+                                                onValueChange={(value) => handleModalInputChange('Queen', 'color', value)}
+                                            >
+
+                                                <Picker.Item label="Selectionner" value="" disabled />
+                                                {colors.map((color, index) => (
+                                                    <Picker.Item key={index} label={color} value={color} />
+                                                ))}
+                                            </Picker>)}
+
                                         </View>
                                     )}
                                     <View style={styles.modalRow}>
                                         <Text style={styles.modalLabel}>Tempérament</Text>
-                                        <Picker
+                                        {formData.Queen.temperament ? (<Picker
                                             selectedValue={formData.Queen.temperament}
                                             style={[styles.modalInput, { backgroundColor: '#FBF5E0' }]}
                                             onValueChange={(value) => handleModalInputChange('Queen', 'temperament', value)}
@@ -316,11 +346,22 @@ const EditInspectionModal = ({
                                             {temperament.map((state, index) => (
                                                 <Picker.Item key={index} label={state} value={state} />
                                             ))}
-                                        </Picker>
+                                        </Picker>) : (<Picker
+                                            selectedValue={formData.Queen.temperament}
+                                            style={[styles.modalInput, { backgroundColor: '#FBF5E0' }]}
+                                            onValueChange={(value) => handleModalInputChange('Queen', 'temperament', value)}
+                                        >
+                                            <Picker.Item label="Selectionner" value="" disabled />
+                                            {temperament.map((state, index) => (
+                                                <Picker.Item key={index} label={state} value={state} />
+                                            ))}
+                                        </Picker>)}
+
                                     </View>
+
                                     <View style={styles.modalRow}>
                                         <Text style={styles.modalLabel}>Cellules royales</Text>
-                                        <Picker
+                                        {formData.Queen.queenCells ? (<Picker
                                             selectedValue={formData.Queen.queenCells}
                                             style={[styles.modalInput, { backgroundColor: '#FBF5E0' }]}
                                             onValueChange={(value) => handleModalInputChange('Queen', 'queenCells', value)}
@@ -328,8 +369,20 @@ const EditInspectionModal = ({
                                             {queen_cells.map((state, index) => (
                                                 <Picker.Item key={index} label={state} value={state} />
                                             ))}
-                                        </Picker>
+                                        </Picker>) : (<Picker
+                                            selectedValue={formData.Queen.queenCells}
+                                            style={[styles.modalInput, { backgroundColor: '#FBF5E0' }]}
+                                            onValueChange={(value) => handleModalInputChange('Queen', 'queenCells', value)}
+                                        >
+                                            <Picker.Item label="Selectionner" value="" disabled />
+                                            {queen_cells.map((state, index) => (
+                                                <Picker.Item key={index} label={state} value={state} />
+                                            ))}
+                                        </Picker>)}
+
                                     </View>
+
+
                                     <View style={styles.modalRow}>
                                         <Text style={styles.modalLabel}>Note</Text>
                                         <TextInput
@@ -622,23 +675,17 @@ const EditInspectionModal = ({
                         </View>
 
 
-                        {formData.BeeHealth.ingredients && formData.BeeHealth.ingredients.quantity ? (<View style={[styles.detailItem, styles.inline]}>
+
+                        <View style={[styles.detailItem, styles.inline]}>
                             <Text style={styles.label}>Quantité</Text>
                             <TextInput
                                 style={[styles.textInput, styles.inlineInput]}
                                 keyboardType='numeric'
                                 onChangeText={(value) => handleModalInputChange('BeeHealth', 'quantity', value)}
-                                value={formData.BeeHealth.quantity.toString()}
+                                value={formData.BeeHealth?.quantity ? formData.BeeHealth.quantity.toString() : ''}
                             />
-                        </View>) : <View style={[styles.detailItem, styles.inline]}>
-                            <Text style={styles.label}>Quantité</Text>
-                            <TextInput
-                                style={[styles.textInput, styles.inlineInput]}
-                                keyboardType='numeric'
-                                onChangeText={(value) => handleModalInputChange('BeeHealth', 'quantity', value)}
-                                value={formData.BeeHealth.quantity}
-                            />
-                        </View>}
+                        </View>
+
 
 
 

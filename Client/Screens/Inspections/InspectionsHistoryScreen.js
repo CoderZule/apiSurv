@@ -52,7 +52,8 @@ const InspectionsHistoryScreen = ({ route, navigation }) => {
                             >
                                 <Text style={styles.cell}>
                                     {item.Inspector.firstName} {item.Inspector.lastName}{'\n'}
-                                    <Text style={{ color: '#977700' }}>Cin: </Text>{item.Inspector.cin}
+                                    <Text style={{ color: '#977700' }}>Cin: </Text>{item.Inspector.cin}{'\n'}
+                                    <Text style={{ color: '#977700' }}>Tel: </Text>{item.Inspector.phone}
                                 </Text>
                                 <Text style={[styles.cell, index === lastItemIndex ? styles.lastCell : null]}>
                                     {new Date(item.InspectionDateTime).toLocaleDateString('fr-FR')}{'\n'}
