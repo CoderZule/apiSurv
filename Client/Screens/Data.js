@@ -92,5 +92,4 @@ export const options = [
   { name: "Rayon de miel", requiresNumberInput: true }
 ];
 
-export const weather_conditions = ["Ciel Dégagé", "Quelques Nuages", "Nuages Épars", "Nuages Fragmentés", "Averses", "Pluie", "Orage", "Neige", "Brume"];
-export const weather_wind_direction = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
+ 

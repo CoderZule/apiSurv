@@ -50,7 +50,7 @@ const InspectionDetails = ({ route, navigation }) => {
       );
     } else {
       return (
-        <Text style={[styles.highlight, styles.inlineText]}>Observée <Ionicons name="close-outline" size={22} color="red" style={styles.icon} /></Text>
+        <Text style={[styles.highlight, styles.inlineText]}>Non Observée <Ionicons name="close-outline" size={22} color="red" style={styles.icon} /></Text>
       );
     }
   }
@@ -62,7 +62,7 @@ const InspectionDetails = ({ route, navigation }) => {
        );
     } else {
       return (
-        <Text style={styles.highlight}>{text} <Ionicons name="close-outline" size={22} color="red" style={styles.icon} /></Text>
+        <Text style={styles.highlight}>Non {text} <Ionicons name="close-outline" size={22} color="red" style={styles.icon} /></Text>
       );
     }
   };
@@ -518,7 +518,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   highlight: {
-    color: '#977700',
+     color: '#977700',
   },
   divider: {
     borderBottomColor: '#cccccc',

@@ -71,7 +71,7 @@ export default function ChangePasswordOnFirstLogin({ visible, onClose, userId })
         >
             <View style={styles.modalContainer}>
                 <View style={styles.modalContent}>
-                    <Text style={styles.modalTitle}>Changer mot de passe</Text>
+                    <Text style={styles.modalTitle}>Changer le mot de passe</Text>
                     <Text style={styles.modalSubTitle}>Votre mot de passe a expiré. Veuillez saisir un nouveau mot de passe</Text>
                     <View style={styles.inputContainer}>
                         <View style={styles.input}>
