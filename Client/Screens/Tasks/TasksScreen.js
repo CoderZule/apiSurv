@@ -1,10 +1,30 @@
 import React, { useState } from 'react';
 import {
-  Text
+  Text, SafeAreaView, StyleSheet
 } from 'react-native';
+import HomeHeader from '../../Components/HomeHeader';
 
-export default function TasksScreen() {
+export default function TasksScreen({navigation}) {
   return (
-    <Text>Tasks Screen</Text>
+    <SafeAreaView style={styles.safeArea}>
+      <HomeHeader navigation={navigation} title={'Tâches'} />
+    </SafeAreaView>
+
   )
 }
+
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#FBF5E0',
+  },
+  container: {
+    flex: 1,
+    margin: 20,
+    justifyContent: 'center',
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+  }
+})

@@ -70,8 +70,7 @@ export default function ProfilScreen({ navigation }) {
         updatedUserData
       );
 
-      console.log('Update response:', response.data);
-
+ 
       // Save updated user data to AsyncStorage
       await AsyncStorage.setItem('currentUser', JSON.stringify(updatedUserData));
 

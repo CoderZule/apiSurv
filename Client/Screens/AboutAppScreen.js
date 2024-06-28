@@ -1,10 +1,30 @@
 import React, { useState } from 'react';
 import {
-  Text
+  Text, SafeAreaView, StyleSheet
 } from 'react-native';
+import HomeHeader from '../Components/HomeHeader';
 
-export default function AboutAppScreen() {
+export default function AboutAppScreen({navigation}) {
   return (
-    <Text>hi</Text>
+    <SafeAreaView style={styles.safeArea}>
+      <HomeHeader navigation={navigation} title={'À propos'} />
+    </SafeAreaView>
+
   )
 }
+
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#FBF5E0',
+  },
+  container: {
+    flex: 1,
+    margin: 20,
+    justifyContent: 'center',
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+  }
+})
