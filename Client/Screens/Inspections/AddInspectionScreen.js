@@ -22,6 +22,8 @@ import {
 
 } from '../Data';
 import { useNavigation } from '@react-navigation/native';
+import { FontAwesome5 } from '@expo/vector-icons';
+
 
 const Option = React.memo(({ option, isSelected, onPressHandler, quantity, onQuantityChange }) => (
   <TouchableOpacity
@@ -522,7 +524,8 @@ const AddInspectionScreen = ({ route }) => {
           <View style={styles.fieldset}>
             <Text style={styles.fieldsetTitle}>Inspecteur</Text>
             <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Nom et prénom</Text>
+              <Text style={styles.label}>Nom et prénom  <FontAwesome5 name="user-alt" size={14} color="#977700" style={styles.inputIcon} />
+              </Text>
               <TextInput
                 style={[styles.textInput, styles.inlineInput, styles.disabledTextInput]}
                 value={`${inspector.Firstname} ${inspector.Lastname}`}
@@ -530,7 +533,8 @@ const AddInspectionScreen = ({ route }) => {
               />
             </View>
             <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>CIN</Text>
+              <Text style={styles.label}>CIN <FontAwesome5 name="id-card-alt" size={14} color="#977700" style={styles.inputIcon} />
+              </Text>
               <TextInput
                 style={[styles.textInput, styles.inlineInput, styles.disabledTextInput]}
                 value={inspector.Cin}
@@ -538,7 +542,9 @@ const AddInspectionScreen = ({ route }) => {
               />
             </View>
             <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Tel</Text>
+
+              <Text style={styles.label}> Tel <FontAwesome5 name="phone" size={14} color="#977700" style={styles.inputIcon} />
+              </Text>
               <TextInput
                 style={[styles.textInput, styles.inlineInput, styles.disabledTextInput]}
                 value={inspector.Phone}
@@ -554,7 +560,8 @@ const AddInspectionScreen = ({ route }) => {
           <View style={styles.fieldset}>
             <Text style={styles.fieldsetTitle}>Rucher et Ruche</Text>
             <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Rucher</Text>
+              <Text style={styles.label}>Rucher <FontAwesome5 name="seedling" size={14} color="#977700" style={styles.icon} />
+              </Text>
               <TextInput
                 style={[styles.textInput, styles.inlineInput, styles.disabledTextInput]}
                 value={hiveData.Apiary.Name}
@@ -562,7 +569,7 @@ const AddInspectionScreen = ({ route }) => {
               />
             </View>
             <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Ruche</Text>
+              <Text style={styles.label}>Ruche <FontAwesome5 name="archive" size={14} color="#977700" style={styles.icon} /></Text>
               <TextInput
                 style={[styles.textInput, styles.inlineInput, styles.disabledTextInput]}
                 value={hiveData.Type}
@@ -577,7 +584,8 @@ const AddInspectionScreen = ({ route }) => {
           <View style={styles.fieldset}>
             <Text style={styles.fieldsetTitle}>Date et Heure</Text>
             <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Date</Text>
+              <Text style={styles.label}>Date <FontAwesome5 name="calendar-alt" size={14} color="#977700" style={styles.icon} />
+              </Text>
               <TextInput
                 style={[styles.textInput, styles.inlineInput, styles.disabledTextInput]}
                 value={new Date().toLocaleDateString('fr-FR')}
@@ -585,7 +593,8 @@ const AddInspectionScreen = ({ route }) => {
               />
             </View>
             <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Heure</Text>
+              <Text style={styles.label}>Heure <FontAwesome5 name="clock" size={14} color="#977700" style={styles.icon} />
+              </Text>
               <TextInput
                 style={[styles.textInput, styles.inlineInput, styles.disabledTextInput]}
                 value={new Date().toLocaleTimeString('fr-FR')}
@@ -1228,20 +1237,18 @@ const AddInspectionScreen = ({ route }) => {
 
 
           {/* Note Details  */}
-          <View style={styles.fieldset}>
-            <Text style={styles.fieldsetTitle}>Note</Text>
+          <Text style={styles.fieldsetTitle}>Note</Text>
 
 
 
-            <View style={[styles.detailItem, styles.inline]}>
-              <TextInput
-                style={[styles.textInput, styles.inlineInput, styles.textArea]}
-                multiline={true}
-                numberOfLines={5}
-                onChangeText={(value) => handleInputChange('InspectionNote', value)}
-                value={formData.InspectionNote}
-              />
-            </View>
+          <View style={[styles.detailItem, styles.inline]}>
+            <TextInput
+              style={[styles.textInput, styles.inlineInput, styles.textArea]}
+              multiline={true}
+              numberOfLines={5}
+              onChangeText={(value) => handleInputChange('InspectionNote', value)}
+              value={formData.InspectionNote}
+            />
           </View>
           {/* End of Note*/}
 
@@ -1262,10 +1269,9 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     backgroundColor: '#FBF5E0',
-    paddingHorizontal: 24,
-    paddingVertical: 45,
-    borderTopLeftRadius: 50,
-    borderTopRightRadius: 50,
+    padding: 15,
+    borderRadius: 30,
+    marginBottom: 50
   },
   title: {
     fontSize: 22,
@@ -1274,6 +1280,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
   },
+
+  inputIcon: {
+    padding: 10,
+  },
+
   detailsContainer: {
     backgroundColor: '#fff',
     borderRadius: 20,

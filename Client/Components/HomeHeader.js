@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, StatusBar } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
  
-export default function HomeHeader({ navigation }) {
+export default function HomeHeader({ navigation, title }) {
 
  
 
@@ -19,7 +19,7 @@ export default function HomeHeader({ navigation }) {
         <Ionicons name="menu" color="white" size={32} />
       </TouchableOpacity>
       <View style={styles.titleContainer}>
-        <Text style={styles.headerTitle}>Accueil</Text>
+        <Text style={styles.headerTitle}>{title}</Text>
       </View>
     </View>
   );

@@ -58,8 +58,8 @@ const InspectionDetails = ({ route, navigation }) => {
   const renderIconAndText = (text, condition) => {
     if (condition) {
       return (
-           <Text style={styles.highlight}>{text} <Ionicons name="checkmark-outline" size={22} color="green" style={styles.icon} /></Text>
-       );
+        <Text style={styles.highlight}>{text} <Ionicons name="checkmark-outline" size={22} color="green" style={styles.icon} /></Text>
+      );
     } else {
       return (
         <Text style={styles.highlight}>Non {text} <Ionicons name="close-outline" size={22} color="red" style={styles.icon} /></Text>
@@ -226,18 +226,18 @@ const InspectionDetails = ({ route, navigation }) => {
 
 
         <View style={styles.row}>
-          <Text style={styles.label}>Inspecteur</Text>
+          <Text style={styles.label}><Ionicons name="person-outline" size={14} color="#977700"  style={styles.icon} /> Inspecteur</Text>
           <Text style={styles.value}>{inspectionData.Inspector.firstName} {inspectionData.Inspector.lastName}</Text>
         </View>
         <View style={styles.divider} />
         <View style={styles.row}>
-          <Text style={styles.label}>CIN</Text>
+          <Text style={styles.label}><Ionicons name="id-card-outline" size={14} color="#977700"  style={styles.icon} /> CIN</Text>
           <Text style={styles.value}>{inspectionData.Inspector.cin}</Text>
         </View>
         <View style={styles.divider} />
 
         <View style={styles.row}>
-          <Text style={styles.label}>Tel</Text>
+          <Text style={styles.label}><Ionicons name="call-outline" size={14} color="#977700"  style={styles.icon} /> Tel</Text>
           <Text style={styles.value}>
             {inspectionData.Inspector.phone
               ? `(${inspectionData.Inspector.phone.substring(0, 4)})${inspectionData.Inspector.phone.substring(4)}`
@@ -248,13 +248,13 @@ const InspectionDetails = ({ route, navigation }) => {
         <View style={styles.divider} />
 
         <View style={styles.row}>
-          <Text style={styles.label}>Date</Text>
+          <Text style={styles.label}><Ionicons name="calendar-outline" size={14} color="#977700"  style={styles.icon} /> Date</Text>
           <Text style={styles.value}>{new Date(inspectionData.InspectionDateTime).toLocaleDateString('fr-FR')}</Text>
         </View>
         <View style={styles.divider} />
 
         <View style={styles.row}>
-          <Text style={styles.label}>Heure</Text>
+          <Text style={styles.label}><Ionicons name="time-outline" size={14} color="#977700"  style={styles.icon} /> Heure</Text>
           <Text style={styles.value}>{new Date(inspectionData.InspectionDateTime).toLocaleTimeString('fr-FR')}</Text>
         </View>
 
@@ -270,7 +270,7 @@ const InspectionDetails = ({ route, navigation }) => {
 
 
                 {inspectionData.Queen.color && (
-                 
+
                   <>{'\n\n'}
                     <Text style={styles.highlight}>Couleur: </Text>{inspectionData.Queen.color} <Ionicons name="color-palette-outline" size={22} color="fuchsia" style={styles.icon} />
                   </>
@@ -280,13 +280,13 @@ const InspectionDetails = ({ route, navigation }) => {
                 {'\n\n'}
                 {renderIconAndText('Essaimée', inspectionData.Queen.isSwarmed)}
                 {'\n\n'}
-                 
+
                 {inspectionData.Queen.queenCells && (
                   <>
                     <Text style={styles.highlight}>Cellules royales: </Text>{inspectionData.Queen.queenCells} <Ionicons name="keypad-outline" size={22} color="blue" style={styles.icon} />{'\n\n'}
                   </>
                 )}
-                
+
                 {inspectionData.Queen.temperament && (
                   <>
                     <Text style={styles.highlight}>Tempérament: </Text>{inspectionData.Queen.temperament} <Ionicons name="happy-outline" size={22} color="gray" style={styles.icon} /> {'\n\n'}
@@ -459,14 +459,13 @@ const InspectionDetails = ({ route, navigation }) => {
         ) : null}
 
       </View>
-      <View style={styles.divider} />
+
 
       <EditInspectionModal
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
         formData={formData}
         handleModalInputChange={handleModalInputChange}
-
       />
 
     </ScrollView>
@@ -474,12 +473,13 @@ const InspectionDetails = ({ route, navigation }) => {
 };
 
 const styles = StyleSheet.create({
+
   container: {
     flex: 1,
     backgroundColor: '#FBF5E0',
     marginTop: 10,
-    padding: 20,
-  },
+    padding: 4,
+   },
   card: {
     backgroundColor: '#FFFFFF',
     borderRadius: 10,
@@ -518,7 +518,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   highlight: {
-     color: '#977700',
+    color: '#977700',
   },
   divider: {
     borderBottomColor: '#cccccc',

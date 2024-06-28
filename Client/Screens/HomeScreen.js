@@ -112,7 +112,7 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <HomeHeader navigation={navigation} />
+      <HomeHeader navigation={navigation} title={'Accueil'} />
 
       <View style={styles.headerTextView}>
         <Text style={styles.headerText1}>Bonjour</Text>
@@ -167,6 +167,7 @@ export default function HomeScreen({ navigation }) {
           </View>
         </View>
       </Modal>
+   
       <ChangePasswordOnFirstLogin
         visible={passwordModalVisible}
         onClose={() => setPasswordModalVisible(false)}

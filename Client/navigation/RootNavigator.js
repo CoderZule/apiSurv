@@ -4,7 +4,6 @@ import { IntroStack } from './IntroStack';
  
 
 
-
 export default function RootNavigator() {
 
  

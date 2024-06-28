@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
-
+ 
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -15,7 +14,7 @@ import AddInspectionScreen from '../Screens/Inspections/AddInspectionScreen';
 import ScannerScreenAddInspections from '../Screens/Scan/ScannerScreenAddInspections';
 import InspectionsHistoryScreen from '../Screens/Inspections/InspectionsHistoryScreen';
 import InspectionDetailsScreen from '../Screens/Inspections/InspectionDetailsScreen';
- 
+
 const Stack = createNativeStackNavigator();
 
 export function IntroStack() {
@@ -31,6 +30,7 @@ export function IntroStack() {
         headerShown: false,
       }}
     >
+ 
       {showSplash ? (
         <Stack.Screen name="Splash">
           {props => <Splash {...props} onFinish={handleSplashFinish} />}
@@ -46,11 +46,11 @@ export function IntroStack() {
 
 
           <Stack.Screen name="HiveDetailsScreen" component={HiveDetailsScreen} options={{ title: 'Hive Details' }} />
-          <Stack.Screen name="InspectionsHistoryScreen" component={InspectionsHistoryScreen}/>
+          <Stack.Screen name="InspectionsHistoryScreen" component={InspectionsHistoryScreen} />
           <Stack.Screen name="InspectionDetailsScreen" component={InspectionDetailsScreen} options={{ title: 'Inspection Details Screen' }} />
 
           <Stack.Screen name="AddInspectionScreen" component={AddInspectionScreen} options={{ title: 'Add Hive Inspection' }} />
- 
+
         </>
       )}
     </Stack.Navigator>
