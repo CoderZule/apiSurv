@@ -5,6 +5,8 @@ import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { useCameraPermissions } from 'expo-camera';
+import { useIsFocused } from '@react-navigation/native';
+
 import ChangePasswordOnFirstLogin from './UserAccountManagement/ChangePasswordOnFirstLogin';
  
 export default function HomeScreen({ navigation }) {
@@ -14,6 +16,7 @@ export default function HomeScreen({ navigation }) {
   const [apiariesCount, setApiariesCount] = useState(0);
   const [hivesCount, setHivesCount] = useState(0);
   const [passwordModalVisible, setPasswordModalVisible] = useState(false);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -32,9 +35,10 @@ export default function HomeScreen({ navigation }) {
       }
     };
 
-    fetchCurrentUser();
-  }, []);
-
+    if (isFocused) {
+      fetchCurrentUser();
+    }
+  }, [isFocused]);
 
   useEffect(() => {
     const fetchApiariesCount = async () => {

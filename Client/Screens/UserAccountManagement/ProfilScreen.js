@@ -9,7 +9,6 @@ import {
   Alert,
   Modal,
   Pressable,
-
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -22,17 +21,21 @@ export default function ProfilScreen({ navigation }) {
   const [Lastname, setLastName] = useState('');
   const [Email, setEmail] = useState('');
   const [Phone, setPhone] = useState('');
-  const [Password, setPassword] = useState('');
   const [currentUser, setCurrentUser] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const [currentPassword, setCurrentPassword] = useState('');
+  const [currentPasswordInput, setCurrentPasswordInput] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
+  const [hideCurrentPassword, setHideCurrentPassword] = useState(true);
+  const [hideNewPassword, setHideNewPassword] = useState(true);
+  const [hideConfirmPassword, setHideConfirmPassword] = useState(true);
+
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const currentUserString = await AsyncStorage.getItem('currentUser');
-
         if (currentUserString) {
           const user = JSON.parse(currentUserString);
           setCurrentUser(user);
@@ -40,7 +43,6 @@ export default function ProfilScreen({ navigation }) {
           setLastName(user.Lastname);
           setPhone(user.Phone);
           setEmail(user.Email);
-          setPassword(user.Password);
         } else {
           Alert.alert('Error', 'User data not found in AsyncStorage');
         }
@@ -61,7 +63,6 @@ export default function ProfilScreen({ navigation }) {
         Lastname,
         Email,
         Phone,
-        Password,
       };
 
       const response = await axios.post(
@@ -70,49 +71,90 @@ export default function ProfilScreen({ navigation }) {
       );
 
       console.log('Update response:', response.data);
-      // Handle success (maybe update AsyncStorage here too)
-      Alert.alert('Success', 'User information updated successfully');
+
+      // Save updated user data to AsyncStorage
+      await AsyncStorage.setItem('currentUser', JSON.stringify(updatedUserData));
+
+      // Update the currentUser state
+      setCurrentUser(updatedUserData);
+
+      Alert.alert('Succès', 'Les informations ont été mises à jour avec succès');
     } catch (error) {
-      console.error('Error updating user information:', error);
-      Alert.alert('Error', 'Failed to update user information');
+      console.error('Erreur lors de la mise à jour des informations:', error);
+      Alert.alert('Error', 'Échec de la mise à jour des informations');
     }
   };
 
   const handleModalClose = () => {
     setModalVisible(false);
     // Reset fields when modal closes
+    setCurrentPasswordInput('');
     setNewPassword('');
     setConfirmPassword('');
+    setError('');
   };
 
   const handlePasswordChange = async () => {
     try {
-      // Validate new password and confirm password match
+      if (!currentPasswordInput) {
+        setError("Veuillez saisir le mot de passe actuel.");
+        return;
+      }
+
+      if (!newPassword || !confirmPassword) {
+        setError("Veuillez saisir un nouveau mot de passe.");
+        return;
+      }
+
       if (newPassword !== confirmPassword) {
-        Alert.alert('Error', 'Passwords do not match');
+        setError("Les mots de passe ne correspondent pas.");
         return;
       }
 
       // Send API request to change password
       const updatedUserData = {
-        _id: currentUser._id,
-        Password: newPassword,
+        userId: currentUser._id,
+        currentPassword: currentPasswordInput,
+        newPassword: newPassword,
       };
 
       const response = await axios.post(
-        'http://192.168.1.17:3000/api/user/changePassword',
+        'http://192.168.1.17:3000/api/user/changeProfilPassword',
         updatedUserData
       );
 
-      console.log('Password change response:', response.data);
-      Alert.alert('Success', 'Password changed successfully');
-      setModalVisible(false);
+      if (response.data.success) {
+        Alert.alert('Succès', 'Le mot de passe a été changé avec succès.');
+        setError('');
+        setCurrentPasswordInput('');
+        setConfirmPassword('');
+        setNewPassword('');
+        setModalVisible(false);
+      } else {
+        setError(response.data.message || 'Failed to change password');
+      }
     } catch (error) {
-      console.error('Error changing password:', error);
-      Alert.alert('Error', 'Failed to change password');
+      if (error.response && error.response.status === 400) {
+        setError('Le mot de passe actuel est incorrect.');
+      } else {
+        console.error('Error changing password:', error);
+
+      }
     }
   };
 
+
+  const toggleCurrentPasswordVisibility = () => {
+    setHideCurrentPassword(!hideCurrentPassword);
+  };
+
+  const toggleNewPasswordVisibility = () => {
+    setHideNewPassword(!hideNewPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setHideConfirmPassword(!hideConfirmPassword);
+  };
   return (
     <SafeAreaView style={styles.safeArea}>
       <HomeHeader navigation={navigation} title={'Profil'} />
@@ -122,7 +164,7 @@ export default function ProfilScreen({ navigation }) {
           {/* Card 1: Personal Information */}
 
           <View style={styles.card}>
-          <Text style={styles.cardTitle}>Informations de l'apiculteur</Text>
+            <Text style={styles.cardTitle}>Informations de l'apiculteur</Text>
 
             <View style={styles.input}>
               <Text style={styles.inputLabel}>Prénom</Text>
@@ -186,7 +228,7 @@ export default function ProfilScreen({ navigation }) {
           {/* Card 2: Login Credentials */}
 
           <View style={styles.card}>
-          <Text style={styles.cardTitle}>Paramètres du compte</Text>
+            <Text style={styles.cardTitle}>Paramètres du compte</Text>
 
             <View style={styles.input}>
               <Text style={styles.inputLabel}>Email</Text>
@@ -234,57 +276,104 @@ export default function ProfilScreen({ navigation }) {
         </KeyboardAwareScrollView>
       </View >
 
-      {/* Modal for Password Change */}
-      < Modal
-        animationType="slide"
-        transparent={true}
-        statusBarTranslucent={true}
-        visible={modalVisible}
-        onRequestClose={handleModalClose}
-      >
-        <View style={styles.modalBackground}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalTitle}>Changer le mot de passe</Text>
-         
-            <TextInput
-              style={styles.modalInput}
-              value={newPassword}
-              onChangeText={setCurrentPassword}
-              placeholder="Mot de passe actuel"
-              secureTextEntry
-            />
-         
-            <TextInput
-              style={styles.modalInput}
-              value={newPassword}
-              onChangeText={setNewPassword}
-              placeholder="Nouveau mot de passe"
-              secureTextEntry
-            />
-            <TextInput
-              style={styles.modalInput}
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-              placeholder="Retaper le nouveau mot de passe"
-              secureTextEntry
-            />
-            <View style={styles.modalButtons}>
-              <Pressable
-                style={[styles.modalButton, styles.buttonClose]}
-                onPress={handleModalClose}
-              >
-                <Text style={styles.textStyle}>Annuler</Text>
-              </Pressable>
-              <Pressable
-                style={[styles.modalButton, styles.buttonSave]}
-                onPress={handlePasswordChange}
-              >
-                <Text style={styles.textStyle}>Sauvegarder</Text>
-              </Pressable>
-            </View>
-          </View>
-        </View>
-      </Modal >
+      <Modal
+  animationType="slide"
+  transparent={true}
+  statusBarTranslucent={true}
+  visible={modalVisible}
+  onRequestClose={handleModalClose}
+>
+  <View style={styles.modalBackground}>
+    <View style={styles.modalView}>
+      <Text style={styles.modalTitle}>Changer le mot de passe</Text>
+      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+      {/* Current Password */}
+      <View style={styles.modalInput}>
+        <TextInput
+          style={styles.inputControl}
+          onChangeText={setCurrentPasswordInput}
+          placeholder="Mot de passe actuel"
+          secureTextEntry={hideCurrentPassword}
+          placeholderTextColor="#6b7280"
+        />
+        <TouchableOpacity
+          style={styles.visibilityIcon}
+          onPress={toggleCurrentPasswordVisibility}
+        >
+          <FontAwesome5
+            name={hideCurrentPassword ? 'eye-slash' : 'eye'}
+            size={20}
+            color="#6b7280"
+          />
+        </TouchableOpacity>
+      </View>
+
+      {/* New Password */}
+      <View style={styles.modalInput}>
+        <TextInput
+          style={styles.inputControl}
+          value={newPassword}
+          onChangeText={setNewPassword}
+          placeholder="Nouveau mot de passe"
+          secureTextEntry={hideNewPassword}
+          placeholderTextColor="#6b7280"
+        />
+        <TouchableOpacity
+          style={styles.visibilityIcon}
+          onPress={toggleNewPasswordVisibility}
+        >
+          <FontAwesome5
+            name={hideNewPassword ? 'eye-slash' : 'eye'}
+            size={20}
+            color="#6b7280"
+          />
+        </TouchableOpacity>
+      </View>
+
+      {/* Confirm New Password */}
+      <View style={styles.modalInput}>
+        <TextInput
+          style={styles.inputControl}
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          placeholder="Confirmer le mot de passe"
+          secureTextEntry={hideConfirmPassword}
+          placeholderTextColor="#6b7280"
+        />
+        <TouchableOpacity
+          style={styles.visibilityIcon}
+          onPress={toggleConfirmPasswordVisibility}
+        >
+          <FontAwesome5
+            name={hideConfirmPassword ? 'eye-slash' : 'eye'}
+            size={20}
+            color="#6b7280"
+          />
+        </TouchableOpacity>
+      </View>
+
+      {/* Buttons */}
+      <View style={styles.modalButtons}>
+        <Pressable
+          style={[styles.modalButton, styles.buttonClose]}
+          onPress={handleModalClose}
+        >
+          <Text style={styles.textStyle}>Annuler</Text>
+        </Pressable>
+        <Pressable
+          style={[styles.modalButton, styles.buttonSave]}
+          onPress={handlePasswordChange}
+        >
+          <Text style={styles.textStyle}>Sauvegarder</Text>
+        </Pressable>
+      </View>
+    </View>
+  </View>
+</Modal>
+
+
+
     </SafeAreaView >
   );
 }
@@ -362,7 +451,7 @@ const styles = StyleSheet.create({
     color: '#797979',
   },
   formAction: {
-   // marginTop: 10,
+    // marginTop: 10,
     //marginBottom: 16,
     alignItems: 'center',
   },
@@ -442,5 +531,24 @@ const styles = StyleSheet.create({
     color: '#373737',
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: 10,
+  },
+  modalInput: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F5F5F5',
+    borderRadius: 30,
+    paddingHorizontal: 8,
+    paddingVertical: 8,
+    borderColor: '#E5E5E5',
+    borderWidth: 1,
+    marginBottom: 16,
+  },
+  visibilityIcon: {
+    padding: 10,
+    marginLeft: 'auto', // This will push the icon to the right
   },
 });
