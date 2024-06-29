@@ -249,7 +249,7 @@ const TasksScreen = ({ navigation }) => {
             events={events}
             height={600}
             onPressEvent={(event) => openModal(event)}
-            onPressCell={(date) => {
+             onPressCell={(date) => {
               if (!isPastDateTime(date)) {
                 openModal();
               }

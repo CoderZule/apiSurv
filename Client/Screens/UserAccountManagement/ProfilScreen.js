@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   Alert,
   Modal,
-  Pressable,
+  Pressable, ActivityIndicator,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -30,6 +30,7 @@ export default function ProfilScreen({ navigation }) {
   const [hideCurrentPassword, setHideCurrentPassword] = useState(true);
   const [hideNewPassword, setHideNewPassword] = useState(true);
   const [hideConfirmPassword, setHideConfirmPassword] = useState(true);
+  const [isLoading, setIsLoading] = useState(true); // State for loading indicator
 
 
   useEffect(() => {
@@ -49,6 +50,8 @@ export default function ProfilScreen({ navigation }) {
       } catch (error) {
         console.error('Error fetching user data:', error);
         Alert.alert('Error', 'Failed to fetch user data');
+      }finally {
+        setIsLoading(false); // After fetching data, set isLoading to false
       }
     };
 
@@ -157,124 +160,128 @@ export default function ProfilScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.safeArea}>
       <HomeHeader navigation={navigation} title={'Profil'} />
+      {isLoading ? (
+        <View style={[styles.container, styles.loadingContainer]}>
+          <ActivityIndicator size="large" color="#977700" />
+        </View>
+      ) : (
+        <View style={styles.container}>
+          <KeyboardAwareScrollView contentContainerStyle={styles.scrollContainer}>
+            {/* Card 1: Personal Information */}
 
-      <View style={styles.container}>
-        <KeyboardAwareScrollView contentContainerStyle={styles.scrollContainer}>
-          {/* Card 1: Personal Information */}
+            <View style={styles.card}>
+              <Text style={styles.cardTitle}>Informations de l'apiculteur</Text>
 
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Informations de l'apiculteur</Text>
-
-            <View style={styles.input}>
-              <Text style={styles.inputLabel}>Prénom</Text>
-              <View style={styles.inputContainer}>
-                <FontAwesome5
-                  name="user"
-                  size={15}
-                  color="#977700"
-                  style={styles.inputIcon}
-                />
-                <TextInput
-                  style={styles.inputControl}
-                  value={Firstname}
-                  onChangeText={setFirstName}
-                  placeholder="Entrez votre prénom"
-                  placeholderTextColor="#6b7280"
-                />
-              </View>
-            </View>
-
-            <View style={styles.input}>
-              <Text style={styles.inputLabel}>Nom</Text>
-              <View style={styles.inputContainer}>
-                <FontAwesome5
-                  name="user"
-                  size={15}
-                  color="#977700"
-                  style={styles.inputIcon}
-                />
-                <TextInput
-                  style={styles.inputControl}
-                  value={Lastname}
-                  onChangeText={setLastName}
-                  placeholder="Entrez votre nom"
-                  placeholderTextColor="#6b7280"
-                />
-              </View>
-            </View>
-
-            <View style={styles.input}>
-              <Text style={styles.inputLabel}>Téléphone</Text>
-              <View style={styles.inputContainer}>
-                <FontAwesome5
-                  name="phone"
-                  size={15}
-                  color="#977700"
-                  style={styles.inputIcon}
-                />
-                <TextInput
-                  style={styles.inputControl}
-                  value={Phone}
-                  onChangeText={setPhone}
-                  placeholder="Entrez votre numéro de téléphone"
-                  placeholderTextColor="#6b7280"
-                  keyboardType="Phone-pad"
-                />
-              </View>
-            </View>
-          </View>
-
-          {/* Card 2: Login Credentials */}
-
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Paramètres du compte</Text>
-
-            <View style={styles.input}>
-              <Text style={styles.inputLabel}>Email</Text>
-              <View style={styles.inputContainer}>
-                <FontAwesome5
-                  name="envelope"
-                  size={15}
-                  color="#977700"
-                  style={styles.inputIcon}
-                />
-                <TextInput
-                  style={styles.inputControl}
-                  value={Email}
-                  onChangeText={setEmail}
-                  placeholder="Entrez votre Email"
-                  placeholderTextColor="#6b7280"
-                  keyboardType="Email-address"
-                />
-              </View>
-            </View>
-
-            <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.penIconContainer}>
               <View style={styles.input}>
-                <Text style={styles.inputLabel}>Mot de passe  <FontAwesome5
-                  name="pen"
-                  size={15}
-                  color="#5188C7"
-                  style={styles.inputIcon}
-                /></Text>
-
+                <Text style={styles.inputLabel}>Prénom</Text>
+                <View style={styles.inputContainer}>
+                  <FontAwesome5
+                    name="user"
+                    size={15}
+                    color="#977700"
+                    style={styles.inputIcon}
+                  />
+                  <TextInput
+                    style={styles.inputControl}
+                    value={Firstname}
+                    onChangeText={setFirstName}
+                    placeholder="Entrez votre prénom"
+                    placeholderTextColor="#6b7280"
+                  />
+                </View>
               </View>
-            </TouchableOpacity>
 
-
-          </View>
-
-          {/* Single Button Outside Cards */}
-          <View style={styles.formAction}>
-            <TouchableOpacity onPress={handleUpdateProfile}>
-              <View style={styles.btn}>
-                <Text style={styles.btnText}>Mettre à jour</Text>
+              <View style={styles.input}>
+                <Text style={styles.inputLabel}>Nom</Text>
+                <View style={styles.inputContainer}>
+                  <FontAwesome5
+                    name="user"
+                    size={15}
+                    color="#977700"
+                    style={styles.inputIcon}
+                  />
+                  <TextInput
+                    style={styles.inputControl}
+                    value={Lastname}
+                    onChangeText={setLastName}
+                    placeholder="Entrez votre nom"
+                    placeholderTextColor="#6b7280"
+                  />
+                </View>
               </View>
-            </TouchableOpacity>
-          </View>
-        </KeyboardAwareScrollView>
-      </View >
 
+              <View style={styles.input}>
+                <Text style={styles.inputLabel}>Téléphone</Text>
+                <View style={styles.inputContainer}>
+                  <FontAwesome5
+                    name="phone"
+                    size={15}
+                    color="#977700"
+                    style={styles.inputIcon}
+                  />
+                  <TextInput
+                    style={styles.inputControl}
+                    value={Phone}
+                    onChangeText={setPhone}
+                    placeholder="Entrez votre numéro de téléphone"
+                    placeholderTextColor="#6b7280"
+                    keyboardType="Phone-pad"
+                  />
+                </View>
+              </View>
+            </View>
+
+            {/* Card 2: Login Credentials */}
+
+            <View style={styles.card}>
+              <Text style={styles.cardTitle}>Paramètres du compte</Text>
+
+              <View style={styles.input}>
+                <Text style={styles.inputLabel}>Email</Text>
+                <View style={styles.inputContainer}>
+                  <FontAwesome5
+                    name="envelope"
+                    size={15}
+                    color="#977700"
+                    style={styles.inputIcon}
+                  />
+                  <TextInput
+                    style={styles.inputControl}
+                    value={Email}
+                    onChangeText={setEmail}
+                    placeholder="Entrez votre Email"
+                    placeholderTextColor="#6b7280"
+                    keyboardType="Email-address"
+                  />
+                </View>
+              </View>
+
+              <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.penIconContainer}>
+                <View style={styles.input}>
+                  <Text style={styles.inputLabel}>Mot de passe  <FontAwesome5
+                    name="pen"
+                    size={15}
+                    color="#5188C7"
+                    style={styles.inputIcon}
+                  /></Text>
+
+                </View>
+              </TouchableOpacity>
+
+
+            </View>
+
+            {/* Single Button Outside Cards */}
+            <View style={styles.formAction}>
+              <TouchableOpacity onPress={handleUpdateProfile}>
+                <View style={styles.btn}>
+                  <Text style={styles.btnText}>Mettre à jour</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </KeyboardAwareScrollView>
+        </View >
+      )}
       <Modal
         animationType="fade"
         transparent={true}
@@ -549,5 +556,9 @@ const styles = StyleSheet.create({
   visibilityIcon: {
     padding: 10,
     marginLeft: 'auto', // This will push the icon to the right
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, ScrollView, View, Text, TextInput, TouchableOpacity, Switch, Pressable, Alert } from 'react-native';
+import { StyleSheet, ScrollView, View, Text, TextInput, TouchableOpacity, Switch, Pressable, Alert, ActivityIndicator } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -67,6 +67,7 @@ const AddInspectionScreen = ({ route }) => {
   years.reverse();
 
   const [inspector, setInspector] = useState('');
+  const [isLoading, setIsLoading] = useState(true); // State for loading indicator
 
 
   // get logged in current user
@@ -76,6 +77,7 @@ const AddInspectionScreen = ({ route }) => {
         if (value) {
           const inspector = JSON.parse(value);
           setInspector(inspector);
+          setIsLoading(false); // After fetching data, set isLoading to false
 
         } else {
           setInspector('Unknown Inspector');
@@ -517,749 +519,755 @@ const AddInspectionScreen = ({ route }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Ajouter une inspection</Text>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.detailsContainer}>
+      {isLoading ? (
+        <View style={[styles.container, styles.loadingContainer]}>
+          <ActivityIndicator size="large" color="#977700" />
+        </View>
+      ) : (
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <View style={styles.detailsContainer}>
 
-          {/* Inspector Details*/}
-          <View style={styles.fieldset}>
-            <Text style={styles.fieldsetTitle}>Inspecteur</Text>
-            <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Nom et prénom  <FontAwesome5 name="user-alt" size={14} color="#977700" style={styles.inputIcon} />
-              </Text>
-              <TextInput
-                style={[styles.textInput, styles.inlineInput, styles.disabledTextInput]}
-                value={`${inspector.Firstname} ${inspector.Lastname}`}
-                editable={false}
-              />
-            </View>
-            <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>CIN <FontAwesome5 name="id-card-alt" size={14} color="#977700" style={styles.inputIcon} />
-              </Text>
-              <TextInput
-                style={[styles.textInput, styles.inlineInput, styles.disabledTextInput]}
-                value={inspector.Cin}
-                editable={false}
-              />
-            </View>
-            <View style={[styles.detailItem, styles.inline]}>
-
-              <Text style={styles.label}> Tel <FontAwesome5 name="phone" size={14} color="#977700" style={styles.inputIcon} />
-              </Text>
-              <TextInput
-                style={[styles.textInput, styles.inlineInput, styles.disabledTextInput]}
-                value={inspector.Phone}
-                editable={false}
-              />
-            </View>
-
-          </View>
-          {/* End of Inspector Details*/}
-
-
-          {/* Hive and Apiary Details */}
-          <View style={styles.fieldset}>
-            <Text style={styles.fieldsetTitle}>Rucher et Ruche</Text>
-            <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Rucher <FontAwesome5 name="seedling" size={14} color="#977700" style={styles.icon} />
-              </Text>
-              <TextInput
-                style={[styles.textInput, styles.inlineInput, styles.disabledTextInput]}
-                value={hiveData.Apiary.Name}
-                editable={false}
-              />
-            </View>
-            <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Ruche <FontAwesome5 name="archive" size={14} color="#977700" style={styles.icon} /></Text>
-              <TextInput
-                style={[styles.textInput, styles.inlineInput, styles.disabledTextInput]}
-                value={hiveData.Type}
-                editable={false}
-              />
-            </View>
-          </View>
-          {/* End of Hive and Apiary Details */}
-
-
-          {/* Data and Time Details */}
-          <View style={styles.fieldset}>
-            <Text style={styles.fieldsetTitle}>Date et Heure</Text>
-            <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Date <FontAwesome5 name="calendar-alt" size={14} color="#977700" style={styles.icon} />
-              </Text>
-              <TextInput
-                style={[styles.textInput, styles.inlineInput, styles.disabledTextInput]}
-                value={new Date().toLocaleDateString('fr-FR')}
-                editable={false}
-              />
-            </View>
-            <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Heure <FontAwesome5 name="clock" size={14} color="#977700" style={styles.icon} />
-              </Text>
-              <TextInput
-                style={[styles.textInput, styles.inlineInput, styles.disabledTextInput]}
-                value={new Date().toLocaleTimeString('fr-FR')}
-                editable={false}
-              />
-            </View>
-          </View>
-          {/* End of Date and Time Details */}
-
-
-          {/* Queen Details*/}
-          {hiveData.Queen && (
+            {/* Inspector Details*/}
             <View style={styles.fieldset}>
-              <Text style={styles.fieldsetTitle}>Reine</Text>
+              <Text style={styles.fieldsetTitle}>Inspecteur</Text>
+              <View style={[styles.detailItem, styles.inline]}>
+                <Text style={styles.label}>Nom et prénom  <FontAwesome5 name="user-alt" size={14} color="#977700" style={styles.inputIcon} />
+                </Text>
+                <TextInput
+                  style={[styles.textInput, styles.inlineInput, styles.disabledTextInput]}
+                  value={`${inspector.Firstname} ${inspector.Lastname}`}
+                  editable={false}
+                />
+              </View>
+              <View style={[styles.detailItem, styles.inline]}>
+                <Text style={styles.label}>CIN <FontAwesome5 name="id-card-alt" size={14} color="#977700" style={styles.inputIcon} />
+                </Text>
+                <TextInput
+                  style={[styles.textInput, styles.inlineInput, styles.disabledTextInput]}
+                  value={inspector.Cin}
+                  editable={false}
+                />
+              </View>
+              <View style={[styles.detailItem, styles.inline]}>
+
+                <Text style={styles.label}> Tel <FontAwesome5 name="phone" size={14} color="#977700" style={styles.inputIcon} />
+                </Text>
+                <TextInput
+                  style={[styles.textInput, styles.inlineInput, styles.disabledTextInput]}
+                  value={inspector.Phone}
+                  editable={false}
+                />
+              </View>
+
+            </View>
+            {/* End of Inspector Details*/}
 
 
-              <View>
-                <View style={styles.inline}>
-                  <Text style={styles.label}>Observée</Text>
-                  <Switch
-                    trackColor={{ false: "#767577", true: "#81b0ff" }}
-                    thumbColor={showQueenDetails ? "#f4f3f4" : "#f4f3f4"}
-                    ios_backgroundColor="#3e3e3e"
-                    onValueChange={(value) => {
-                      handleInputChange('seen', value);
-                      handleSeenToggle(value);
-                    }}
-                    value={showQueenDetails}
-                  />
-                </View>
+            {/* Hive and Apiary Details */}
+            <View style={styles.fieldset}>
+              <Text style={styles.fieldsetTitle}>Rucher et Ruche</Text>
+              <View style={[styles.detailItem, styles.inline]}>
+                <Text style={styles.label}>Rucher <FontAwesome5 name="seedling" size={14} color="#977700" style={styles.icon} />
+                </Text>
+                <TextInput
+                  style={[styles.textInput, styles.inlineInput, styles.disabledTextInput]}
+                  value={hiveData.Apiary.Name}
+                  editable={false}
+                />
+              </View>
+              <View style={[styles.detailItem, styles.inline]}>
+                <Text style={styles.label}>Ruche <FontAwesome5 name="archive" size={14} color="#977700" style={styles.icon} /></Text>
+                <TextInput
+                  style={[styles.textInput, styles.inlineInput, styles.disabledTextInput]}
+                  value={hiveData.Type}
+                  editable={false}
+                />
+              </View>
+            </View>
+            {/* End of Hive and Apiary Details */}
 
 
-                {showQueenDetails && (
-                  <>
-                    <View style={[styles.detailItem, styles.inline]}>
-                      <Text style={styles.label}>Clippée</Text>
-                      <Switch
-                        trackColor={{ false: "#767577", true: "#81b0ff" }}
-                        thumbColor={formData.clipped ? "#f4f3f4" : "#f4f3f4"}
-                        ios_backgroundColor="#3e3e3e"
-                        onValueChange={(value) => handleInputChange('clipped', value)}
-                        value={formData.clipped}
-                      />
-                    </View>
+            {/* Data and Time Details */}
+            <View style={styles.fieldset}>
+              <Text style={styles.fieldsetTitle}>Date et Heure</Text>
+              <View style={[styles.detailItem, styles.inline]}>
+                <Text style={styles.label}>Date <FontAwesome5 name="calendar-alt" size={14} color="#977700" style={styles.icon} />
+                </Text>
+                <TextInput
+                  style={[styles.textInput, styles.inlineInput, styles.disabledTextInput]}
+                  value={new Date().toLocaleDateString('fr-FR')}
+                  editable={false}
+                />
+              </View>
+              <View style={[styles.detailItem, styles.inline]}>
+                <Text style={styles.label}>Heure <FontAwesome5 name="clock" size={14} color="#977700" style={styles.icon} />
+                </Text>
+                <TextInput
+                  style={[styles.textInput, styles.inlineInput, styles.disabledTextInput]}
+                  value={new Date().toLocaleTimeString('fr-FR')}
+                  editable={false}
+                />
+              </View>
+            </View>
+            {/* End of Date and Time Details */}
 
-                    <View style={[styles.detailItem, styles.inline]}>
-                      <Text style={styles.label}>Essaimé</Text>
-                      <Switch
-                        trackColor={{ false: "#767577", true: "#81b0ff" }}
-                        thumbColor={formData.isSwarmed ? "#f4f3f4" : "#f4f3f4"}
-                        ios_backgroundColor="#3e3e3e"
-                        onValueChange={(value) => handleInputChange('isSwarmed', value)}
-                        value={formData.isSwarmed}
-                      />
-                    </View>
 
-                    <View style={[styles.detailItem, styles.inline]}>
-                      <Text style={styles.label}>Marquée</Text>
-                      <Switch
-                        trackColor={{ false: "#767577", true: "#81b0ff" }}
-                        thumbColor={formData.isMarked ? "#f4f3f4" : "#f4f3f4"}
-                        ios_backgroundColor="#3e3e3e"
-                        onValueChange={(value) => handleInputChange('isMarked', value)}
-                        value={formData.isMarked}
-                      />
-                    </View>
+            {/* Queen Details*/}
+            {hiveData.Queen && (
+              <View style={styles.fieldset}>
+                <Text style={styles.fieldsetTitle}>Reine</Text>
 
-                    {formData.isMarked && (
+
+                <View>
+                  <View style={styles.inline}>
+                    <Text style={styles.label}>Observée</Text>
+                    <Switch
+                      trackColor={{ false: "#767577", true: "#81b0ff" }}
+                      thumbColor={showQueenDetails ? "#f4f3f4" : "#f4f3f4"}
+                      ios_backgroundColor="#3e3e3e"
+                      onValueChange={(value) => {
+                        handleInputChange('seen', value);
+                        handleSeenToggle(value);
+                      }}
+                      value={showQueenDetails}
+                    />
+                  </View>
+
+
+                  {showQueenDetails && (
+                    <>
                       <View style={[styles.detailItem, styles.inline]}>
-                        <Text style={styles.label}>Couleur</Text>
+                        <Text style={styles.label}>Clippée</Text>
+                        <Switch
+                          trackColor={{ false: "#767577", true: "#81b0ff" }}
+                          thumbColor={formData.clipped ? "#f4f3f4" : "#f4f3f4"}
+                          ios_backgroundColor="#3e3e3e"
+                          onValueChange={(value) => handleInputChange('clipped', value)}
+                          value={formData.clipped}
+                        />
+                      </View>
+
+                      <View style={[styles.detailItem, styles.inline]}>
+                        <Text style={styles.label}>Essaimé</Text>
+                        <Switch
+                          trackColor={{ false: "#767577", true: "#81b0ff" }}
+                          thumbColor={formData.isSwarmed ? "#f4f3f4" : "#f4f3f4"}
+                          ios_backgroundColor="#3e3e3e"
+                          onValueChange={(value) => handleInputChange('isSwarmed', value)}
+                          value={formData.isSwarmed}
+                        />
+                      </View>
+
+                      <View style={[styles.detailItem, styles.inline]}>
+                        <Text style={styles.label}>Marquée</Text>
+                        <Switch
+                          trackColor={{ false: "#767577", true: "#81b0ff" }}
+                          thumbColor={formData.isMarked ? "#f4f3f4" : "#f4f3f4"}
+                          ios_backgroundColor="#3e3e3e"
+                          onValueChange={(value) => handleInputChange('isMarked', value)}
+                          value={formData.isMarked}
+                        />
+                      </View>
+
+                      {formData.isMarked && (
+                        <View style={[styles.detailItem, styles.inline]}>
+                          <Text style={styles.label}>Couleur</Text>
+                          <Picker
+                            style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
+                            selectedValue={formData.color}
+                            onValueChange={(value) => handleInputChange('color', value)}
+                          >
+                            <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                            {colors.map((color, index) => (
+                              <Picker.Item key={index} label={color} value={color} />
+                            ))}
+                          </Picker>
+                        </View>
+                      )}
+
+                      <View style={[styles.detailItem, styles.inline]}>
+                        <Text style={styles.label}>Tempérament</Text>
                         <Picker
                           style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                          selectedValue={formData.color}
-                          onValueChange={(value) => handleInputChange('color', value)}
+                          selectedValue={formData.q_temperament}
+                          onValueChange={(value) => handleInputChange('q_temperament', value)}
                         >
                           <Picker.Item label="Sélectionner..." value="" enabled={false} />
-                          {colors.map((color, index) => (
-                            <Picker.Item key={index} label={color} value={color} />
+                          {temperament.map((state, index) => (
+                            <Picker.Item key={index} label={state} value={state} />
                           ))}
                         </Picker>
                       </View>
-                    )}
 
-                    <View style={[styles.detailItem, styles.inline]}>
-                      <Text style={styles.label}>Tempérament</Text>
-                      <Picker
-                        style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                        selectedValue={formData.q_temperament}
-                        onValueChange={(value) => handleInputChange('q_temperament', value)}
-                      >
-                        <Picker.Item label="Sélectionner..." value="" enabled={false} />
-                        {temperament.map((state, index) => (
-                          <Picker.Item key={index} label={state} value={state} />
-                        ))}
-                      </Picker>
-                    </View>
+                      <View style={[styles.detailItem, styles.inline]}>
+                        <Text style={styles.label}>Cellules royales</Text>
+                        <Picker
+                          style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
+                          selectedValue={formData.queenCells}
+                          onValueChange={(value) => handleInputChange('queenCells', value)}
+                        >
+                          <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                          {queen_cells.map((state, index) => (
+                            <Picker.Item key={index} label={state} value={state} />
+                          ))}
+                        </Picker>
+                      </View>
 
-                    <View style={[styles.detailItem, styles.inline]}>
-                      <Text style={styles.label}>Cellules royales</Text>
-                      <Picker
-                        style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                        selectedValue={formData.queenCells}
-                        onValueChange={(value) => handleInputChange('queenCells', value)}
-                      >
-                        <Picker.Item label="Sélectionner..." value="" enabled={false} />
-                        {queen_cells.map((state, index) => (
-                          <Picker.Item key={index} label={state} value={state} />
-                        ))}
-                      </Picker>
-                    </View>
+                      <View style={[styles.detailItem, styles.inline]}>
+                        <Text style={styles.label}>Note</Text>
+                        <TextInput
+                          style={[styles.textInput, styles.inlineInput, styles.textArea]}
+                          multiline={true}
+                          numberOfLines={4}
+                          value={formData.queenNote}
+                          onChangeText={(value) => handleInputChange('queenNote', value)}
+                        />
+                      </View>
+                    </>
+                  )}
+                </View>
+              </View>)}
 
-                    <View style={[styles.detailItem, styles.inline]}>
-                      <Text style={styles.label}>Note</Text>
-                      <TextInput
-                        style={[styles.textInput, styles.inlineInput, styles.textArea]}
-                        multiline={true}
-                        numberOfLines={4}
-                        value={formData.queenNote}
-                        onChangeText={(value) => handleInputChange('queenNote', value)}
-                      />
-                    </View>
-                  </>
-                )}
-              </View>
-            </View>)}
-
-          {/* End of Queen Details*/}
+            {/* End of Queen Details*/}
 
 
-          {/* Equipments Details  */}
-          <View style={styles.fieldset}>
-            <Text style={styles.fieldsetTitle}>Équipements</Text>
-
-            <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Nombre de hausses</Text>
-              <TextInput
-                style={[styles.textInput, styles.inlineInput]}
-                keyboardType='numeric'
-                onChangeText={(value) => handleInputChange('supers', value)}
-                value={formData.supers.toString()}
-              />
-            </View>
-            <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Nombre de trappes à pollen</Text>
-              <TextInput
-                style={[styles.textInput, styles.inlineInput]}
-                keyboardType='numeric'
-                onChangeText={(value) => handleInputChange('pollenFrames', value)}
-                value={hiveData.Colony.pollenFrames ? formData.pollenFrames.toString() : formData.pollenFrames}
-              />
-            </View>
-
-
-            <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Nombre total de cadres</Text>
-              <TextInput
-                style={[styles.textInput, styles.inlineInput]}
-                keyboardType='numeric'
-                onChangeText={(value) => handleInputChange('TotalFrames', value)}
-                value={formData.TotalFrames.toString()}
-              />
-            </View>
-
-
-          </View>
-          {/* End of Equipments  Details*/}
-
-
-
-
-          {/* Supplies Details  */}
-          <View style={styles.fieldset}>
-            <Text style={styles.fieldsetTitle}>Nourritures</Text>
-
-            <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Produit</Text>
-              <Picker
-                style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                selectedValue={formData.product}
-                onValueChange={(value) => handleInputChange('product', value)}
-              >
-                {/* Adding the default disabled option */}
-                <Picker.Item label="Sélectionner..." value="" enabled={false} />
-
-                {supplies.map((state, index) => (
-                  <Picker.Item key={index} label={state} value={state} />
-                ))}
-              </Picker>
-            </View>
-
-            <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Ingrédients</Text>
-              <TextInput
-                style={[styles.textInput, styles.inlineInput]}
-                onChangeText={(value) => handleInputChange('name', value)}
-                value={formData.name}
-              />
-            </View>
-
-            <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Quantité totale</Text>
-              <TextInput
-                style={[styles.textInput, styles.inlineInput]}
-                keyboardType='numeric'
-                onChangeText={(value) => handleInputChange('suppliesQuantity', value)}
-                value={formData.quantity}
-              />
-            </View>
-
-
-            <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Unité</Text>
-              <Picker
-                style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                selectedValue={formData.unit}
-                onValueChange={(value) => handleInputChange('unit', value)}
-              >
-                {/* Adding the default disabled option */}
-                <Picker.Item label="Sélectionner..." value="" enabled={false} />
-
-                {units.map((state, index) => (
-                  <Picker.Item key={index} label={state} value={state} />
-                ))}
-              </Picker>
-            </View>
-
-            <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Note</Text>
-              <TextInput
-                style={[styles.textInput, styles.inlineInput, styles.textArea]}
-                multiline={true}
-                numberOfLines={4}
-                onChangeText={(value) => handleInputChange('SuppliesNote', value)}
-                value={formData.SuppliesNote}
-              />
-            </View>
-          </View>
-          {/* End of Supplies Details*/}
-
-
-          {/* Brood Details*/}
-          <View style={styles.fieldset}>
-            <Text style={styles.fieldsetTitle}>Couvain & Mâles</Text>
-
-            <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>État du couvain</Text>
-              <Picker
-                style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                selectedValue={formData.state}
-                onValueChange={(value) => handleInputChange('state', value)}
-
-              >
-                {/* Adding the default disabled option */}
-                <Picker.Item label="Sélectionner..." value="" enabled={false} />
-
-                {brood.map((state, index) => (
-                  <Picker.Item key={index} label={state} value={state} />
-                ))}
-              </Picker>
-            </View>
-
-            <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Nombre total du couvain</Text>
-              <TextInput
-                style={[styles.textInput, styles.inlineInput]}
-                keyboardType='numeric'
-                onChangeText={(value) => handleInputChange('totalBrood', value)}
-                value={formData.totalBrood}
-              />
-            </View>
-
-
-
-            <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Couvain mâle</Text>
-              <Picker
-                style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                selectedValue={formData.maleBrood}
-                onValueChange={(value) => handleInputChange('maleBrood', value)}
-              >
-                {/* Adding the default disabled option */}
-                <Picker.Item label="Sélectionner..." value="" enabled={false} />
-
-                {malebrood.map((state, index) => (
-                  <Picker.Item key={index} label={state} value={state} />
-                ))}
-              </Picker>
-            </View>
-
-            <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Mâles Observés</Text>
-              <Switch
-                trackColor={{ false: "#767577", true: "#81b0ff" }}
-                thumbColor={formData.DronesSeen ? "#f4f3f4" : "#f4f3f4"}
-                ios_backgroundColor="#3e3e3e"
-                onValueChange={(value) => handleInputChange('DronesSeen', value)}
-                value={formData.DronesSeen}
-              />
-            </View>
-
-          </View>
-          {/* End of Brood Details*/}
-
-
-
-          {/* Colony Details*/}
-          <View style={styles.fieldset}>
-            <Text style={styles.fieldsetTitle}>Colonie</Text>
-
-
-            <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Abeilles mortes</Text>
-              <Switch
-                trackColor={{ false: "#767577", true: "#81b0ff" }}
-                thumbColor={formData.deadBees ? "#f4f3f4" : "#f4f3f4"}
-                ios_backgroundColor="#3e3e3e"
-                onValueChange={(value) => handleInputChange('deadBees', value)}
-                value={formData.deadBees}
-              />
-            </View>
-
-            <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Tempérament</Text>
-              <Picker
-                style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                selectedValue={formData.c_temperament}
-                onValueChange={(value) => handleInputChange('c_temperament', value)}
-              >
-                {/* Adding the default disabled option */}
-                <Picker.Item label="Sélectionner..." value="" enabled={false} />
-
-                {temperament.map((state, index) => (
-                  <Picker.Item key={index} label={state} value={state} />
-                ))}
-              </Picker>
-            </View>
-
-
-            <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Force</Text>
-              <Picker
-                style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                selectedValue={formData.strength}
-                onValueChange={(value) => handleInputChange('strength', value)}
-              >
-                {/* Adding the default disabled option */}
-                <Picker.Item label="Sélectionner..." value="" enabled={false} />
-
-                {force.map((state, index) => (
-                  <Picker.Item key={index} label={state} value={state} />
-                ))}
-              </Picker>
-            </View>
-
-            <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Note</Text>
-              <TextInput
-                style={[styles.textInput, styles.inlineInput, styles.textArea]}
-                multiline={true}
-                numberOfLines={4}
-                onChangeText={(value) => handleInputChange('colonyNote', value)}
-                value={formData.colonyNote}
-              />
-            </View>
-
-          </View>
-          {/* End of Colony Details*/}
-
-
-
-          {/* Treatment Details  */}
-          <View style={styles.fieldset}>
-            <Text style={styles.fieldsetTitle}>Maladie et traitement</Text>
-
-            <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Maladie</Text>
-              <Picker
-                style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                selectedValue={formData.disease}
-                onValueChange={(value) => handleInputChange('disease', value)}
-              >
-                {/* Adding the default disabled option */}
-                <Picker.Item label="Sélectionner..." value="" enabled={false} />
-
-                {diseases.map((state, index) => (
-                  <Picker.Item key={index} label={state} value={state} />
-                ))}
-              </Picker>
-            </View>
-
-            <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Traitements</Text>
-              <Picker
-                style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                selectedValue={formData.treatment}
-                onValueChange={(value) => handleInputChange('treatment', value)}
-              >
-                {/* Adding the default disabled option */}
-                <Picker.Item label="Sélectionner..." value="" enabled={false} />
-
-                {treatments.map((state, index) => (
-                  <Picker.Item key={index} label={state} value={state} />
-                ))}
-              </Picker>
-            </View>
-
+            {/* Equipments Details  */}
             <View style={styles.fieldset}>
-              <Text style={styles.fieldsetTitle}>Durée</Text>
-              <View>
-                <View style={[styles.detailItem, styles.inline]}>
-                  <Text style={styles.label}>À partir de</Text>
-                  <Pressable onPress={togglePickerFrom}>
-                    <Text style={[styles.textInput, styles.inlineInput]}>
-                      {formData.from ? formData.from.toLocaleDateString('fr-FR') : 'Sélectionner une date'}
-                    </Text>
-                  </Pressable>
-                </View>
-                {showPickerFrom && (
-                  <DateTimePicker
-                    testID="dateTimePickerFrom"
-                    value={formData.from || new Date()}
-                    mode="date"
-                    is24Hour={true}
-                    display="default"
-                    onChange={handleDateChangeFrom}
-                    locale="fr"
-                  />
-                )}
+              <Text style={styles.fieldsetTitle}>Équipements</Text>
+
+              <View style={[styles.detailItem, styles.inline]}>
+                <Text style={styles.label}>Nombre de hausses</Text>
+                <TextInput
+                  style={[styles.textInput, styles.inlineInput]}
+                  keyboardType='numeric'
+                  onChangeText={(value) => handleInputChange('supers', value)}
+                  value={formData.supers.toString()}
+                />
+              </View>
+              <View style={[styles.detailItem, styles.inline]}>
+                <Text style={styles.label}>Nombre de trappes à pollen</Text>
+                <TextInput
+                  style={[styles.textInput, styles.inlineInput]}
+                  keyboardType='numeric'
+                  onChangeText={(value) => handleInputChange('pollenFrames', value)}
+                  value={hiveData.Colony.pollenFrames ? formData.pollenFrames.toString() : formData.pollenFrames}
+                />
               </View>
 
-              <View>
-                <View style={[styles.detailItem, styles.inline]}>
-                  <Text style={styles.label}>À</Text>
-                  <Pressable onPress={togglePickerTo}>
-                    <Text style={[styles.textInput, styles.inlineInput]}>
-                      {formData.to ? formData.to.toLocaleDateString('fr-FR') : 'Sélectionner une date'}
-                    </Text>
-                  </Pressable>
-                </View>
-                {showPickerTo && (
-                  <DateTimePicker
-                    testID="dateTimePickerTo"
-                    value={formData.to || new Date()}
-                    mode="date"
-                    is24Hour={true}
-                    display="default"
-                    onChange={handleDateChangeTo}
-                    locale="fr"
-                  />
-                )}
+
+              <View style={[styles.detailItem, styles.inline]}>
+                <Text style={styles.label}>Nombre total de cadres</Text>
+                <TextInput
+                  style={[styles.textInput, styles.inlineInput]}
+                  keyboardType='numeric'
+                  onChangeText={(value) => handleInputChange('TotalFrames', value)}
+                  value={formData.TotalFrames.toString()}
+                />
               </View>
+
+
             </View>
-
-            <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Quantité</Text>
-              <TextInput
-                style={[styles.textInput, styles.inlineInput]}
-                keyboardType='numeric'
-                onChangeText={(value) => handleInputChange('treatmentQuantity', value)}
-                value={formData.treatmentQuantity}
-              />
-            </View>
-
-
-            <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Doses</Text>
-              <Picker
-                style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                selectedValue={formData.doses}
-                onValueChange={(value) => handleInputChange('doses', value)}
-              >
-                {/* Adding the default disabled option */}
-                <Picker.Item label="Sélectionner..." value="" enabled={false} />
-
-                {doses.map((state, index) => (
-                  <Picker.Item key={index} label={state} value={state} />
-                ))}
-              </Picker>
-            </View>
-
-            <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Note</Text>
-              <TextInput
-                style={[styles.textInput, styles.inlineInput, styles.textArea]}
-                multiline={true}
-                numberOfLines={4}
-                onChangeText={(value) => handleInputChange('BeeHealthNote', value)}
-                value={formData.BeeHealthNote}
-              />
-            </View>
-          </View>
-          {/* End of Treatment Details*/}
+            {/* End of Equipments  Details*/}
 
 
 
-          {/* Honey and Pollen stores Details  */}
-          <View style={styles.fieldset}>
-            <Text style={styles.fieldsetTitle}>Récoltes</Text>
 
-            <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Récolte de miel </Text>
-              <Picker
-                style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                selectedValue={formData.HoneyStores}
-                onValueChange={(value) => handleInputChange('HoneyStores', value)}
-              >
-                {/* Adding the default disabled option */}
-                <Picker.Item label="Sélectionner..." value="" enabled={false} />
-
-                {HoneyPollenHarvest.map((state, index) => (
-                  <Picker.Item key={index} label={state} value={state} />
-                ))}
-              </Picker>
-            </View>
-
-            <View style={[styles.detailItem, styles.inline]}>
-              <Text style={styles.label}>Récolte de pollens </Text>
-              <Picker
-                style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
-                selectedValue={formData.PollenStores}
-                onValueChange={(value) => handleInputChange('PollenStores', value)}
-              >
-                {/* Adding the default disabled option */}
-                <Picker.Item label="Sélectionner..." value="" enabled={false} />
-
-                {HoneyPollenHarvest.map((state, index) => (
-                  <Picker.Item key={index} label={state} value={state} />
-                ))}
-              </Picker>
-            </View>
-
-
-
-          </View>
-
-          {/* End of Honey and Pollen stores Details */}
-
-
-          {/* Actions Taken */}
-          <ScrollView>
+            {/* Supplies Details  */}
             <View style={styles.fieldset}>
-              <Text style={styles.fieldsetTitle}>Actions entreprises</Text>
-              <View style={styles.frameContainer}>
-                <View style={styles.frame}>
-                  <Text style={styles.frameTitle}>Ajouts</Text>
-                  <View style={styles.optionsContainer}>
-                    {options.map((option) => renderOption(option, selectedAjouts, handleAjoutsChange))}
-                  </View>
-                </View>
-                <View style={styles.frame}>
-                  <Text style={styles.frameTitle}>Enlèvements</Text>
-                  <View style={styles.optionsContainer}>
-                    {options.map((option) => renderOption(option, selectedEnlevements, handleEnlevementsChange))}
-                  </View>
-                </View>
+              <Text style={styles.fieldsetTitle}>Nourritures</Text>
+
+              <View style={[styles.detailItem, styles.inline]}>
+                <Text style={styles.label}>Produit</Text>
+                <Picker
+                  style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
+                  selectedValue={formData.product}
+                  onValueChange={(value) => handleInputChange('product', value)}
+                >
+                  {/* Adding the default disabled option */}
+                  <Picker.Item label="Sélectionner..." value="" enabled={false} />
+
+                  {supplies.map((state, index) => (
+                    <Picker.Item key={index} label={state} value={state} />
+                  ))}
+                </Picker>
+              </View>
+
+              <View style={[styles.detailItem, styles.inline]}>
+                <Text style={styles.label}>Ingrédients</Text>
+                <TextInput
+                  style={[styles.textInput, styles.inlineInput]}
+                  onChangeText={(value) => handleInputChange('name', value)}
+                  value={formData.name}
+                />
+              </View>
+
+              <View style={[styles.detailItem, styles.inline]}>
+                <Text style={styles.label}>Quantité totale</Text>
+                <TextInput
+                  style={[styles.textInput, styles.inlineInput]}
+                  keyboardType='numeric'
+                  onChangeText={(value) => handleInputChange('suppliesQuantity', value)}
+                  value={formData.quantity}
+                />
+              </View>
+
+
+              <View style={[styles.detailItem, styles.inline]}>
+                <Text style={styles.label}>Unité</Text>
+                <Picker
+                  style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
+                  selectedValue={formData.unit}
+                  onValueChange={(value) => handleInputChange('unit', value)}
+                >
+                  {/* Adding the default disabled option */}
+                  <Picker.Item label="Sélectionner..." value="" enabled={false} />
+
+                  {units.map((state, index) => (
+                    <Picker.Item key={index} label={state} value={state} />
+                  ))}
+                </Picker>
+              </View>
+
+              <View style={[styles.detailItem, styles.inline]}>
+                <Text style={styles.label}>Note</Text>
+                <TextInput
+                  style={[styles.textInput, styles.inlineInput, styles.textArea]}
+                  multiline={true}
+                  numberOfLines={4}
+                  onChangeText={(value) => handleInputChange('SuppliesNote', value)}
+                  value={formData.SuppliesNote}
+                />
               </View>
             </View>
-          </ScrollView>
-          {/* End of Actions Taken  */}
+            {/* End of Supplies Details*/}
 
-          {/* Weather Details  */}
-          <View>
-            <View style={styles.inline}>
-              <Text style={styles.label}>Inclure la météo</Text>
-              <Switch
-                trackColor={{ false: "#767577", true: "#B8E986" }}
-                thumbColor={showWeatherDetails ? "#B8E986" : "#B8E986"}
-                value={showWeatherDetails}
-                onValueChange={(value) => setShowWeatherDetails(value)}
-              />
+
+            {/* Brood Details*/}
+            <View style={styles.fieldset}>
+              <Text style={styles.fieldsetTitle}>Couvain & Mâles</Text>
+
+              <View style={[styles.detailItem, styles.inline]}>
+                <Text style={styles.label}>État du couvain</Text>
+                <Picker
+                  style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
+                  selectedValue={formData.state}
+                  onValueChange={(value) => handleInputChange('state', value)}
+
+                >
+                  {/* Adding the default disabled option */}
+                  <Picker.Item label="Sélectionner..." value="" enabled={false} />
+
+                  {brood.map((state, index) => (
+                    <Picker.Item key={index} label={state} value={state} />
+                  ))}
+                </Picker>
+              </View>
+
+              <View style={[styles.detailItem, styles.inline]}>
+                <Text style={styles.label}>Nombre total du couvain</Text>
+                <TextInput
+                  style={[styles.textInput, styles.inlineInput]}
+                  keyboardType='numeric'
+                  onChangeText={(value) => handleInputChange('totalBrood', value)}
+                  value={formData.totalBrood}
+                />
+              </View>
+
+
+
+              <View style={[styles.detailItem, styles.inline]}>
+                <Text style={styles.label}>Couvain mâle</Text>
+                <Picker
+                  style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
+                  selectedValue={formData.maleBrood}
+                  onValueChange={(value) => handleInputChange('maleBrood', value)}
+                >
+                  {/* Adding the default disabled option */}
+                  <Picker.Item label="Sélectionner..." value="" enabled={false} />
+
+                  {malebrood.map((state, index) => (
+                    <Picker.Item key={index} label={state} value={state} />
+                  ))}
+                </Picker>
+              </View>
+
+              <View style={[styles.detailItem, styles.inline]}>
+                <Text style={styles.label}>Mâles Observés</Text>
+                <Switch
+                  trackColor={{ false: "#767577", true: "#81b0ff" }}
+                  thumbColor={formData.DronesSeen ? "#f4f3f4" : "#f4f3f4"}
+                  ios_backgroundColor="#3e3e3e"
+                  onValueChange={(value) => handleInputChange('DronesSeen', value)}
+                  value={formData.DronesSeen}
+                />
+              </View>
+
             </View>
+            {/* End of Brood Details*/}
 
-            {showWeatherDetails && (
+
+
+            {/* Colony Details*/}
+            <View style={styles.fieldset}>
+              <Text style={styles.fieldsetTitle}>Colonie</Text>
+
+
+              <View style={[styles.detailItem, styles.inline]}>
+                <Text style={styles.label}>Abeilles mortes</Text>
+                <Switch
+                  trackColor={{ false: "#767577", true: "#81b0ff" }}
+                  thumbColor={formData.deadBees ? "#f4f3f4" : "#f4f3f4"}
+                  ios_backgroundColor="#3e3e3e"
+                  onValueChange={(value) => handleInputChange('deadBees', value)}
+                  value={formData.deadBees}
+                />
+              </View>
+
+              <View style={[styles.detailItem, styles.inline]}>
+                <Text style={styles.label}>Tempérament</Text>
+                <Picker
+                  style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
+                  selectedValue={formData.c_temperament}
+                  onValueChange={(value) => handleInputChange('c_temperament', value)}
+                >
+                  {/* Adding the default disabled option */}
+                  <Picker.Item label="Sélectionner..." value="" enabled={false} />
+
+                  {temperament.map((state, index) => (
+                    <Picker.Item key={index} label={state} value={state} />
+                  ))}
+                </Picker>
+              </View>
+
+
+              <View style={[styles.detailItem, styles.inline]}>
+                <Text style={styles.label}>Force</Text>
+                <Picker
+                  style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
+                  selectedValue={formData.strength}
+                  onValueChange={(value) => handleInputChange('strength', value)}
+                >
+                  {/* Adding the default disabled option */}
+                  <Picker.Item label="Sélectionner..." value="" enabled={false} />
+
+                  {force.map((state, index) => (
+                    <Picker.Item key={index} label={state} value={state} />
+                  ))}
+                </Picker>
+              </View>
+
+              <View style={[styles.detailItem, styles.inline]}>
+                <Text style={styles.label}>Note</Text>
+                <TextInput
+                  style={[styles.textInput, styles.inlineInput, styles.textArea]}
+                  multiline={true}
+                  numberOfLines={4}
+                  onChangeText={(value) => handleInputChange('colonyNote', value)}
+                  value={formData.colonyNote}
+                />
+              </View>
+
+            </View>
+            {/* End of Colony Details*/}
+
+
+
+            {/* Treatment Details  */}
+            <View style={styles.fieldset}>
+              <Text style={styles.fieldsetTitle}>Maladie et traitement</Text>
+
+              <View style={[styles.detailItem, styles.inline]}>
+                <Text style={styles.label}>Maladie</Text>
+                <Picker
+                  style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
+                  selectedValue={formData.disease}
+                  onValueChange={(value) => handleInputChange('disease', value)}
+                >
+                  {/* Adding the default disabled option */}
+                  <Picker.Item label="Sélectionner..." value="" enabled={false} />
+
+                  {diseases.map((state, index) => (
+                    <Picker.Item key={index} label={state} value={state} />
+                  ))}
+                </Picker>
+              </View>
+
+              <View style={[styles.detailItem, styles.inline]}>
+                <Text style={styles.label}>Traitements</Text>
+                <Picker
+                  style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
+                  selectedValue={formData.treatment}
+                  onValueChange={(value) => handleInputChange('treatment', value)}
+                >
+                  {/* Adding the default disabled option */}
+                  <Picker.Item label="Sélectionner..." value="" enabled={false} />
+
+                  {treatments.map((state, index) => (
+                    <Picker.Item key={index} label={state} value={state} />
+                  ))}
+                </Picker>
+              </View>
+
               <View style={styles.fieldset}>
-                <Text style={styles.fieldsetTitle}>Météo</Text>
-
-                <View style={[styles.detailItem, styles.inline]}>
-                  <Text style={styles.label}>Température (°C)</Text>
-                  <TextInput
-                    style={[styles.textInput, styles.inlineInput]}
-                    keyboardType="numeric"
-                    value={formData.temperature}
-                    editable={false}
-                  />
+                <Text style={styles.fieldsetTitle}>Durée</Text>
+                <View>
+                  <View style={[styles.detailItem, styles.inline]}>
+                    <Text style={styles.label}>À partir de</Text>
+                    <Pressable onPress={togglePickerFrom}>
+                      <Text style={[styles.textInput, styles.inlineInput]}>
+                        {formData.from ? formData.from.toLocaleDateString('fr-FR') : 'Sélectionner une date'}
+                      </Text>
+                    </Pressable>
+                  </View>
+                  {showPickerFrom && (
+                    <DateTimePicker
+                      testID="dateTimePickerFrom"
+                      value={formData.from || new Date()}
+                      mode="date"
+                      is24Hour={true}
+                      display="default"
+                      onChange={handleDateChangeFrom}
+                      locale="fr"
+                    />
+                  )}
                 </View>
 
-                <View style={[styles.detailItem, styles.inline]}>
-                  <Text style={styles.label}>Humidité (%)</Text>
-                  <TextInput
-                    style={[styles.textInput, styles.inlineInput]}
-                    keyboardType="numeric"
-                    value={formData.humidity}
-                    editable={false}
-                  />
+                <View>
+                  <View style={[styles.detailItem, styles.inline]}>
+                    <Text style={styles.label}>À</Text>
+                    <Pressable onPress={togglePickerTo}>
+                      <Text style={[styles.textInput, styles.inlineInput]}>
+                        {formData.to ? formData.to.toLocaleDateString('fr-FR') : 'Sélectionner une date'}
+                      </Text>
+                    </Pressable>
+                  </View>
+                  {showPickerTo && (
+                    <DateTimePicker
+                      testID="dateTimePickerTo"
+                      value={formData.to || new Date()}
+                      mode="date"
+                      is24Hour={true}
+                      display="default"
+                      onChange={handleDateChangeTo}
+                      locale="fr"
+                    />
+                  )}
                 </View>
-
-                <View style={[styles.detailItem, styles.inline]}>
-                  <Text style={styles.label}>Pression (hPa)</Text>
-                  <TextInput
-                    style={[styles.textInput, styles.inlineInput]}
-                    keyboardType="numeric"
-                    value={formData.pressure}
-                    editable={false}
-                  />
-                </View>
-
-                <View style={[styles.detailItem, styles.inline]}>
-                  <Text style={styles.label}>Vitesse du vent (km/h)</Text>
-                  <TextInput
-                    style={[styles.textInput, styles.inlineInput]}
-                    keyboardType="numeric"
-                    value={formData.windSpeed}
-                    editable={false}
-                  />
-                </View>
-
-                <View style={[styles.detailItem, styles.inline]}>
-                  <Text style={styles.label}>Direction du vent</Text>
-                  <TextInput
-                    style={[styles.textInput, styles.inlineInput]}
-                    value={formData.windDirection}
-                    editable={false}
-                  />
-                </View>
-
-                <View style={[styles.detailItem, styles.inline]}>
-                  <Text style={styles.label}>Condition météorologique</Text>
-                  <TextInput
-                    style={[styles.textInput, styles.inlineInput]}
-                    value={formData.condition}
-                    editable={false}
-                  />
-                </View>
-
               </View>
-            )}
+
+              <View style={[styles.detailItem, styles.inline]}>
+                <Text style={styles.label}>Quantité</Text>
+                <TextInput
+                  style={[styles.textInput, styles.inlineInput]}
+                  keyboardType='numeric'
+                  onChangeText={(value) => handleInputChange('treatmentQuantity', value)}
+                  value={formData.treatmentQuantity}
+                />
+              </View>
+
+
+              <View style={[styles.detailItem, styles.inline]}>
+                <Text style={styles.label}>Doses</Text>
+                <Picker
+                  style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
+                  selectedValue={formData.doses}
+                  onValueChange={(value) => handleInputChange('doses', value)}
+                >
+                  {/* Adding the default disabled option */}
+                  <Picker.Item label="Sélectionner..." value="" enabled={false} />
+
+                  {doses.map((state, index) => (
+                    <Picker.Item key={index} label={state} value={state} />
+                  ))}
+                </Picker>
+              </View>
+
+              <View style={[styles.detailItem, styles.inline]}>
+                <Text style={styles.label}>Note</Text>
+                <TextInput
+                  style={[styles.textInput, styles.inlineInput, styles.textArea]}
+                  multiline={true}
+                  numberOfLines={4}
+                  onChangeText={(value) => handleInputChange('BeeHealthNote', value)}
+                  value={formData.BeeHealthNote}
+                />
+              </View>
+            </View>
+            {/* End of Treatment Details*/}
+
+
+
+            {/* Honey and Pollen stores Details  */}
+            <View style={styles.fieldset}>
+              <Text style={styles.fieldsetTitle}>Récoltes</Text>
+
+              <View style={[styles.detailItem, styles.inline]}>
+                <Text style={styles.label}>Récolte de miel </Text>
+                <Picker
+                  style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
+                  selectedValue={formData.HoneyStores}
+                  onValueChange={(value) => handleInputChange('HoneyStores', value)}
+                >
+                  {/* Adding the default disabled option */}
+                  <Picker.Item label="Sélectionner..." value="" enabled={false} />
+
+                  {HoneyPollenHarvest.map((state, index) => (
+                    <Picker.Item key={index} label={state} value={state} />
+                  ))}
+                </Picker>
+              </View>
+
+              <View style={[styles.detailItem, styles.inline]}>
+                <Text style={styles.label}>Récolte de pollens </Text>
+                <Picker
+                  style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
+                  selectedValue={formData.PollenStores}
+                  onValueChange={(value) => handleInputChange('PollenStores', value)}
+                >
+                  {/* Adding the default disabled option */}
+                  <Picker.Item label="Sélectionner..." value="" enabled={false} />
+
+                  {HoneyPollenHarvest.map((state, index) => (
+                    <Picker.Item key={index} label={state} value={state} />
+                  ))}
+                </Picker>
+              </View>
+
+
+
+            </View>
+
+            {/* End of Honey and Pollen stores Details */}
+
+
+            {/* Actions Taken */}
+            <ScrollView>
+              <View style={styles.fieldset}>
+                <Text style={styles.fieldsetTitle}>Actions entreprises</Text>
+                <View style={styles.frameContainer}>
+                  <View style={styles.frame}>
+                    <Text style={styles.frameTitle}>Ajouts</Text>
+                    <View style={styles.optionsContainer}>
+                      {options.map((option) => renderOption(option, selectedAjouts, handleAjoutsChange))}
+                    </View>
+                  </View>
+                  <View style={styles.frame}>
+                    <Text style={styles.frameTitle}>Enlèvements</Text>
+                    <View style={styles.optionsContainer}>
+                      {options.map((option) => renderOption(option, selectedEnlevements, handleEnlevementsChange))}
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </ScrollView>
+            {/* End of Actions Taken  */}
+
+            {/* Weather Details  */}
+            <View>
+              <View style={styles.inline}>
+                <Text style={styles.label}>Inclure la météo</Text>
+                <Switch
+                  trackColor={{ false: "#767577", true: "#B8E986" }}
+                  thumbColor={showWeatherDetails ? "#B8E986" : "#B8E986"}
+                  value={showWeatherDetails}
+                  onValueChange={(value) => setShowWeatherDetails(value)}
+                />
+              </View>
+
+              {showWeatherDetails && (
+                <View style={styles.fieldset}>
+                  <Text style={styles.fieldsetTitle}>Météo</Text>
+
+                  <View style={[styles.detailItem, styles.inline]}>
+                    <Text style={styles.label}>Température (°C)</Text>
+                    <TextInput
+                      style={[styles.textInput, styles.inlineInput]}
+                      keyboardType="numeric"
+                      value={formData.temperature}
+                      editable={false}
+                    />
+                  </View>
+
+                  <View style={[styles.detailItem, styles.inline]}>
+                    <Text style={styles.label}>Humidité (%)</Text>
+                    <TextInput
+                      style={[styles.textInput, styles.inlineInput]}
+                      keyboardType="numeric"
+                      value={formData.humidity}
+                      editable={false}
+                    />
+                  </View>
+
+                  <View style={[styles.detailItem, styles.inline]}>
+                    <Text style={styles.label}>Pression (hPa)</Text>
+                    <TextInput
+                      style={[styles.textInput, styles.inlineInput]}
+                      keyboardType="numeric"
+                      value={formData.pressure}
+                      editable={false}
+                    />
+                  </View>
+
+                  <View style={[styles.detailItem, styles.inline]}>
+                    <Text style={styles.label}>Vitesse du vent (km/h)</Text>
+                    <TextInput
+                      style={[styles.textInput, styles.inlineInput]}
+                      keyboardType="numeric"
+                      value={formData.windSpeed}
+                      editable={false}
+                    />
+                  </View>
+
+                  <View style={[styles.detailItem, styles.inline]}>
+                    <Text style={styles.label}>Direction du vent</Text>
+                    <TextInput
+                      style={[styles.textInput, styles.inlineInput]}
+                      value={formData.windDirection}
+                      editable={false}
+                    />
+                  </View>
+
+                  <View style={[styles.detailItem, styles.inline]}>
+                    <Text style={styles.label}>Condition météorologique</Text>
+                    <TextInput
+                      style={[styles.textInput, styles.inlineInput]}
+                      value={formData.condition}
+                      editable={false}
+                    />
+                  </View>
+
+                </View>
+              )}
+            </View>
+            {/* End of Weather Details  */}
+
+
+
+            {/* Note Details  */}
+            <Text style={styles.fieldsetTitle}>Note</Text>
+
+
+
+            <View style={[styles.detailItem, styles.inline]}>
+              <TextInput
+                style={[styles.textInput, styles.inlineInput, styles.textArea]}
+                multiline={true}
+                numberOfLines={5}
+                onChangeText={(value) => handleInputChange('InspectionNote', value)}
+                value={formData.InspectionNote}
+              />
+            </View>
+            {/* End of Note*/}
+
+            <TouchableOpacity style={styles.addButton} onPress={handleAddInspection}>
+              <Text style={styles.addButtonText}>Ajouter</Text>
+            </TouchableOpacity>
+
+
+
           </View>
-          {/* End of Weather Details  */}
-
-
-
-          {/* Note Details  */}
-          <Text style={styles.fieldsetTitle}>Note</Text>
-
-
-
-          <View style={[styles.detailItem, styles.inline]}>
-            <TextInput
-              style={[styles.textInput, styles.inlineInput, styles.textArea]}
-              multiline={true}
-              numberOfLines={5}
-              onChangeText={(value) => handleInputChange('InspectionNote', value)}
-              value={formData.InspectionNote}
-            />
-          </View>
-          {/* End of Note*/}
-
-          <TouchableOpacity style={styles.addButton} onPress={handleAddInspection}>
-            <Text style={styles.addButtonText}>Ajouter</Text>
-          </TouchableOpacity>
-
-
-
-        </View>
-      </ScrollView>
+        </ScrollView>
+      )}
 
     </View>
   );
@@ -1413,6 +1421,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     alignSelf: 'center',
     color: '#342D21',
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
 

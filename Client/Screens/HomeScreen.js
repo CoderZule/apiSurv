@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, Platform } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, ActivityIndicator } from 'react-native';
 import HomeHeader from '../Components/HomeHeader';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -8,7 +8,7 @@ import { useCameraPermissions } from 'expo-camera';
 import { useIsFocused } from '@react-navigation/native';
 
 import ChangePasswordOnFirstLogin from './UserAccountManagement/ChangePasswordOnFirstLogin';
- 
+
 export default function HomeScreen({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [permission, requestPermission] = useCameraPermissions();
@@ -17,6 +17,7 @@ export default function HomeScreen({ navigation }) {
   const [hivesCount, setHivesCount] = useState(0);
   const [passwordModalVisible, setPasswordModalVisible] = useState(false);
   const isFocused = useIsFocused();
+  const [isLoading, setIsLoading] = useState(true); // State for loading indicator
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -51,7 +52,6 @@ export default function HomeScreen({ navigation }) {
           setApiariesCount(userApiaries.length);
         }
       } catch (error) {
-
         console.error('Error fetching apiaries count:', error);
       }
     };
@@ -59,28 +59,33 @@ export default function HomeScreen({ navigation }) {
     fetchApiariesCount();
   }, [currentUser]);
 
-  const fetchHivesCount = async () => {
-    try {
-      if (currentUser) {
-        const response = await axios.get('http://192.168.1.17:3000/api/hive/getAllHives');
-        const hives = response.data.data;
+  useEffect(() => {
+    const fetchHivesCount = async () => {
+      try {
+        if (currentUser) {
+          const response = await axios.get('http://192.168.1.17:3000/api/hive/getAllHives');
+          const hives = response.data.data;
 
-        // Fetch all apiaries owned by the current user
-        const apiariesResponse = await axios.get('http://192.168.1.17:3000/api/apiary/getAllApiaries');
-        const userApiaries = apiariesResponse.data.data.filter(apiary => apiary.Owner._id === currentUser._id);
+          // Fetch all apiaries owned by the current user
+          const apiariesResponse = await axios.get('http://192.168.1.17:3000/api/apiary/getAllApiaries');
+          const userApiaries = apiariesResponse.data.data.filter(apiary => apiary.Owner._id === currentUser._id);
 
-        // Filter hives based on the apiaries owned by the current user
-        const userHives = hives.filter(hive => userApiaries.some(apiary => apiary._id === hive.Apiary._id));
+          // Filter hives based on the apiaries owned by the current user
+          const userHives = hives.filter(hive => userApiaries.some(apiary => apiary._id === hive.Apiary._id));
 
-        setHivesCount(userHives.length);
+          setHivesCount(userHives.length);
+        }
+      } catch (error) {
+        console.error('Error fetching hives count:', error);
+      } finally {
+        setIsLoading(false); // After fetching data, set isLoading to false
       }
-    } catch (error) {
-      console.error('Error fetching hives count:', error);
+    };
+
+    if (currentUser) {
+      fetchHivesCount();
     }
-  };
-
-  fetchHivesCount();
-
+  }, [currentUser]);
 
   const propertiesData = [
     { id: 1, name: 'Ruchers', value: apiariesCount.toString(), img: require('../assets/rucher.png') },
@@ -118,34 +123,43 @@ export default function HomeScreen({ navigation }) {
     <View style={styles.container}>
       <HomeHeader navigation={navigation} title={'Accueil'} />
 
-      <View style={styles.headerTextView}>
-        <Text style={styles.headerText1}>Bonjour</Text>
-        <Text style={styles.headerText1}></Text>
-        <View style={styles.headerTextContainer}>
-          {currentUser ? (
-            <Text style={styles.headerText2}>{currentUser.Firstname}</Text>
-          ) : null}
+      {isLoading ? (
+        <View style={[styles.container, styles.loadingContainer]}>
+          <ActivityIndicator size="large" color="#977700" />
         </View>
-      </View>
-
-      <View style={styles.propertiesContainer}>
-        {propertiesData.map((item) => (
-          <View key={item.id}  >
-            <Image style={styles.image} source={item.img} />
-            <View style={styles.propertyInfo}>
-              <Text style={styles.nameText}>{item.name}</Text>
-              <Text style={styles.valueText}>{item.value}</Text>
+      ) : (
+        <>
+          <View style={styles.headerTextView}>
+            <Text style={styles.headerText1}>Bonjour</Text>
+            <Text style={styles.headerText1}></Text>
+            <View style={styles.headerTextContainer}>
+              {currentUser ? (
+                <Text style={styles.headerText2}>{currentUser.Firstname}</Text>
+              ) : null}
             </View>
           </View>
-        ))}
-      </View>
 
-      <View style={styles.centeredContainer}>
-        <Image source={require('../assets/qr-scan.png')} style={styles.qrScan} />
-        <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
-          <Text style={styles.buttonText}>Scanner</Text>
-        </TouchableOpacity>
-      </View>
+
+          <View style={styles.propertiesContainer}>
+            {propertiesData.map((item) => (
+              <View key={item.id}  >
+                <Image style={styles.image} source={item.img} />
+                <View style={styles.propertyInfo}>
+                  <Text style={styles.nameText}>{item.name}</Text>
+                  <Text style={styles.valueText}>{item.value}</Text>
+                </View>
+              </View>
+            ))}
+          </View>
+
+          <View style={styles.centeredContainer}>
+            <Image source={require('../assets/qr-scan.png')} style={styles.qrScan} />
+            <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
+              <Text style={styles.buttonText}>Scanner</Text>
+            </TouchableOpacity>
+          </View>
+        </>
+      )}
 
       <Modal
         animationType="slide"
@@ -171,13 +185,13 @@ export default function HomeScreen({ navigation }) {
           </View>
         </View>
       </Modal>
-   
+
       <ChangePasswordOnFirstLogin
         visible={passwordModalVisible}
         onClose={() => setPasswordModalVisible(false)}
         userId={currentUser ? currentUser._id : null}
       />
-      
+
 
 
     </View>
@@ -234,7 +248,7 @@ const styles = StyleSheet.create({
     height: 80,
     width: 75,
   },
- 
+
   propertyInfo: {
     flexDirection: 'column',
     justifyContent: 'center',
@@ -269,7 +283,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
-   },
+  },
   buttonText: {
     fontSize: 17,
     color: '#373737',
@@ -321,6 +335,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#373737',
     fontSize: 16,
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 
