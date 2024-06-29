@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "743145240151",
+    "project_id": "apisurvtestfcm",
+    "storage_bucket": "apisurvtestfcm.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:743145240151:android:ecd4596fb01265751e9512",
+        "android_client_info": {
+          "package_name": "com.zule.apiSurv"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMv9Y4eryH1RIetF-IjYBsMfPDxk7lmQw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
