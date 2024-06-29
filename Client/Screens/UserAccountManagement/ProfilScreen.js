@@ -70,7 +70,7 @@ export default function ProfilScreen({ navigation }) {
         updatedUserData
       );
 
- 
+
       // Save updated user data to AsyncStorage
       await AsyncStorage.setItem('currentUser', JSON.stringify(updatedUserData));
 
@@ -276,100 +276,100 @@ export default function ProfilScreen({ navigation }) {
       </View >
 
       <Modal
-  animationType="slide"
-  transparent={true}
-  statusBarTranslucent={true}
-  visible={modalVisible}
-  onRequestClose={handleModalClose}
->
-  <View style={styles.modalBackground}>
-    <View style={styles.modalView}>
-      <Text style={styles.modalTitle}>Changer le mot de passe</Text>
-      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+        animationType="fade"
+        transparent={true}
+        statusBarTranslucent={true}
+        visible={modalVisible}
+        onRequestClose={handleModalClose}
+      >
+        <View style={styles.modalBackground}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalTitle}>Changer le mot de passe</Text>
+            {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
-      {/* Current Password */}
-      <View style={styles.modalInput}>
-        <TextInput
-          style={styles.inputControl}
-          onChangeText={setCurrentPasswordInput}
-          placeholder="Mot de passe actuel"
-          secureTextEntry={hideCurrentPassword}
-          placeholderTextColor="#6b7280"
-        />
-        <TouchableOpacity
-          style={styles.visibilityIcon}
-          onPress={toggleCurrentPasswordVisibility}
-        >
-          <FontAwesome5
-            name={hideCurrentPassword ? 'eye-slash' : 'eye'}
-            size={20}
-            color="#6b7280"
-          />
-        </TouchableOpacity>
-      </View>
+            {/* Current Password */}
+            <View style={styles.modalInput}>
+              <TextInput
+                style={styles.inputControl}
+                onChangeText={setCurrentPasswordInput}
+                placeholder="Mot de passe actuel"
+                secureTextEntry={hideCurrentPassword}
+                placeholderTextColor="#6b7280"
+              />
+              <TouchableOpacity
+                style={styles.visibilityIcon}
+                onPress={toggleCurrentPasswordVisibility}
+              >
+                <FontAwesome5
+                  name={hideCurrentPassword ? 'eye-slash' : 'eye'}
+                  size={20}
+                  color="#6b7280"
+                />
+              </TouchableOpacity>
+            </View>
 
-      {/* New Password */}
-      <View style={styles.modalInput}>
-        <TextInput
-          style={styles.inputControl}
-          value={newPassword}
-          onChangeText={setNewPassword}
-          placeholder="Nouveau mot de passe"
-          secureTextEntry={hideNewPassword}
-          placeholderTextColor="#6b7280"
-        />
-        <TouchableOpacity
-          style={styles.visibilityIcon}
-          onPress={toggleNewPasswordVisibility}
-        >
-          <FontAwesome5
-            name={hideNewPassword ? 'eye-slash' : 'eye'}
-            size={20}
-            color="#6b7280"
-          />
-        </TouchableOpacity>
-      </View>
+            {/* New Password */}
+            <View style={styles.modalInput}>
+              <TextInput
+                style={styles.inputControl}
+                value={newPassword}
+                onChangeText={setNewPassword}
+                placeholder="Nouveau mot de passe"
+                secureTextEntry={hideNewPassword}
+                placeholderTextColor="#6b7280"
+              />
+              <TouchableOpacity
+                style={styles.visibilityIcon}
+                onPress={toggleNewPasswordVisibility}
+              >
+                <FontAwesome5
+                  name={hideNewPassword ? 'eye-slash' : 'eye'}
+                  size={20}
+                  color="#6b7280"
+                />
+              </TouchableOpacity>
+            </View>
 
-      {/* Confirm New Password */}
-      <View style={styles.modalInput}>
-        <TextInput
-          style={styles.inputControl}
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          placeholder="Confirmer le mot de passe"
-          secureTextEntry={hideConfirmPassword}
-          placeholderTextColor="#6b7280"
-        />
-        <TouchableOpacity
-          style={styles.visibilityIcon}
-          onPress={toggleConfirmPasswordVisibility}
-        >
-          <FontAwesome5
-            name={hideConfirmPassword ? 'eye-slash' : 'eye'}
-            size={20}
-            color="#6b7280"
-          />
-        </TouchableOpacity>
-      </View>
+            {/* Confirm New Password */}
+            <View style={styles.modalInput}>
+              <TextInput
+                style={styles.inputControl}
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+                placeholder="Confirmer le mot de passe"
+                secureTextEntry={hideConfirmPassword}
+                placeholderTextColor="#6b7280"
+              />
+              <TouchableOpacity
+                style={styles.visibilityIcon}
+                onPress={toggleConfirmPasswordVisibility}
+              >
+                <FontAwesome5
+                  name={hideConfirmPassword ? 'eye-slash' : 'eye'}
+                  size={20}
+                  color="#6b7280"
+                />
+              </TouchableOpacity>
+            </View>
 
-      {/* Buttons */}
-      <View style={styles.modalButtons}>
-        <Pressable
-          style={[styles.modalButton, styles.buttonClose]}
-          onPress={handleModalClose}
-        >
-          <Text style={styles.textStyle}>Annuler</Text>
-        </Pressable>
-        <Pressable
-          style={[styles.modalButton, styles.buttonSave]}
-          onPress={handlePasswordChange}
-        >
-          <Text style={styles.textStyle}>Sauvegarder</Text>
-        </Pressable>
-      </View>
-    </View>
-  </View>
-</Modal>
+            {/* Buttons */}
+            <View style={styles.modalButtons}>
+              <Pressable
+                style={[styles.modalButton, styles.buttonClose]}
+                onPress={handleModalClose}
+              >
+                <Text style={styles.textStyle}>Annuler</Text>
+              </Pressable>
+              <Pressable
+                style={[styles.modalButton, styles.buttonSave]}
+                onPress={handlePasswordChange}
+              >
+                <Text style={styles.textStyle}>Sauvegarder</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
 
 
 

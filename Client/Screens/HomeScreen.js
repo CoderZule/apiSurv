@@ -301,7 +301,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FEE502',
     width: '100%',
     paddingVertical: 10,
-    marginVertical: 10,
+    marginVertical: 4,
     borderRadius: 8,
   },
   modalButtonText: {
@@ -314,7 +314,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#E0E0E0',
     width: '100%',
     paddingVertical: 10,
-    borderRadius: 5,
+    marginVertical: 4,
+    borderRadius: 8,
   },
   closeButtonText: {
     textAlign: 'center',
