@@ -122,19 +122,19 @@ const HiveDetailsScreen = ({ route, navigation }) => {
                                             <Text style={styles.labelGeneralInfo}>Couleur</Text>
                                             <Text style={styles.textGeneralInfo}>{hiveData.Color}</Text>
                                         </View>
-                                        <View style={styles.detailItemGeneralInfo}>
+                                        <View style={styles.detailItem}>
                                             <Text style={styles.labelGeneralInfo}>Type</Text>
                                             <Text style={styles.textGeneralInfo}>{hiveData.Type}</Text>
                                         </View>
-                                        <View style={styles.detailItemGeneralInfo}>
+                                        <View style={styles.detailItem}>
                                             <Text style={styles.labelGeneralInfo}>Source</Text>
                                             <Text style={styles.textGeneralInfo}>{hiveData.Source}</Text>
                                         </View>
-                                        <View style={styles.detailItemGeneralInfo}>
+                                        <View style={styles.detailItem}>
                                             <Text style={styles.labelGeneralInfo}>But</Text>
                                             <Text style={styles.textGeneralInfo}>{hiveData.Purpose}</Text>
                                         </View>
-                                        <View style={styles.detailItemGeneralInfo}>
+                                        <View style={styles.detailItem}>
                                             <Text style={styles.labelGeneralInfo}>Date d'ajout</Text>
                                             <Text style={styles.textGeneralInfo}>{formatDate(hiveData.Added)}</Text>
                                         </View>
@@ -347,7 +347,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: 'bold',
         color: '#626262',
-        marginBottom: 8,
+        marginBottom: 4,
         textAlign: 'center',  
     },
     textGeneralInfo: {

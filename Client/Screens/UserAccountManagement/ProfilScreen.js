@@ -8,13 +8,15 @@ import {
   TouchableOpacity,
   Alert,
   Modal,
-  Pressable, ActivityIndicator,
+  Pressable,
+  ActivityIndicator,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { FontAwesome5 } from '@expo/vector-icons';
 import HomeHeader from '../../Components/HomeHeader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { Card } from 'react-native-paper';
 
 export default function ProfilScreen({ navigation }) {
   const [Firstname, setFirstName] = useState('');
@@ -30,8 +32,7 @@ export default function ProfilScreen({ navigation }) {
   const [hideCurrentPassword, setHideCurrentPassword] = useState(true);
   const [hideNewPassword, setHideNewPassword] = useState(true);
   const [hideConfirmPassword, setHideConfirmPassword] = useState(true);
-  const [isLoading, setIsLoading] = useState(true); // State for loading indicator
-
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -50,8 +51,8 @@ export default function ProfilScreen({ navigation }) {
       } catch (error) {
         console.error('Error fetching user data:', error);
         Alert.alert('Error', 'Failed to fetch user data');
-      }finally {
-        setIsLoading(false); // After fetching data, set isLoading to false
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -73,13 +74,8 @@ export default function ProfilScreen({ navigation }) {
         updatedUserData
       );
 
-
-      // Save updated user data to AsyncStorage
       await AsyncStorage.setItem('currentUser', JSON.stringify(updatedUserData));
-
-      // Update the currentUser state
       setCurrentUser(updatedUserData);
-
       Alert.alert('Succès', 'Les informations ont été mises à jour avec succès');
     } catch (error) {
       console.error('Erreur lors de la mise à jour des informations:', error);
@@ -89,7 +85,6 @@ export default function ProfilScreen({ navigation }) {
 
   const handleModalClose = () => {
     setModalVisible(false);
-    // Reset fields when modal closes
     setCurrentPasswordInput('');
     setNewPassword('');
     setConfirmPassword('');
@@ -99,21 +94,20 @@ export default function ProfilScreen({ navigation }) {
   const handlePasswordChange = async () => {
     try {
       if (!currentPasswordInput) {
-        setError("Veuillez saisir le mot de passe actuel.");
+        setError('Veuillez saisir le mot de passe actuel.');
         return;
       }
 
       if (!newPassword || !confirmPassword) {
-        setError("Veuillez saisir un nouveau mot de passe.");
+        setError('Veuillez saisir un nouveau mot de passe.');
         return;
       }
 
       if (newPassword !== confirmPassword) {
-        setError("Les mots de passe ne correspondent pas.");
+        setError('Les mots de passe ne correspondent pas.');
         return;
       }
 
-      // Send API request to change password
       const updatedUserData = {
         userId: currentUser._id,
         currentPassword: currentPasswordInput,
@@ -140,11 +134,9 @@ export default function ProfilScreen({ navigation }) {
         setError('Le mot de passe actuel est incorrect.');
       } else {
         console.error('Error changing password:', error);
-
       }
     }
   };
-
 
   const toggleCurrentPasswordVisibility = () => {
     setHideCurrentPassword(!hideCurrentPassword);
@@ -157,6 +149,7 @@ export default function ProfilScreen({ navigation }) {
   const toggleConfirmPasswordVisibility = () => {
     setHideConfirmPassword(!hideConfirmPassword);
   };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <HomeHeader navigation={navigation} title={'Profil'} />
@@ -167,111 +160,108 @@ export default function ProfilScreen({ navigation }) {
       ) : (
         <View style={styles.container}>
           <KeyboardAwareScrollView contentContainerStyle={styles.scrollContainer}>
-            {/* Card 1: Personal Information */}
-
-            <View style={styles.card}>
-              <Text style={styles.cardTitle}>Informations de l'apiculteur</Text>
-
-              <View style={styles.input}>
-                <Text style={styles.inputLabel}>Prénom</Text>
-                <View style={styles.inputContainer}>
-                  <FontAwesome5
-                    name="user"
-                    size={15}
-                    color="#977700"
-                    style={styles.inputIcon}
-                  />
-                  <TextInput
-                    style={styles.inputControl}
-                    value={Firstname}
-                    onChangeText={setFirstName}
-                    placeholder="Entrez votre prénom"
-                    placeholderTextColor="#6b7280"
-                  />
-                </View>
-              </View>
-
-              <View style={styles.input}>
-                <Text style={styles.inputLabel}>Nom</Text>
-                <View style={styles.inputContainer}>
-                  <FontAwesome5
-                    name="user"
-                    size={15}
-                    color="#977700"
-                    style={styles.inputIcon}
-                  />
-                  <TextInput
-                    style={styles.inputControl}
-                    value={Lastname}
-                    onChangeText={setLastName}
-                    placeholder="Entrez votre nom"
-                    placeholderTextColor="#6b7280"
-                  />
-                </View>
-              </View>
-
-              <View style={styles.input}>
-                <Text style={styles.inputLabel}>Téléphone</Text>
-                <View style={styles.inputContainer}>
-                  <FontAwesome5
-                    name="phone"
-                    size={15}
-                    color="#977700"
-                    style={styles.inputIcon}
-                  />
-                  <TextInput
-                    style={styles.inputControl}
-                    value={Phone}
-                    onChangeText={setPhone}
-                    placeholder="Entrez votre numéro de téléphone"
-                    placeholderTextColor="#6b7280"
-                    keyboardType="Phone-pad"
-                  />
-                </View>
-              </View>
-            </View>
-
-            {/* Card 2: Login Credentials */}
-
-            <View style={styles.card}>
-              <Text style={styles.cardTitle}>Paramètres du compte</Text>
-
-              <View style={styles.input}>
-                <Text style={styles.inputLabel}>Email</Text>
-                <View style={styles.inputContainer}>
-                  <FontAwesome5
-                    name="envelope"
-                    size={15}
-                    color="#977700"
-                    style={styles.inputIcon}
-                  />
-                  <TextInput
-                    style={styles.inputControl}
-                    value={Email}
-                    onChangeText={setEmail}
-                    placeholder="Entrez votre Email"
-                    placeholderTextColor="#6b7280"
-                    keyboardType="Email-address"
-                  />
-                </View>
-              </View>
-
-              <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.penIconContainer}>
+            <Card style={styles.card}>
+              <Card.Title title="Informations de l'apiculteur" />
+              <Card.Content>
                 <View style={styles.input}>
-                  <Text style={styles.inputLabel}>Mot de passe  <FontAwesome5
-                    name="pen"
-                    size={15}
-                    color="#5188C7"
-                    style={styles.inputIcon}
-                  /></Text>
-
+                  <Text style={styles.inputLabel}>Prénom</Text>
+                  <View style={styles.inputContainer}>
+                    <FontAwesome5
+                      name="user"
+                      size={15}
+                      color="#977700"
+                      style={styles.inputIcon}
+                    />
+                    <TextInput
+                      style={styles.inputControl}
+                      value={Firstname}
+                      onChangeText={setFirstName}
+                      placeholder="Entrez votre prénom"
+                      placeholderTextColor="#6b7280"
+                    />
+                  </View>
                 </View>
-              </TouchableOpacity>
 
+                <View style={styles.input}>
+                  <Text style={styles.inputLabel}>Nom</Text>
+                  <View style={styles.inputContainer}>
+                    <FontAwesome5
+                      name="user"
+                      size={15}
+                      color="#977700"
+                      style={styles.inputIcon}
+                    />
+                    <TextInput
+                      style={styles.inputControl}
+                      value={Lastname}
+                      onChangeText={setLastName}
+                      placeholder="Entrez votre nom"
+                      placeholderTextColor="#6b7280"
+                    />
+                  </View>
+                </View>
 
-            </View>
+                <View style={styles.input}>
+                  <Text style={styles.inputLabel}>Téléphone</Text>
+                  <View style={styles.inputContainer}>
+                    <FontAwesome5
+                      name="phone"
+                      size={15}
+                      color="#977700"
+                      style={styles.inputIcon}
+                    />
+                    <TextInput
+                      style={styles.inputControl}
+                      value={Phone}
+                      onChangeText={setPhone}
+                      placeholder="Entrez votre numéro de téléphone"
+                      placeholderTextColor="#6b7280"
+                      keyboardType="phone-pad"
+                    />
+                  </View>
+                </View>
+              </Card.Content>
+            </Card>
 
-            {/* Single Button Outside Cards */}
+            <Card style={styles.card}>
+              <Card.Title title="Paramètres du compte" />
+              <Card.Content>
+                <View style={styles.input}>
+                  <Text style={styles.inputLabel}>Email</Text>
+                  <View style={styles.inputContainer}>
+                    <FontAwesome5
+                      name="envelope"
+                      size={15}
+                      color="#977700"
+                      style={styles.inputIcon}
+                    />
+                    <TextInput
+                      style={styles.inputControl}
+                      value={Email}
+                      onChangeText={setEmail}
+                      placeholder="Entrez votre Email"
+                      placeholderTextColor="#6b7280"
+                      keyboardType="email-address"
+                    />
+                  </View>
+                </View>
+
+                <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.penIconContainer}>
+                  <View style={styles.input}>
+                    <Text style={styles.inputLabel}>
+                      Mot de passe{' '}
+                      <FontAwesome5
+                        name="pen"
+                        size={15}
+                        color="#5188C7"
+                        style={styles.inputIcon}
+                      />
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </Card.Content>
+            </Card>
+
             <View style={styles.formAction}>
               <TouchableOpacity onPress={handleUpdateProfile}>
                 <View style={styles.btn}>
@@ -280,8 +270,9 @@ export default function ProfilScreen({ navigation }) {
               </TouchableOpacity>
             </View>
           </KeyboardAwareScrollView>
-        </View >
+        </View>
       )}
+
       <Modal
         animationType="fade"
         transparent={true}
@@ -294,7 +285,6 @@ export default function ProfilScreen({ navigation }) {
             <Text style={styles.modalTitle}>Changer le mot de passe</Text>
             {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
-            {/* Current Password */}
             <View style={styles.modalInput}>
               <TextInput
                 style={styles.inputControl}
@@ -315,7 +305,6 @@ export default function ProfilScreen({ navigation }) {
               </TouchableOpacity>
             </View>
 
-            {/* New Password */}
             <View style={styles.modalInput}>
               <TextInput
                 style={styles.inputControl}
@@ -337,7 +326,6 @@ export default function ProfilScreen({ navigation }) {
               </TouchableOpacity>
             </View>
 
-            {/* Confirm New Password */}
             <View style={styles.modalInput}>
               <TextInput
                 style={styles.inputControl}
@@ -359,7 +347,6 @@ export default function ProfilScreen({ navigation }) {
               </TouchableOpacity>
             </View>
 
-            {/* Buttons */}
             <View style={styles.modalButtons}>
               <Pressable
                 style={[styles.modalButton, styles.buttonClose]}
@@ -377,10 +364,7 @@ export default function ProfilScreen({ navigation }) {
           </View>
         </View>
       </Modal>
-
-
-
-    </SafeAreaView >
+    </SafeAreaView>
   );
 }
 
@@ -391,102 +375,81 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    margin: 20,
+
+
+    padding: 16,
+  },
+  loadingContainer: {
     justifyContent: 'center',
+    alignItems: 'center',
   },
   scrollContainer: {
-    flexGrow: 1,
-    justifyContent: 'center',
+    paddingBottom: 16,
   },
   card: {
-    paddingHorizontal: 24,
-    flexGrow: 1,
-    flexShrink: 1,
-    flexBasis: 0,
+    marginBottom: 16,
     backgroundColor: '#fff',
-    borderRadius: 30,
-    paddingVertical: 25,
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#977700',
-    textAlign: 'center',
-    marginBottom: 20,
   },
   cardTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#977700',
-    marginBottom: 20,
-    marginLeft: 10,
+    marginBottom: 8,
+    color: '#FBF5E0',
+
   },
   input: {
     marginBottom: 16,
+
   },
   inputLabel: {
     fontSize: 12,
-    fontWeight: '600',
-    color: '#373737',
-    marginBottom: 8,
-    marginLeft: 10,
+    color: '#333',
+    marginBottom: 4,
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F5F5F5',
-    borderRadius: 30,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderColor: '#E5E5E5',
     borderWidth: 1,
-  },
-  penIconContainer: {
-    // padding: 10,
-  },
+    borderColor: '#ccc',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    backgroundColor: '#f9f9f9',
 
+  },
   inputIcon: {
-    padding: 10,
+    marginRight: 8,
   },
   inputControl: {
     flex: 1,
-    paddingHorizontal: 8,
-    fontSize: 12,
-    fontWeight: '500',
-    color: '#797979',
+    fontSize: 16,
+    color: '#333',
   },
   formAction: {
-    // marginTop: 10,
-    //marginBottom: 16,
-    alignItems: 'center',
+    marginTop: 24,
   },
   btn: {
-    width: 276,
-    height: 50,
-    paddingHorizontal: 20,
     backgroundColor: '#FEE502',
-    borderRadius: 20,
-    justifyContent: 'center',
+    borderRadius: 8,
+    paddingVertical: 12,
     alignItems: 'center',
   },
   btnText: {
-    fontSize: 17,
-    color: '#373737',
+    fontSize: 16,
+    color:  '#373737',
     fontWeight: 'bold',
   },
-  // Modal styles
   modalBackground: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalView: {
-    margin: 20,
+    width: '90%',
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 30,
+    padding: 20,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
@@ -496,22 +459,27 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    width: '80%',
   },
   modalTitle: {
     fontSize: 18,
-    marginBottom: 20,
-    textAlign: 'center',
     fontWeight: 'bold',
+    marginBottom: 12,
     color: '#977700',
   },
   modalInput: {
+    flexDirection: 'row',
+    alignItems: 'center',
     borderWidth: 1,
     borderColor: '#ccc',
-    padding: 10,
-    marginBottom: 20,
-    borderRadius: 10,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    backgroundColor: '#f9f9f9',
+    marginBottom: 16,
     width: '100%',
+  },
+  visibilityIcon: {
+    marginLeft: 8,
   },
   modalButtons: {
     flexDirection: 'row',
@@ -519,46 +487,25 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   modalButton: {
-    borderRadius: 10,
-    padding: 10,
-    elevation: 2,
-    minWidth: 100,
+    flex: 1,
+    margin: 4,
+    padding: 12,
+    borderRadius: 8,
     alignItems: 'center',
   },
   buttonClose: {
-    backgroundColor: '#ccc',
-    marginRight: 10,
+    backgroundColor: '#bbb',
   },
   buttonSave: {
     backgroundColor: '#FEE502',
-    marginLeft: 10,
   },
   textStyle: {
+    fontSize: 16,
     color: '#373737',
-    fontWeight: 'bold',
-    textAlign: 'center',
+ 
   },
   errorText: {
     color: 'red',
-    marginBottom: 10,
-  },
-  modalInput: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F5F5F5',
-    borderRadius: 30,
-    paddingHorizontal: 8,
-    paddingVertical: 8,
-    borderColor: '#E5E5E5',
-    borderWidth: 1,
-    marginBottom: 16,
-  },
-  visibilityIcon: {
-    padding: 10,
-    marginLeft: 'auto', // This will push the icon to the right
-  },
-  loadingContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    marginBottom: 8,
   },
 });

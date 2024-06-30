@@ -91,3 +91,14 @@ export const options = [
 ];
 
  
+export const HarvestProducts = ["Miel", "Pollen", "Cire d'abeille", "Propolis", "Gelée royale", "Pain d'abeille", "Venin d'abeille"];
+export const HarvestSeasons = ["Printemps", "Été", "Automne", "Hiver"];
+export const HarvestMethods = [
+  "Extraction manuelle",
+  "Extraction centrifuge",
+  "Récolte à la main",
+  "Récolte mécanique",
+  "Récolte au balayage",
+  "Récolte par grattage"
+];
+

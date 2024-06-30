@@ -1,21 +1,25 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, StatusBar } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
- 
+
 export default function HomeHeader({ navigation, title }) {
-
- 
-
-   React.useEffect(() => {
+  React.useEffect(() => {
     StatusBar.setHidden(true);
     return () => {
-      StatusBar.setHidden(false); 
+      StatusBar.setHidden(false);
     };
   }, []);
 
+  const handleMenuPress = () => {
+    if (navigation && navigation.toggleDrawer) {
+      navigation.toggleDrawer();
+    }
+    // Add fallback logic if needed
+  };
+
   return (
     <View style={styles.header}>
-      <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={styles.menuButton}>
+      <TouchableOpacity onPress={handleMenuPress} style={styles.menuButton}>
         <Ionicons name="menu" color="white" size={32} />
       </TouchableOpacity>
       <View style={styles.titleContainer}>
@@ -28,21 +32,18 @@ export default function HomeHeader({ navigation, title }) {
 const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
-     backgroundColor: '#977700' ,
-
+    backgroundColor: '#977700',
     height: 63,
     alignItems: 'center',
     paddingHorizontal: 15,
-   },
-
+  },
   titleContainer: {
-    flex: 1, 
-    alignItems: 'center', 
+    flex: 1,
+    alignItems: 'center',
   },
   headerTitle: {
-    color: "white",
+    color: 'white',
     fontSize: 25,
     fontWeight: 'bold',
- 
   },
 });

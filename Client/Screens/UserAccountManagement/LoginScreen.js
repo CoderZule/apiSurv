@@ -183,7 +183,8 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#f9f9f9',
+
     borderRadius: 30,
     paddingHorizontal: 10,
     paddingVertical: 8,
@@ -198,7 +199,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     fontSize: 15,
     fontWeight: '500',
-    color: '#797979',
+    color: '#342D21',
   },
   formAction: {
     marginTop: 16,

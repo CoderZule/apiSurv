@@ -1,9 +1,11 @@
 import React from 'react';
 import { View, Text, ScrollView, FlatList, StyleSheet, TouchableOpacity, Image } from 'react-native';
-
+ 
 const InspectionsHistoryScreen = ({ route, navigation }) => {
     const { InspectionsHistoryData } = route.params;
 
+
+    
     if (!InspectionsHistoryData || InspectionsHistoryData.length === 0) {
         return (
             <View style={[styles.container, styles.centeredView]}>

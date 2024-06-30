@@ -2,15 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { ScrollView, View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import EditInspectionModal from './EditInspectionModal';
-
-import axios from 'axios';
+  import axios from 'axios';
 
 const InspectionDetails = ({ route, navigation }) => {
   const { inspectionData, badge } = route.params;
   const [modalVisible, setModalVisible] = useState(false);
   const [formData, setFormData] = useState({ ...inspectionData });
-
-
+  
+ 
 
   const handleModalInputChange = (section, fieldOrValue, value) => {
     // Create a copy of the current state to avoid mutation
@@ -466,6 +465,7 @@ const InspectionDetails = ({ route, navigation }) => {
         setModalVisible={setModalVisible}
         formData={formData}
         handleModalInputChange={handleModalInputChange}
+        navigation={navigation}
       />
 
     </ScrollView>

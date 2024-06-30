@@ -19,7 +19,6 @@ import {
     options,
 
 } from '../Data';
-import { useNavigation } from '@react-navigation/native';
 
 const Option = React.memo(({ option, isSelected, onPressHandler, quantity, onQuantityChange }) => (
     <TouchableOpacity
@@ -52,12 +51,15 @@ const EditInspectionModal = ({
     setModalVisible,
     formData,
     handleModalInputChange,
+    navigation
 }) => {
     // Function to toggle date picker visibility
     const [showPickerFrom, setShowPickerFrom] = useState(false);
     const [showPickerTo, setShowPickerTo] = useState(false);
 
-    const navigation = useNavigation();
+ 
+
+    
 
     const togglePickerFrom = () => {
         setShowPickerFrom(!showPickerFrom);
@@ -256,7 +258,7 @@ const EditInspectionModal = ({
             }
 
             setModalVisible(false);
-            navigation.navigate("Home");
+            navigation.navigate('Home')
 
         } catch (error) {
             Alert.alert(

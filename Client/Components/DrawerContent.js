@@ -70,15 +70,17 @@ export default function DrawerContent(props) {
                 />
 
                 <DrawerItem
-                    label="Finances"
-                    icon={() => <Ionicons name='cash-outline' size={24} color="#977700" />}
-                    onPress={() => props.navigation.navigate('Finances')}
-                    labelStyle={styles.drawerItemLabel}
-                />
-                <DrawerItem
                     label="Récolte"
                     icon={() => <Ionicons name='flask-outline' size={24} color="#977700" />}
                     onPress={() => props.navigation.navigate('Harvest')}
+                    labelStyle={styles.drawerItemLabel}
+                />
+
+
+                <DrawerItem
+                    label="Finances"
+                    icon={() => <Ionicons name='cash-outline' size={24} color="#977700" />}
+                    onPress={() => props.navigation.navigate('Finances')}
                     labelStyle={styles.drawerItemLabel}
                 />
 
@@ -118,8 +120,8 @@ const styles = StyleSheet.create({
     divider: {
         borderBottomColor: '#977700',
         borderBottomWidth: 0.2,
-        marginTop:10
- 
+        marginTop: 10
+
     },
     logoContainer: {
         backgroundColor: '#977700',
