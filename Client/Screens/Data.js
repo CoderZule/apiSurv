@@ -90,8 +90,9 @@ export const options = [
   { name: "Rayon de miel", requiresNumberInput: true }
 ];
 
- 
+                                 
 export const HarvestProducts = ["Miel", "Pollen", "Cire d'abeille", "Propolis", "Gelée royale", "Pain d'abeille", "Venin d'abeille"];
+
 export const HarvestSeasons = ["Printemps", "Été", "Automne", "Hiver"];
 export const HarvestMethods = [
   "Extraction manuelle",
