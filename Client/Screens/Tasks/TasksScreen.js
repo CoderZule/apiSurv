@@ -345,7 +345,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   card: {
-    margin: 20,
+    margin: 16,
     padding: 15,
     borderRadius: 10,
     shadowColor: '#000',

@@ -40,7 +40,6 @@ export default function HarvestHistoryScreen({ navigation }) {
         };
 
         const response = await axios.post('http://192.168.1.17:3000/api/harvest/create', formData);
-        console.log('Harvest entry created successfully:', response.data);
         Alert.alert('Success', 'Récolte ajoutée avec succès');
 
         // Reset input states and close modal
@@ -162,7 +161,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     elevation: 3,
     backgroundColor: '#FFFFFF',
-    marginVertical: 8,
+    marginVertical: 16,
     marginHorizontal: 15,
   },
   addButton: {
@@ -198,8 +197,7 @@ const styles = StyleSheet.create({
   },
   tableCell: {
     padding: 10,
-    fontWeight: 'bold',
-    width: 100,
+     width: 100,
     flex: 1,
     textAlign: 'center',
     borderRightWidth: 0.5,

@@ -6,7 +6,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import axios from 'axios';
 import * as Location from 'expo-location';
 import {
-  colors,
+  queenColors,
   queen_cells,
   temperament,
   force,
@@ -65,6 +65,16 @@ const AddInspectionScreen = ({ route }) => {
   const endYear = 2024;
   const years = Array.from(new Array(endYear - startYear + 1), (_, index) => startYear + index);
   years.reverse();
+
+  const [time, setTime] = useState(new Date().toLocaleTimeString('fr-FR'));
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTime(new Date().toLocaleTimeString('fr-FR'));
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const [inspector, setInspector] = useState('');
   const [isLoading, setIsLoading] = useState(true); // State for loading indicator
@@ -604,7 +614,7 @@ const AddInspectionScreen = ({ route }) => {
                 </Text>
                 <TextInput
                   style={[styles.textInput, styles.inlineInput, styles.disabledTextInput]}
-                  value={new Date().toLocaleTimeString('fr-FR')}
+                  value={time}
                   editable={false}
                 />
               </View>
@@ -677,8 +687,7 @@ const AddInspectionScreen = ({ route }) => {
                             selectedValue={formData.color}
                             onValueChange={(value) => handleInputChange('color', value)}
                           >
-                            <Picker.Item label="Sélectionner..." value="" enabled={false} />
-                            {colors.map((color, index) => (
+                             {queenColors.map((color, index) => (
                               <Picker.Item key={index} label={color} value={color} />
                             ))}
                           </Picker>

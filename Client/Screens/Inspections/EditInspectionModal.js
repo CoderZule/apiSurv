@@ -4,7 +4,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 import {
-    colors,
+    queenColors,
     queen_cells,
     temperament,
     force,
@@ -324,7 +324,7 @@ const EditInspectionModal = ({
                                                     style={[styles.modalInput, { backgroundColor: '#FBF5E0' }]}
                                                     onValueChange={(value) => handleModalInputChange('Queen', 'color', value)}
                                                 >
-                                                    {colors.map((color, index) => (
+                                                    {queenColors.map((color, index) => (
                                                         <Picker.Item key={index} label={color} value={color} />
                                                     ))}
                                                 </Picker>) : (<Picker

@@ -1,5 +1,6 @@
 
 export const colors = ['Rouge', 'Bleu', 'Vert', 'Jaune', 'Orange', 'Violet', 'Rose', 'Marron', 'Blanc', 'Noir'];
+export const queenColors = ['Rouge', 'Bleu', 'Vert', 'Jaune', 'Blanc'];
 
 export const queen_cells = ['Aucun', 'Essaim', 'Supersedure', 'Urgence'];
 export const temperament = [
