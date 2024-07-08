@@ -24,6 +24,11 @@ const EditHarvestModal = ({ visible, onSave, onCancel, formData, onInputChange }
 
 
   const handleSave = async () => {
+    if (!formData.Quantity  || !formData.QualityTestResults ) {
+      // Show error alert for empty fields
+      return Alert.alert('Erreur', 'Veuillez remplir tous les champs');
+    }
+    
     try {
       const response = await axios.post('http://192.168.1.17:3000/api/harvest/editHarvest', formData);
 
