@@ -4,9 +4,10 @@ import { Ionicons } from '@expo/vector-icons';
 import EditInspectionModal from './EditInspectionModal';
   import axios from 'axios';
 
-const InspectionDetails = ({ route, navigation }) => {
+const InspectionDetailsScreen = ({ route, navigation }) => {
   const { inspectionData, badge } = route.params;
   const [modalVisible, setModalVisible] = useState(false);
+  
   const [formData, setFormData] = useState({ ...inspectionData });
   
  
@@ -141,16 +142,16 @@ const InspectionDetails = ({ route, navigation }) => {
       const response = await axios.post('http://192.168.1.17:3000/api/inspection/deleteInspection', { inspectionId });
 
       if (response.status === 200) {
-        console.log('Inspection deleted successfully');
+        console.log('Inspection supprimée avec succès');
         // Show success alert
-        showAlertAndNavigate('Inspection deleted successfully');
+        showAlertAndNavigate('Inspection supprimée avec succès');
       } else {
         console.error('Failed to delete inspection:', response.data.message);
-        showAlert('Failed to delete inspection');
+        showAlert('Échec de la suppression de l\'inspection');
       }
     } catch (error) {
       console.error('Error deleting inspection:', error.message);
-      showAlert('Error deleting inspection');
+      showAlert('Erreur lors de la suppression de l\'inspection');
     }
   };
 
@@ -571,4 +572,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default InspectionDetails;
+export default InspectionDetailsScreen;

@@ -40,6 +40,8 @@ const AddHarvestModal = ({
                 <View style={styles.modalView}>
                     <Card style={styles.card}>
                         <ScrollView contentContainerStyle={styles.scrollViewContent} keyboardShouldPersistTaps="handled">
+                        <Text style={styles.modalTitle}>Ajouter une récolte</Text>
+
                             <Text style={styles.label}>Produit</Text>
                             <View style={styles.inputContainer}>
                                 <Picker
@@ -169,6 +171,13 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 5,
     },
+    modalTitle: {
+        fontSize: 22,
+        fontWeight: "bold",
+        color: '#977700',
+        textAlign: 'center',
+        marginBottom: 20,
+      },
     scrollViewContent: {
         flexGrow: 1,
         justifyContent: 'flex-start', // Align items at the top

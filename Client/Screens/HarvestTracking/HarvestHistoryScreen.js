@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, StyleSheet, View, Text, TouchableOpacity, Alert, FlatList, ScrollView } from 'react-native';
+import { SafeAreaView, StyleSheet, View, Text, TouchableOpacity, Alert, FlatList, ScrollView, ActivityIndicator } from 'react-native';
 import { Card } from 'react-native-paper';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import axios from 'axios';
 import HomeHeader from '../../Components/HomeHeader';
 import AddHarvestModal from './AddHarvestModal';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function HarvestHistoryScreen({ navigation }) {
   const [harvests, setHarvests] = useState([]);
@@ -17,7 +18,30 @@ export default function HarvestHistoryScreen({ navigation }) {
   const [qualityTestResults, setQualityTestResults] = useState('');
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const isFocused = useIsFocused();
+  const [isLoading, setIsLoading] = useState(true);
 
+  const lastItemIndex = harvests.length - 1;
+
+
+
+  const fetchHarvestData = async () => {
+    try {
+      const response = await axios.get('http://192.168.1.17:3000/api/harvest/getAllHarvests');
+      setHarvests(response.data.data);
+    } catch (error) {
+      console.error('Error fetching harvest data:', error);
+      Alert.alert('Error', 'Erreur lors du chargement des récoltes');
+    }
+    finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchHarvestData();
+  }, [isFocused]);
+  
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setShowDatePicker(false);
@@ -60,36 +84,33 @@ export default function HarvestHistoryScreen({ navigation }) {
     }
   };
 
-  const fetchHarvestData = async () => {
-    try {
-      const response = await axios.get('http://192.168.1.17:3000/api/harvest/getAllHarvests');
-      setHarvests(response.data.data);
-    } catch (error) {
-      console.error('Error fetching harvest data:', error);
-      Alert.alert('Error', 'Erreur lors du chargement des récoltes');
-    }
-  };
 
-  useEffect(() => {
-    fetchHarvestData();
-  }, []);
 
-  const renderHarvestItem = ({ item }) => (
-    <View style={styles.tableRow}>
+  const renderHarvestItem = ({ item, index }) => (
+    <TouchableOpacity
+      style={styles.tableRow}
+      onPress={() => navigation.navigate('HarvestDetailsScreen', { harvestData: item, badge: index === lastItemIndex ? true : false, })}
+    >
       <Text style={styles.tableCell}>{item.Product}</Text>
       <Text style={styles.tableCell}>{new Date(item.Date).toLocaleDateString()}</Text>
-      <Text style={styles.tableCell}>{item.Quantity}</Text>
-      <Text style={styles.tableCell}>{item.Unit}</Text>
       <Text style={styles.tableCell}>{item.Season}</Text>
-      <Text style={styles.tableCell}>{item.HarvestMethods}</Text>
-      <Text style={styles.tableCell}>{item.QualityTestResults}</Text>
-    </View>
+
+      {index === lastItemIndex && (
+        <View style={styles.badge}>
+          <Text style={{ color: 'white', fontSize: 9, fontWeight: 'bold' }}>Dernière récolte</Text>
+        </View>
+      )}
+    </TouchableOpacity>
   );
+
+
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <HomeHeader navigation={navigation} title={'Récolte'} />
+
       <Card style={styles.card}>
+
         <TouchableOpacity
           style={styles.addButton}
           onPress={() => setShowModal(true)}
@@ -97,32 +118,33 @@ export default function HarvestHistoryScreen({ navigation }) {
           <FontAwesome5Icon name="plus-circle" size={30} color="#FEE502" />
         </TouchableOpacity>
 
-        <ScrollView horizontal={true}>
-          <View style={styles.table}>
-            <View style={styles.tableHeader}>
-              <Text style={styles.tableHeaderText}>Produit</Text>
-              <Text style={styles.tableHeaderText}>Date</Text>
-              <Text style={styles.tableHeaderText}>Quantité</Text>
-              <Text style={styles.tableHeaderText}>Unité</Text>
-              <Text style={styles.tableHeaderText}>Saison</Text>
-              <Text style={styles.tableHeaderText}>Méthode de récolte</Text>
-              <Text style={styles.tableHeaderText}>Résultats des tests de qualité</Text>
-            </View>
-
-            <FlatList
-              data={harvests}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={renderHarvestItem}
-              ListEmptyComponent={
-                <View style={styles.tableRow}>
-                  <Text style={styles.noDataCell}>
-                    Aucune récolte trouvée.
-                  </Text>
-                </View>
-              }
-            />
+        {isLoading ? (
+          <View style={[styles.container, styles.loadingContainer]}>
+            <ActivityIndicator size="large" color="#977700" />
           </View>
-        </ScrollView>
+        ) : (
+          <ScrollView horizontal={true}>
+            <View style={styles.table}>
+              <View style={styles.tableHeader}>
+                <Text style={styles.tableHeaderText}>Produit</Text>
+                <Text style={styles.tableHeaderText}>Date</Text>
+                <Text style={styles.tableHeaderText}>Saison</Text>
+              </View>
+
+              <FlatList
+                data={harvests}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={renderHarvestItem}
+                ListEmptyComponent={
+                  <View style={styles.tableRow}>
+                    <Text style={styles.noDataCell}>
+                      Aucune récolte trouvée.
+                    </Text>
+                  </View>
+                }
+              />
+            </View>
+          </ScrollView>)}
       </Card>
 
       {showModal && (
@@ -157,7 +179,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FBF5E0',
   },
   card: {
-    padding: 20,
+    padding: 13,
     borderRadius: 10,
     elevation: 3,
     backgroundColor: '#FFFFFF',
@@ -170,7 +192,7 @@ const styles = StyleSheet.create({
   },
   table: {
     flex: 1,
-    minWidth: '100%',
+    minWidth: '80%',
     borderWidth: 1,
     borderColor: '#ddd',
   },
@@ -183,7 +205,7 @@ const styles = StyleSheet.create({
   },
   tableHeaderText: {
     padding: 8,
-    fontSize: 12,
+    fontSize: 16,
     fontWeight: 'bold',
     width: 100,
     textAlign: 'center',
@@ -193,22 +215,29 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     backgroundColor: '#fff',
     borderBottomColor: '#ccc',
-    minHeight: 50,
+    minHeight: 60,
   },
   tableCell: {
     padding: 10,
-     width: 100,
+    width: 100,
     flex: 1,
     textAlign: 'center',
-    borderRightWidth: 0.5,
-    borderRightColor: '#ccc',
-    borderLeftWidth: 0.5,
-    borderLeftColor: '#ccc',
-    fontSize: 12,
+
+    fontSize: 15,
   },
   noDataCell: {
     flex: 1,
     padding: 10,
     textAlign: 'center',
+  },
+  badge: {
+    position: 'absolute',
+    bottom: 4,
+    right: 4,
+    backgroundColor: "#2EB922",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 10,
+    zIndex: 1,
   },
 });
