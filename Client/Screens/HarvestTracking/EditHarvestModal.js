@@ -5,10 +5,13 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { HarvestMethods, HarvestSeasons, HarvestProducts, units } from '../Data';
 import axios from 'axios';
 
-const EditHarvestModal = ({ visible, onSave, onCancel, formData, onInputChange }) => {
+const EditHarvestModal = ({ visible, onSave, onCancel, formData, onInputChange, apiaries, hives
+}) => {
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [filteredHives, setFilteredHives] = useState([]);
 
+ 
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setShowDatePicker(Platform.OS === 'ios'); // On iOS, showDatePicker remains true
@@ -19,16 +22,22 @@ const EditHarvestModal = ({ visible, onSave, onCancel, formData, onInputChange }
   useEffect(() => {
     // Update date when formData changes (in case of external changes)
     setDate(new Date(formData.Date));
-  }, [formData.Date]);
-
-
-
+    
+    // Filter hives based on selected apiary
+    if (formData.Apiary) {
+      const filteredHives = hives.filter(hive => hive.Apiary.Name.toString() === formData.Apiary.toString());
+      setFilteredHives(filteredHives);
+    } else {
+      setFilteredHives([]);
+    }
+  }, [formData, hives]);
+  
   const handleSave = async () => {
-    if (!formData.Quantity  || !formData.QualityTestResults ) {
+    if (!formData.Quantity || !formData.QualityTestResults) {
       // Show error alert for empty fields
       return Alert.alert('Erreur', 'Veuillez remplir tous les champs');
     }
-    
+
     try {
       const response = await axios.post('http://192.168.1.17:3000/api/harvest/editHarvest', formData);
 
@@ -71,6 +80,35 @@ const EditHarvestModal = ({ visible, onSave, onCancel, formData, onInputChange }
             <ScrollView>
 
               <Text style={styles.modalTitle}>Modifier la récolte</Text>
+
+              {/* Apiary*/}
+              <Text style={styles.label}>Rucher</Text>
+              <View style={styles.inputContainer}>
+                <Picker
+                  selectedValue={formData.Apiary}
+                  onValueChange={(itemValue) => onInputChange('Apiary', itemValue)}
+                  style={styles.picker}
+                >
+                  {apiaries.map((apiary) => (
+                    <Picker.Item label={apiary.Name} value={apiary.Name} key={apiary._id} />
+                  ))}
+                </Picker>
+              </View>
+
+              {/* Hive */}
+              <Text style={styles.label}>Ruche</Text>
+              <View style={styles.inputContainer}>
+                <Picker
+                  selectedValue={formData.Hive}
+                  onValueChange={(itemValue) => onInputChange('Hive', itemValue)}
+                  style={styles.picker}
+                >
+                  {filteredHives.map((hive) => (
+                    <Picker.Item label={hive.Name} value={hive.Name} key={hive._id} />
+                  ))}
+                </Picker>
+
+              </View>
 
               {/* Product */}
               <Text style={styles.label}>Produit</Text>

@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, StyleSheet, View, Text, TouchableOpacity, TextInput, ScrollView, Pressable, KeyboardAvoidingView, Platform } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { HarvestMethods, HarvestSeasons, HarvestProducts, units } from '../Data';
 import { Card } from 'react-native-paper';
+import axios from 'axios';
 
 const AddHarvestModal = ({
+    selectedApiary,
+    setSelectedApiary,
+    selectedHive,
+    setSelectedHive,
     selectedProduct,
     setSelectedProduct,
     quantity,
@@ -24,7 +29,12 @@ const AddHarvestModal = ({
     handleDateChange,
     handleFormSubmit,
     closeModal,
-}) => {
+    apiaries,
+    filteredHives,
+  }) => {
+
+
+ 
     return (
         <Modal
             animationType="slide"
@@ -40,7 +50,37 @@ const AddHarvestModal = ({
                 <View style={styles.modalView}>
                     <Card style={styles.card}>
                         <ScrollView contentContainerStyle={styles.scrollViewContent} keyboardShouldPersistTaps="handled">
-                        <Text style={styles.modalTitle}>Ajouter une récolte</Text>
+                            <Text style={styles.modalTitle}>Ajouter une récolte</Text>
+
+
+                            <Text style={styles.label}>Rucher</Text>
+                            <View style={styles.inputContainer}>
+                                <Picker
+                                    selectedValue={selectedApiary}
+                                    onValueChange={(itemValue) => setSelectedApiary(itemValue)}
+                                    style={styles.picker}
+                                >
+                                    <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                                    {apiaries.map((apiary) => (
+                                        <Picker.Item label={apiary.Name} value={apiary._id} key={apiary._id} />
+                                    ))}
+                                </Picker>
+                            </View>
+
+                            <Text style={styles.label}>Ruche</Text>
+                            <View style={styles.inputContainer}>
+                                <Picker
+                                    selectedValue={selectedHive}
+                                    onValueChange={(itemValue) => setSelectedHive(itemValue)}
+                                    style={styles.picker}
+                                >
+                                    <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                                    {filteredHives.map((hive) => (
+                                        <Picker.Item label={hive.Name} value={hive._id} key={hive._id} />
+                                    ))}
+                                </Picker>
+                            </View>
+
 
                             <Text style={styles.label}>Produit</Text>
                             <View style={styles.inputContainer}>
@@ -69,7 +109,7 @@ const AddHarvestModal = ({
                                         display="default"
                                         onChange={handleDateChange}
                                         locale="fr"
-                                        maximumDate={new Date()} 
+                                        maximumDate={new Date()}
                                     />
                                 )}
                             </View>
@@ -177,7 +217,7 @@ const styles = StyleSheet.create({
         color: '#977700',
         textAlign: 'center',
         marginBottom: 20,
-      },
+    },
     scrollViewContent: {
         flexGrow: 1,
         justifyContent: 'flex-start', // Align items at the top

@@ -6,6 +6,7 @@ import axios from 'axios';
 import HomeHeader from '../../Components/HomeHeader';
 import AddHarvestModal from './AddHarvestModal';
 import { useIsFocused } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function HarvestHistoryScreen({ navigation }) {
   const [harvests, setHarvests] = useState([]);
@@ -20,8 +21,73 @@ export default function HarvestHistoryScreen({ navigation }) {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const isFocused = useIsFocused();
   const [isLoading, setIsLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [apiaries, setApiaries] = useState([]);
+  const [hives, setHives] = useState([]);
 
   const lastItemIndex = harvests.length - 1;
+
+
+
+
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const currentUserString = await AsyncStorage.getItem('currentUser');
+        if (currentUserString) {
+          const user = JSON.parse(currentUserString);
+          setCurrentUser(user);
+
+          if (user && user.FirstTimeLogin) {
+            setPasswordModalVisible(true);
+          }
+        }
+      } catch (error) {
+        console.error('Error retrieving current user:', error);
+      }
+    };
+
+    fetchCurrentUser();
+
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (!currentUser) {
+          return; // Exit early if currentUser is null or undefined
+        }
+        const apiariesResponse = await axios.get('http://192.168.1.17:3000/api/apiary/getAllApiaries');
+        const hivesResponse = await axios.get('http://192.168.1.17:3000/api/hive/getAllHives');
+
+        const userApiaries = apiariesResponse.data.data.filter(apiary => apiary.Owner._id === currentUser._id);
+        setApiaries(userApiaries);
+
+        const userHives = hivesResponse.data.data.filter(hive => userApiaries.some(apiary => apiary._id === hive.Apiary._id));
+        setHives(userHives);
+      } catch (error) {
+        console.error('Error fetching hive and apiary data:', error);
+      }
+    };
+
+    fetchData();
+  }, [currentUser]);
+
+  const [selectedApiary, setSelectedApiary] = useState('');
+  const [selectedHive, setSelectedHive] = useState('');
+  const [filteredHives, setFilteredHives] = useState([]);
+
+
+
+  useEffect(() => {
+    if (selectedApiary) {
+      const filtered = hives.filter(hive => hive.Apiary._id === selectedApiary);
+      setFilteredHives(filtered);
+    } else {
+      setFilteredHives([]);
+    }
+  }, [selectedApiary, hives]);
+
 
 
 
@@ -41,7 +107,7 @@ export default function HarvestHistoryScreen({ navigation }) {
   useEffect(() => {
     fetchHarvestData();
   }, [isFocused]);
-  
+
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setShowDatePicker(false);
@@ -61,12 +127,17 @@ export default function HarvestHistoryScreen({ navigation }) {
           HarvestMethods: selectedHarvestMethod,
           QualityTestResults: qualityTestResults,
           Date: date.toISOString(),
+          Apiary: apiaries.find(apiary => apiary._id === selectedApiary)?.Name || '',
+          Hive: hives.find(hive => hive._id === selectedHive)?.Name || ''
+
         };
 
         const response = await axios.post('http://192.168.1.17:3000/api/harvest/create', formData);
         Alert.alert('Success', 'Récolte ajoutée avec succès');
 
         // Reset input states and close modal
+        setSelectedApiary('');
+        setSelectedHive('');
         setSelectedProduct('');
         setQuantity('');
         setSelectedUnit('');
@@ -89,11 +160,17 @@ export default function HarvestHistoryScreen({ navigation }) {
   const renderHarvestItem = ({ item, index }) => (
     <TouchableOpacity
       style={styles.tableRow}
-      onPress={() => navigation.navigate('HarvestDetailsScreen', { harvestData: item, badge: index === lastItemIndex ? true : false, })}
+      onPress={() => navigation.navigate('HarvestDetailsScreen', {
+        harvestData: item, badge: index === lastItemIndex ? true : false, 
+        apiaries: apiaries,
+        hives: hives
+       
+      })}
     >
+      <Text style={styles.tableCell}>{item.Apiary}</Text>
+      <Text style={styles.tableCell}>{item.Hive}</Text>
       <Text style={styles.tableCell}>{item.Product}</Text>
-      <Text style={styles.tableCell}>{new Date(item.Date).toLocaleDateString()}</Text>
-      <Text style={styles.tableCell}>{item.Season}</Text>
+
 
       {index === lastItemIndex && (
         <View style={styles.badge}>
@@ -126,9 +203,10 @@ export default function HarvestHistoryScreen({ navigation }) {
           <ScrollView horizontal={true}>
             <View style={styles.table}>
               <View style={styles.tableHeader}>
+                <Text style={styles.tableHeaderText}>Rucher</Text>
+                <Text style={styles.tableHeaderText}>Ruche</Text>
                 <Text style={styles.tableHeaderText}>Produit</Text>
-                <Text style={styles.tableHeaderText}>Date</Text>
-                <Text style={styles.tableHeaderText}>Saison</Text>
+
               </View>
 
               <FlatList
@@ -149,6 +227,10 @@ export default function HarvestHistoryScreen({ navigation }) {
 
       {showModal && (
         <AddHarvestModal
+          selectedApiary={selectedApiary}
+          setSelectedApiary={setSelectedApiary}
+          selectedHive={selectedHive}
+          setSelectedHive={setSelectedHive}
           selectedProduct={selectedProduct}
           setSelectedProduct={setSelectedProduct}
           quantity={quantity}
@@ -167,6 +249,9 @@ export default function HarvestHistoryScreen({ navigation }) {
           handleDateChange={handleDateChange}
           handleFormSubmit={handleFormSubmit}
           closeModal={() => setShowModal(false)}
+          apiaries={apiaries}
+          filteredHives={filteredHives}
+
         />
       )}
     </SafeAreaView>
@@ -223,7 +308,7 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'center',
 
-    fontSize: 15,
+    fontSize: 14,
   },
   noDataCell: {
     flex: 1,

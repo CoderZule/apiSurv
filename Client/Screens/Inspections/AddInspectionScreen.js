@@ -131,7 +131,7 @@ const AddInspectionScreen = ({ route }) => {
 
   const [formData, setFormData] = useState({
     isMarked: undefined,
-    color: hiveData.Queen.color,
+    color: hiveData.Queen && hiveData.Queen.color ? hiveData.Queen.color : null ,
     clipped: undefined,
     seen: false,
     isSwarmed: undefined,
@@ -347,7 +347,7 @@ const AddInspectionScreen = ({ route }) => {
 
         ApiaryAndHive: {
           apiaryName: hiveData.Apiary.Name,
-          hiveType: hiveData.Type,
+          hiveName: hiveData.Name,
         },
 
         Queen: {
@@ -589,7 +589,7 @@ const AddInspectionScreen = ({ route }) => {
                 <Text style={styles.label}>Ruche <FontAwesome5 name="archive" size={14} color="#977700" style={styles.icon} /></Text>
                 <TextInput
                   style={[styles.textInput, styles.inlineInput, styles.disabledTextInput]}
-                  value={hiveData.Type}
+                  value={hiveData.Name}
                   editable={false}
                 />
               </View>

@@ -334,7 +334,7 @@ const EditInspectionModal = ({
                                                 >
 
                                                     <Picker.Item label="Selectionner" value="" disabled />
-                                                    {colors.map((color, index) => (
+                                                    {queenColors.map((color, index) => (
                                                         <Picker.Item key={index} label={color} value={color} />
                                                     ))}
                                                 </Picker>)}

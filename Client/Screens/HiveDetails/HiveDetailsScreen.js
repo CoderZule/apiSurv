@@ -85,7 +85,7 @@ const HiveDetailsScreen = ({ route, navigation }) => {
                             <View style={styles.modalContent}>
                                 <Text style={styles.groupTitle}>Détails du rucher</Text>
                                 <View style={styles.detailItem}>
-                                    <Text style={styles.labelGeneralInfo}>Nom du rucher</Text>
+                                    <Text style={styles.labelGeneralInfo}>Nom</Text>
                                     <Text style={styles.textGeneralInfo}>{hiveData.Apiary.Name}</Text>
                                 </View>
                                 <View style={styles.detailItem}>
@@ -118,7 +118,11 @@ const HiveDetailsScreen = ({ route, navigation }) => {
                                 <ScrollView style={styles.scrollContainer}>
 
                                     <View style={styles.section}>
-                                         <View style={styles.detailItem}>
+                                        <View style={styles.detailItem}>
+                                            <Text style={styles.labelGeneralInfo}>Nom</Text>
+                                            <Text style={styles.textGeneralInfo}>{hiveData.Name}</Text>
+                                        </View>
+                                        <View style={styles.detailItem}>
                                             <Text style={styles.labelGeneralInfo}>Couleur</Text>
                                             <Text style={styles.textGeneralInfo}>{hiveData.Color}</Text>
                                         </View>
@@ -314,7 +318,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginBottom: 20,
     },
- 
+
     scrollContainer: {
         maxHeight: 400,
     },
@@ -348,15 +352,15 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#626262',
         marginBottom: 4,
-        textAlign: 'center',  
+        textAlign: 'center',
     },
     textGeneralInfo: {
         fontSize: 12,
         fontWeight: '400',
         color: '#797979',
-        textAlign: 'center',  
+        textAlign: 'center',
     },
-    
+
     header: {
         fontSize: 18,
         fontWeight: 'bold',

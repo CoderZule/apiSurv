@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import EditHarvestModal from './EditHarvestModal'; 
+import EditHarvestModal from './EditHarvestModal';
 import axios from 'axios';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 const HarvestDetailsScreen = ({ route, navigation }) => {
-    const { harvestData, badge } = route.params;
+    const { harvestData, badge, apiaries, hives } = route.params;
     const [modalVisible, setModalVisible] = useState(false);
 
-    
+
     const [formData, setFormData] = useState({ ...harvestData });
 
     useEffect(() => {
@@ -99,11 +100,27 @@ const HarvestDetailsScreen = ({ route, navigation }) => {
                     </TouchableOpacity>
                 </View>
 
+
+                <View style={styles.row}>
+                    <Text style={styles.label}> <FontAwesome5 name="seedling" size={14} color="#977700" /> Rucher
+                    </Text>
+                    <Text style={styles.value}>{formData.Apiary}</Text>
+                </View>
+                <View style={styles.divider} />
+
+                <View style={styles.row}>
+                    <Text style={styles.label}> <FontAwesome5 name="archive" size={14} color="#977700" /> Ruche
+                    </Text>
+                    <Text style={styles.value}>{formData.Hive}</Text>
+                </View>
+                <View style={styles.divider} />
+
                 <View style={styles.row}>
                     <Text style={styles.label}> <Ionicons name="flower-outline" size={14} color="orange" /> Produit
                     </Text>
                     <Text style={styles.value}>{formData.Product}</Text>
                 </View>
+
                 <View style={styles.divider} />
 
                 <View style={styles.row}>
@@ -166,6 +183,8 @@ const HarvestDetailsScreen = ({ route, navigation }) => {
                 onCancel={() => setModalVisible(false)}
                 formData={formData}
                 onInputChange={handleModalInputChange}
+                apiaries={apiaries}
+                hives={hives}
             />
         </ScrollView>
     );
