@@ -214,6 +214,7 @@ const EditInspectionModal = ({
                     return Alert.alert('Erreur', 'Veuillez compléter les informations sur la reine');
                 }
             } else {
+                updatedFormData.Queen.seen= false;
                 updatedFormData.Queen.isMarked = false;
                 updatedFormData.Queen.color = '';
                 updatedFormData.Queen.clipped = false;

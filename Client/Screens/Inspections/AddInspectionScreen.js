@@ -23,6 +23,7 @@ import {
 } from '../Data';
 import { useNavigation } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 
 const Option = React.memo(({ option, isSelected, onPressHandler, quantity, onQuantityChange }) => (
@@ -577,7 +578,7 @@ const AddInspectionScreen = ({ route }) => {
             <View style={styles.fieldset}>
               <Text style={styles.fieldsetTitle}>Rucher et Ruche</Text>
               <View style={[styles.detailItem, styles.inline]}>
-                <Text style={styles.label}>Rucher <FontAwesome5 name="seedling" size={14} color="#977700" style={styles.icon} />
+                <Text style={styles.label}>Rucher  <Ionicons name="trail-sign-outline" size={14} color="#977700" style={styles.icon} />
                 </Text>
                 <TextInput
                   style={[styles.textInput, styles.inlineInput, styles.disabledTextInput]}

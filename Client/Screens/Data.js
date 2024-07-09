@@ -10,7 +10,7 @@ export const temperament = [
 
 ];
 export const force = [
-  "Trés Faible",
+  "Très Faible",
   "Faible",
   "Modérée",
   "Forte",

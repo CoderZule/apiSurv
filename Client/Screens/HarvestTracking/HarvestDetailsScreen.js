@@ -102,7 +102,7 @@ const HarvestDetailsScreen = ({ route, navigation }) => {
 
 
                 <View style={styles.row}>
-                    <Text style={styles.label}> <FontAwesome5 name="seedling" size={14} color="#977700" /> Rucher
+                    <Text style={styles.label}> <Ionicons name="trail-sign-outline" size={14} color="#977700" />  Rucher
                     </Text>
                     <Text style={styles.value}>{formData.Apiary}</Text>
                 </View>

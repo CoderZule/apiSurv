@@ -35,8 +35,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#977700',
     height: 63,
     alignItems: 'center',
-    paddingHorizontal: 15,
-  },
+    justifyContent: 'center',  
+   },
   titleContainer: {
     flex: 1,
     alignItems: 'center',
@@ -46,4 +46,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: 'bold',
   },
+  menuButton:{
+    marginLeft: 10
+  }
 });

@@ -10,7 +10,8 @@ import HarvestHistoryScreen from '../Screens/HarvestTracking/HarvestHistoryScree
 import StatsScreen from '../Screens/Stats/StatsScreen';
 import DrawerContent from '../Components/DrawerContent';
 import AboutAppScreen from '../Screens/AboutAppScreen';
-
+import StorageScreen from '../Screens/Storage/StorageScreen';
+ 
 
 
 
@@ -39,6 +40,7 @@ export default function DrawerNavigator() {
             <Drawer.Screen name="Harvest" component={HarvestHistoryScreen} />
             <Drawer.Screen name="Stats" component={StatsScreen} />
             <Drawer.Screen name="AboutApp" component={AboutAppScreen}/>
+            <Drawer.Screen name="Storage" component={StorageScreen}/>
 
 
 

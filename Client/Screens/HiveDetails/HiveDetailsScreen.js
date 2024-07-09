@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, ScrollView, View, Text, TouchableOpacity, Modal, ImageBackground, TouchableWithoutFeedback } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import _ from 'lodash'; // Import lodash for debounce
+import { FontAwesome5 } from '@expo/vector-icons';
 
 const HiveDetailsScreen = ({ route, navigation }) => {
     const { hiveData, InspectionsHistoryData } = route.params;
@@ -38,7 +39,7 @@ const HiveDetailsScreen = ({ route, navigation }) => {
                 </View>
                 <View style={styles.buttonsRow}>
                     <TouchableOpacity onPress={() => setShowHiveModal(true)} style={[styles.button]}>
-                        <Ionicons name='archive-outline' size={30} color="#fff" />
+                        <FontAwesome5 name="archive" size={30} color="#fff" />
                         <Text style={[styles.buttonText, { marginTop: 5 }]}>Ruche</Text>
                     </TouchableOpacity>
 

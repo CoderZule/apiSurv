@@ -76,6 +76,13 @@ export default function DrawerContent(props) {
                     labelStyle={styles.drawerItemLabel}
                 />
 
+                <DrawerItem
+                    label="Stockage"
+                    icon={() => <Ionicons name='storefront-outline' size={24} color="#977700" />}
+                    onPress={() => props.navigation.navigate('Storage')}
+                    labelStyle={styles.drawerItemLabel}
+                />
+
 
                 <DrawerItem
                     label="Finances"

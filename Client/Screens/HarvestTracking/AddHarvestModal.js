@@ -132,9 +132,30 @@ const AddHarvestModal = ({
                                     style={styles.picker}
                                 >
                                     <Picker.Item label="Sélectionner..." value="" enabled={false} />
-                                    {units.map((unit) => (
-                                        <Picker.Item label={unit} value={unit} key={unit} />
-                                    ))}
+        {units
+            .filter((unit) => {
+                // Replace with actual logic based on not associated units
+                if (selectedProduct === 'Miel') {
+                    return !['Millilitre (ml)'].includes(unit);
+                } else if (selectedProduct === 'Pollen') {
+                    return !['Millilitre (ml)'].includes(unit);
+                } else if (selectedProduct === 'Cire d\'abeille') {
+                    return !['Litre (L)', 'Millilitre (ml)'].includes(unit);
+                } else if (selectedProduct === 'Propolis') {
+                    return !['Litre (L)', 'Millilitre (ml)'].includes(unit);
+                } else if (selectedProduct === 'Gelée royale') {
+                    return !['Kilogramme (kg)', 'Litre (L)'].includes(unit);
+                } else if (selectedProduct === 'Pain d\'abeille') {
+                    return !['Litre (L)', 'Millilitre (ml)'].includes(unit);
+                } else if (selectedProduct === 'Venin d\'abeille') {
+                    return !['Kilogramme (kg)', 'Litre (L)'].includes(unit);
+                } else {
+                    return true; // Allow all units by default
+                }
+            })
+            .map((unit) => (
+                <Picker.Item label={unit} value={unit} key={unit} />
+            ))}
                                 </Picker>
                             </View>
 
