@@ -11,7 +11,7 @@ const EditHarvestModal = ({ visible, onSave, onCancel, formData, onInputChange, 
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [filteredHives, setFilteredHives] = useState([]);
 
- 
+
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setShowDatePicker(Platform.OS === 'ios'); // On iOS, showDatePicker remains true
@@ -22,7 +22,7 @@ const EditHarvestModal = ({ visible, onSave, onCancel, formData, onInputChange, 
   useEffect(() => {
     // Update date when formData changes (in case of external changes)
     setDate(new Date(formData.Date));
-    
+
     // Filter hives based on selected apiary
     if (formData.Apiary) {
       const filteredHives = hives.filter(hive => hive.Apiary.Name.toString() === formData.Apiary.toString());
@@ -31,7 +31,7 @@ const EditHarvestModal = ({ visible, onSave, onCancel, formData, onInputChange, 
       setFilteredHives([]);
     }
   }, [formData, hives]);
-  
+
   const handleSave = async () => {
     if (!formData.Quantity || !formData.QualityTestResults) {
       // Show error alert for empty fields
@@ -103,6 +103,8 @@ const EditHarvestModal = ({ visible, onSave, onCancel, formData, onInputChange, 
                   onValueChange={(itemValue) => onInputChange('Hive', itemValue)}
                   style={styles.picker}
                 >
+                  <Picker.Item label="Sélectionner..." value="" enabled={false} />
+
                   {filteredHives.map((hive) => (
                     <Picker.Item label={hive.Name} value={hive.Name} key={hive._id} />
                   ))}

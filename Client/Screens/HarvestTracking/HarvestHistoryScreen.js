@@ -115,7 +115,7 @@ export default function HarvestHistoryScreen({ navigation }) {
   };
 
   const handleFormSubmit = async () => {
-    if (!selectedProduct || !quantity || !selectedUnit || !selectedSeason || !selectedHarvestMethod) {
+    if ( !selectedApiary ||!selectedHive ||!selectedProduct || !quantity || !selectedUnit || !selectedSeason || !selectedHarvestMethod) {
       return Alert.alert('Erreur', 'Veuillez remplir tous les champs');
     } else {
       try {
