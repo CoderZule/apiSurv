@@ -35,18 +35,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#977700',
     height: 63,
     alignItems: 'center',
-    justifyContent: 'center',  
-   },
+    paddingHorizontal: 10, // Added paddingHorizontal to space items
+  },
   titleContainer: {
     flex: 1,
     alignItems: 'center',
+    justifyContent: 'center', // Centering title vertically
   },
   headerTitle: {
     color: 'white',
-    fontSize: 25,
+    fontSize: 22,
     fontWeight: 'bold',
   },
-  menuButton:{
-    marginLeft: 10
-  }
+  menuButton: {
+    // Remove marginLeft from menuButton to keep it aligned with the header
+  },
 });

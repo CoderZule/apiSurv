@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, SafeAreaView, StyleSheet, View, TouchableOpacity, Modal, TextInput, Button, Alert } from 'react-native';
+import { Text, SafeAreaView, StyleSheet, View, TouchableOpacity, Modal, TextInput, Pressable, Alert, ActivityIndicator } from 'react-native';
 import HomeHeader from '../../Components/HomeHeader';
 import { HarvestProducts, units } from '../Data';
 import { Card } from 'react-native-paper';
@@ -15,6 +15,7 @@ export default function StorageScreen({ navigation }) {
   const [newQuantity, setNewQuantity] = useState('');
   const [selectedUnit, setSelectedUnit] = useState('');
   const isFocused = useIsFocused();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (isFocused) {
@@ -24,32 +25,88 @@ export default function StorageScreen({ navigation }) {
 
   const fetchTotals = async () => {
     try {
-      const response = await axios.get('http://192.168.1.17:3000/api/harvest/getTotals');
-      setTotals(response.data.data);
+      const response = await axios.get('http://192.168.1.17:3000/api/storage/getAllStorages');
+      const storageData = response.data.data;
+
+      const totalsMap = {};
+      storageData.forEach(entry => {
+        if (!entry.Quantities) {
+          console.error('Invalid entry structure:', entry);
+          return; // Skip invalid entries
+        }
+
+        if (!totalsMap[entry.Product]) {
+          totalsMap[entry.Product] = {};
+        }
+
+        entry.Quantities.forEach(quantityEntry => {
+          if (quantityEntry.Unit && quantityEntry.Total !== undefined) {
+            totalsMap[entry.Product][quantityEntry.Unit] = quantityEntry.Total;
+          } else {
+            console.error('Invalid quantity entry structure:', quantityEntry);
+          }
+        });
+      });
+
+      setTotals(totalsMap);
     } catch (error) {
       console.error('Error fetching totals:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleUpdateQuantity = async () => {
-    const currentQuantity = totals[selectedProduct]?.[selectedUnit] || 0;
-
-    if (parseFloat(newQuantity) > currentQuantity) {
-      Alert.alert('Erreur', 'La nouvelle quantité doit être inférieure ou égale à la quantité actuelle.');
-      return;
-    }
-
     try {
-      const response = await axios.post('http://192.168.1.17:3000/api/harvest/updateQuantity', {
+      // Basic validation checks before making the request
+      if (!selectedProduct || !selectedUnit || !newQuantity || isNaN(newQuantity) || newQuantity <= 0) {
+        Alert.alert('Erreur', 'Veuillez remplir tous les champs et entrer une quantité valide.');
+        return;
+      }
+
+      // Fetch current storage data to validate against
+      const storageResponse = await axios.get('http://192.168.1.17:3000/api/storage/getAllStorages');
+      const storageEntries = storageResponse.data.data;
+
+      // Find the storage entry for the selected product and unit
+      const storageEntry = storageEntries.find(entry => entry.Product === selectedProduct);
+
+      if (!storageEntry) {
+        Alert.alert('Erreur', `Produit "${selectedProduct}" non trouvé dans le stock.`);
+        return;
+      }
+
+      // Find the quantity entry for the selected unit
+      const quantityEntry = storageEntry.Quantities.find(q => q.Unit === selectedUnit);
+
+      if (!quantityEntry) {
+        Alert.alert('Erreur', `Unité "${selectedUnit}" non trouvée pour le produit "${selectedProduct}".`);
+        return;
+      }
+
+      // Ensure the newQuantity does not exceed the current quantity
+      if (newQuantity > quantityEntry.Total) {
+        Alert.alert('Erreur', 'La quantité réduite ne peut pas être supérieure à la quantité actuelle.');
+        return;
+      }
+
+      // All validations passed, proceed with the update request
+      const response = await axios.put('http://192.168.1.17:3000/api/storage/updateQuantity', {
         product: selectedProduct,
         unit: selectedUnit,
-        quantity: newQuantity,
+        newQuantity: Number(newQuantity),
       });
-      setShowModal(false);
-      fetchTotals();
+
+      if (response.status === 200 && response.data.success) {
+        fetchTotals();
+        setShowModal(false);
+        Alert.alert('Succès', 'Quantité mise à jour avec succès');
+      } else {
+        Alert.alert('Erreur', response.data.message || 'Erreur lors de la mise à jour de la quantité');
+      }
     } catch (error) {
       console.error('Error updating quantity:', error);
-      Alert.alert('Erreur', 'Une erreur s\'est produite lors de la mise à jour de la quantité.');
+      Alert.alert('Erreur', 'Erreur lors de la mise à jour de la quantité');
     }
   };
 
@@ -81,31 +138,38 @@ export default function StorageScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <HomeHeader navigation={navigation} title={'Stockage'} />
-      <Card style={styles.card}>
-        {HarvestProducts.map((product, index) => (
-          <View key={index}>
-            <Card.Content style={styles.cardContent}>
-              <Text style={styles.productName}>{product}</Text>
-              <Text style={styles.productDetail}>
-                {totals[product] &&
-                  Object.entries(totals[product]).map(([unit, quantity], idx) => (
-                    <Text key={`${unit}-${idx}`}>{`${quantity} ${unit}\n`}</Text>
-                  ))}
-              </Text>
-              <TouchableOpacity onPress={() => openModal(product)}>
-                <Ionicons name="remove-circle" size={24} color="red" />
-              </TouchableOpacity>
-            </Card.Content>
-            {index !== HarvestProducts.length - 1 && <View style={styles.divider} />}
-          </View>
-        ))}
-      </Card>
+      <HomeHeader navigation={navigation} title={'Produits en stock'} />
+      {isLoading ? (
+        <View style={[styles.container, styles.loadingContainer]}>
+          <ActivityIndicator size="large" color="#977700" />
+        </View>
+      ) : (
+        <Card style={styles.card}>
+          {HarvestProducts.map((product, index) => (
+            <View key={index}>
+              <Card.Content style={styles.cardContent}>
+                <Text style={styles.productName}>{product}</Text>
+                <Text style={styles.productDetail}>
+                  {totals[product] &&
+                    Object.entries(totals[product]).map(([unit, quantity], idx) => (
+                      <Text key={`${unit}-${idx}`}>{`${quantity} ${unit}\n`}</Text>
+                    ))}
+                </Text>
+                <TouchableOpacity onPress={() => openModal(product)}>
+                  <Ionicons name="remove-circle" size={24} color="red" />
+                </TouchableOpacity>
+              </Card.Content>
+              {index !== HarvestProducts.length - 1 && <View style={styles.divider} />}
+            </View>
+          ))}
+        </Card>
+      )}
 
       <Modal
         transparent={true}
         visible={showModal}
         onRequestClose={() => setShowModal(false)}
+        statusBarTranslucent={true}
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
@@ -113,7 +177,7 @@ export default function StorageScreen({ navigation }) {
             <Text style={styles.modalProduct}>{selectedProduct}</Text>
             <TextInput
               style={styles.input}
-              placeholder="Nouvelle quantité"
+              placeholder="Quantité à réduire"
               keyboardType="numeric"
               value={newQuantity}
               onChangeText={setNewQuantity}
@@ -128,8 +192,21 @@ export default function StorageScreen({ navigation }) {
                 <Picker.Item label={unit} value={unit} key={unit} />
               ))}
             </Picker>
-            <Button title="Enregistrer" onPress={handleUpdateQuantity} />
-            <Button title="Annuler" onPress={() => setShowModal(false)} />
+            <View style={styles.modalButtons}>
+              <Pressable
+                style={[styles.modalButton, styles.buttonClose]}
+                onPress={() => setShowModal(false)}
+              >
+                <Text style={styles.textStyle}>Annuler</Text>
+              </Pressable>
+              <Pressable
+                style={[styles.modalButton, styles.buttonSave]}
+                onPress={handleUpdateQuantity}
+              >
+                <Text style={styles.textStyle}>Sauvegarder</Text>
+              </Pressable>
+            </View>
+
           </View>
         </View>
       </Modal>
@@ -197,5 +274,30 @@ const styles = StyleSheet.create({
   picker: {
     width: '100%',
     marginBottom: 10,
+    backgroundColor: '#FBF5E0',
+  },
+
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  modalButton: {
+    flex: 1,
+    margin: 4,
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  buttonClose: {
+    backgroundColor: '#bbb',
+  },
+  buttonSave: {
+    backgroundColor: '#FEE502',
+  },
+  textStyle: {
+    fontSize: 16,
+    color: '#373737',
+
   },
 });
