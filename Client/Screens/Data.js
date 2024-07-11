@@ -104,3 +104,5 @@ export const HarvestMethods = [
   "Récolte par grattage"
 ];
 
+export const taskpriority = ['Faible', 'Élevée', 'Normale', 'Critique'];
+

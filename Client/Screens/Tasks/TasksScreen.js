@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, TouchableOpacity, Modal, TextInput, Button, StyleSheet, LogBox, SafeAreaView, Alert } from 'react-native';
+import { Text, View, TouchableOpacity, Modal, TextInput, StyleSheet, LogBox, SafeAreaView, Alert, ScrollView } from 'react-native';
 import { Calendar } from 'react-native-big-calendar';
 import { FontAwesome5 } from '@expo/vector-icons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -7,22 +7,37 @@ import HomeHeader from '../../Components/HomeHeader';
 import { Card } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
+import { Picker } from '@react-native-picker/picker';
+import { taskpriority } from '../Data';
 
-const TasksScreen = ({ navigation }) => {
+const TaskScreen = ({ navigation }) => {
   const [events, setEvents] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [title, setTitle] = useState('');
+  const [priority, setPriority] = useState('');
   const [description, setDescription] = useState('');
   const [start, setStart] = useState(new Date());
   const [end, setEnd] = useState(new Date());
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [isStartPicker, setIsStartPicker] = useState(true);
   const baseURL = 'http://192.168.1.17:3000/api/task';
-  const [errorTitle, setErrorTitle] = useState('');
-  const [errorDescription, setErrorDescription] = useState('');
-  const [errorDates, setErrorDates] = useState('');
 
+
+  const getPriorityColor = (itemValue) => {
+    switch (itemValue) {
+      case 'Faible':
+        return '#007bff'; // Blue color for 'Faible'
+      case 'Élevée':
+        return '#dc3545'; // Red color for 'Élevée'
+      case 'Normale':
+        return '#28a745'; // Green color for 'Normale'
+      case 'Critique':
+        return '#ffc107';
+      default:
+        return '#000000'; // Default color
+    }
+  };
 
   useEffect(() => {
     LogBox.ignoreLogs([
@@ -31,25 +46,6 @@ const TasksScreen = ({ navigation }) => {
     ]);
   }, []);
 
-
-  const validateInputs = () => {
-    let isValid = true;
-
-    if (!title) {
-      setErrorTitle('Le titre est requis');
-      isValid = false;
-    } else {
-      setErrorTitle('');
-    }
-
-    if (!description) {
-      setErrorDescription('La description est requise');
-      isValid = false;
-    } else {
-      setErrorDescription('');
-    }
-    return isValid;
-  };
 
   const isPastDateTime = (date) => {
     const now = new Date();
@@ -60,12 +56,14 @@ const TasksScreen = ({ navigation }) => {
     if (event) {
       setSelectedEvent(event);
       setTitle(event.title);
+      setPriority(event.priority);
       setDescription(event.description);
       setStart(new Date(event.start));
       setEnd(new Date(event.end));
     } else {
       setSelectedEvent(null);
       setTitle('');
+      setPriority('');
       setDescription('');
       setStart(new Date());
       setEnd(new Date());
@@ -122,9 +120,8 @@ const TasksScreen = ({ navigation }) => {
 
   const createTask = async () => {
     try {
-
-      if (!validateInputs()) {
-        return;
+      if (!title || !priority || !description || !start || !end) {
+        return Alert.alert('Erreur', 'Veuillez remplir tous les champs');
       } else {
         // Ensure start and end are Date objects
         const startDate = new Date(start);
@@ -133,6 +130,7 @@ const TasksScreen = ({ navigation }) => {
 
         const response = await axios.post(`${baseURL}/create`, {
           title,
+          priority,
           description,
           start: startDate.toISOString(), // Convert to ISO string
           end: endDate.toISOString(), // Convert to ISO string
@@ -142,12 +140,13 @@ const TasksScreen = ({ navigation }) => {
         const newTask = {
           _id: response.data.data._id,
           title: response.data.data.title,
+          priority: response.data.data.priority,
           description: response.data.data.description,
-          start: new Date(response.data.data.start), // Ensure start is a Date object
-          end: new Date(response.data.data.end),     // Ensure end is a Date object
+          start: new Date(response.data.data.start),
+          end: new Date(response.data.data.end),
         };
 
-        setEvents([...events, newTask]); // Update events state with new task
+        setEvents([...events, newTask]);
         closeModal();
         Alert.alert('Succès', 'Tâche créée avec succès');
       }
@@ -160,13 +159,13 @@ const TasksScreen = ({ navigation }) => {
 
   const editTask = async () => {
     try {
-
-      if (!validateInputs()) {
-        return;
+      if (!title || !priority || !description || !start || !end) {
+        return Alert.alert('Erreur', 'Veuillez remplir tous les champs');
       } else {
         const editedTaskData = {
           _id: selectedEvent._id,
           title,
+          priority,
           description,
           start,
           end,
@@ -177,6 +176,7 @@ const TasksScreen = ({ navigation }) => {
           const updatedTask = {
             ...selectedEvent,
             title,
+            priority,
             description,
             start,
             end,
@@ -249,7 +249,7 @@ const TasksScreen = ({ navigation }) => {
             events={events}
             height={600}
             onPressEvent={(event) => openModal(event)}
-             onPressCell={(date) => {
+            onPressCell={(date) => {
               if (!isPastDateTime(date)) {
                 openModal();
               }
@@ -269,51 +269,80 @@ const TasksScreen = ({ navigation }) => {
       <Modal visible={modalVisible} transparent animationType="slide" statusBarTranslucent>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>
-              {selectedEvent ? 'Modifier/Supprimer la tâche' : 'Nouvelle tâche'}
-            </Text>
-            <TextInput
-              placeholder="Titre"
-              value={title}
-              onChangeText={setTitle}
-              style={styles.input}
-            />
-            {errorTitle ? <Text style={styles.errorText}>{errorTitle}</Text> : null}
-            <TextInput
-              placeholder="Description"
-              value={description}
-              onChangeText={setDescription}
-              style={styles.input}
-            />
-            {errorDescription ? <Text style={styles.errorText}>{errorDescription}</Text> : null}
-            <TouchableOpacity onPress={() => showDatePicker(true)}>
-              <Text style={styles.input}>{`Date et heure de début: ${start.toLocaleString()}`}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => showDatePicker(false)}>
-              <Text style={styles.input}>{`Date et heure de fin: ${end.toLocaleString()}`}</Text>
-            </TouchableOpacity>
-            {errorDates ? <Text style={styles.errorText}>{errorDates}</Text> : null}
-            <TouchableOpacity
-              style={[styles.buttonContainer, { backgroundColor: '#FEE502' }]}
-              onPress={selectedEvent ? editTask : createTask}
-            >
-              <Ionicons name="save-outline" size={20} color="#977700" />
-              <Text style={[styles.buttonContainerText]}>Enregistrer</Text>
-            </TouchableOpacity>
+            <ScrollView contentContainerStyle={styles.scrollViewContent}>
 
-            {selectedEvent && (
-              <TouchableOpacity
-                style={[styles.buttonContainer, { backgroundColor: '#f01e2c' }]}
-                onPress={deleteTask}
-              >
-                <Ionicons name="trash-outline" size={20} color="#fff" />
-                <Text style={[styles.buttonContainerText, { color: '#fff' }]}>Supprimer</Text>
+              <Text style={styles.modalTitle}>
+                {selectedEvent ? 'Modifier/Supprimer la tâche' : 'Nouvelle tâche'}
+              </Text>
+
+              <Text style={styles.label}>Priorité</Text>
+              <View style={styles.inputContainer}>
+                <Picker
+                  selectedValue={priority}
+                  onValueChange={(itemValue) => setPriority(itemValue)}
+                  style={styles.input}
+                >
+                  <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                  {taskpriority.map((item) => (
+                    <Picker.Item
+                      key={item}
+                      label={item}
+                      value={item}
+                      style={{ color: getPriorityColor(item) }}
+                      />
+                  ))}
+                </Picker>
+              </View>
+
+              <Text style={styles.label}>Titre</Text>
+              <TextInput
+                placeholder="Titre"
+                value={title}
+                onChangeText={setTitle}
+                style={styles.input}
+              />
+
+              <Text style={styles.label}>Description</Text>
+              <TextInput
+                placeholder="Description"
+                value={description}
+                onChangeText={setDescription}
+                style={styles.input}
+              />
+
+              <Text style={styles.label}>Date début</Text>
+              <TouchableOpacity onPress={() => showDatePicker(true)}>
+                <Text style={styles.input}>{`Date et heure de début: ${start.toLocaleString()}`}</Text>
               </TouchableOpacity>
-            )}
 
-            <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
-              <Text style={styles.closeButtonText}>Annuler</Text>
-            </TouchableOpacity>
+              <Text style={styles.label}>Date fin</Text>
+              <TouchableOpacity onPress={() => showDatePicker(false)}>
+                <Text style={styles.input}>{`Date et heure de fin: ${end.toLocaleString()}`}</Text>
+              </TouchableOpacity>
+
+
+              <TouchableOpacity
+                style={[styles.buttonContainer, { backgroundColor: '#FEE502' }]}
+                onPress={selectedEvent ? editTask : createTask}
+              >
+                <Ionicons name="save-outline" size={20} color="#977700" />
+                <Text style={[styles.buttonContainerText]}>Enregistrer</Text>
+              </TouchableOpacity>
+
+              {selectedEvent && (
+                <TouchableOpacity
+                  style={[styles.buttonContainer, { backgroundColor: '#f01e2c' }]}
+                  onPress={deleteTask}
+                >
+                  <Ionicons name="trash-outline" size={20} color="#fff" />
+                  <Text style={[styles.buttonContainerText, { color: '#fff' }]}>Supprimer</Text>
+                </TouchableOpacity>
+              )}
+
+              <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+                <Text style={styles.closeButtonText}>Annuler</Text>
+              </TouchableOpacity>
+            </ScrollView>
           </View>
         </View>
       </Modal>
@@ -331,7 +360,10 @@ const TasksScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FBF5E0',
+    backgroundColor: '#f5f5f5',
+  },
+  card: {
+    margin: 10,
   },
   addButton: {
     position: 'absolute',
@@ -344,16 +376,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  card: {
-    margin: 16,
-    padding: 15,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -361,23 +383,58 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
-    width: 300,
-    padding: 20,
     backgroundColor: 'white',
     borderRadius: 10,
+    padding: 20,
+    width: '90%',
+    maxHeight: '80%', // Adjust the height as needed
+  },
+  scrollViewContent: {
+    paddingVertical: 20,
   },
   modalTitle: {
-    fontSize: 18,
-    marginBottom: 10,
+    fontSize: 22,
+    fontWeight: "bold",
+    color: '#977700',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  label: {
+    fontSize: 16,
+    marginBottom: 5,
+    fontWeight: 'bold',
+    color: '#342D21',
+    justifyContent: 'center',
+    textAlign: 'center',
+    alignSelf: 'center'
+
   },
   input: {
-    width: '100%',
-    padding: 10,
     borderWidth: 1,
     borderColor: '#ccc',
-    marginBottom: 10,
     borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
   },
+  error: {
+    color: 'red',
+    marginBottom: 10,
+  },
+  deleteButton: {
+    backgroundColor: '#e74c3c',
+    padding: 10,
+    borderRadius: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  deleteButtonText: {
+    color: 'white',
+    marginLeft: 5,
+  },
+
+
+
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -405,12 +462,18 @@ const styles = StyleSheet.create({
     color: '#373737',
     fontSize: 16,
   },
-  errorText: {
-    color: 'red',
-    marginBottom: 10,
-  }
-
+  inputContainer: {
+    marginBottom: 15,
+    borderBottomWidth: 1,
+    backgroundColor: '#FBF5E0',
+    borderBottomColor: '#CCCCCC',
+    width: '100%', // Ensure full width
+  },
+  picker: {
+    height: 50,
+    width: '100%',
+    color: '#333333',
+  },
 });
-
-export default TasksScreen;
+export default TaskScreen;
 
