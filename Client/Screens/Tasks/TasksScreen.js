@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, TouchableOpacity, Modal, TextInput, StyleSheet, LogBox, SafeAreaView, Alert, ScrollView } from 'react-native';
+import { Text, View, TouchableOpacity, Modal, TextInput, StyleSheet, LogBox, SafeAreaView, Alert, ScrollView, Switch } from 'react-native';
 import { Calendar } from 'react-native-big-calendar';
 import { FontAwesome5 } from '@expo/vector-icons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -22,6 +22,7 @@ const TaskScreen = ({ navigation }) => {
   const [description, setDescription] = useState('');
   const [start, setStart] = useState(new Date());
   const [end, setEnd] = useState(new Date());
+  const [completed, setCompleted] = useState(false);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [isStartPicker, setIsStartPicker] = useState(true);
   const baseURL = 'http://192.168.1.17:3000/api/task';
@@ -81,6 +82,8 @@ const TaskScreen = ({ navigation }) => {
       setDescription(event.description);
       setStart(new Date(event.start));
       setEnd(new Date(event.end));
+      setCompleted(event.completed || false); // Add this line
+
     } else {
       setSelectedEvent(null);
       setTitle('');
@@ -88,6 +91,8 @@ const TaskScreen = ({ navigation }) => {
       setDescription('');
       setStart(new Date());
       setEnd(new Date());
+      setCompleted(false); // Add this line
+
 
     }
     setModalVisible(true);
@@ -124,7 +129,7 @@ const TaskScreen = ({ navigation }) => {
       console.error('Current user is null');
       return;
     }
-    
+
     try {
       const response = await axios.get(`${baseURL}/getAllTasks`, {
         params: {
@@ -137,18 +142,18 @@ const TaskScreen = ({ navigation }) => {
         end: event.end ? new Date(event.end) : new Date(),     // Default to current date if end is undefined
       }));
       setEvents(fetchedEvents);
-     } catch (error) {
+    } catch (error) {
       console.error('Error fetching tasks:', error);
       // Handle error
     }
   };
 
-   useEffect(() => {
+  useEffect(() => {
     if (currentUser) {
       fetchTasks();
     }
   }, [currentUser]);
-  
+
 
 
   const createTask = async () => {
@@ -205,6 +210,7 @@ const TaskScreen = ({ navigation }) => {
           description,
           start,
           end,
+          completed
         };
 
         const response = await axios.post(`${baseURL}/editTask`, editedTaskData);
@@ -216,6 +222,7 @@ const TaskScreen = ({ navigation }) => {
             description,
             start,
             end,
+            completed
           };
 
           setEvents(events.map(event =>
@@ -310,6 +317,20 @@ const TaskScreen = ({ navigation }) => {
               <Text style={styles.modalTitle}>
                 {selectedEvent ? 'Modifier/Supprimer la tâche' : 'Nouvelle tâche'}
               </Text>
+
+
+              {selectedEvent && (
+                <View style={styles.inline}>
+                  <Text style={styles.label}>Terminée</Text>
+                  <Switch
+                    trackColor={{ false: "#767577", true: "#81b0ff" }}
+                    thumbColor={completed ? "#f4f3f4" : "#f4f3f4"}
+                    ios_backgroundColor="#3e3e3e"
+                    onValueChange={(itemValue) => setCompleted(itemValue)}
+                    value={completed}
+                  />
+                </View>
+              )}
 
               <Text style={styles.label}>Priorité</Text>
               <View style={styles.inputContainer}>
@@ -509,6 +530,10 @@ const styles = StyleSheet.create({
     height: 50,
     width: '100%',
     color: '#333333',
+  },
+  inline: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });
 export default TaskScreen;

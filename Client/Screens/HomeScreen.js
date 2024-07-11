@@ -18,6 +18,7 @@ export default function HomeScreen({ navigation }) {
   const [passwordModalVisible, setPasswordModalVisible] = useState(false);
   const isFocused = useIsFocused();
   const [isLoading, setIsLoading] = useState(true); // State for loading indicator
+  const [incompleteTasksCount, setIncompleteTasksCount] = useState(0);
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -87,6 +88,41 @@ export default function HomeScreen({ navigation }) {
     }
   }, [currentUser]);
 
+
+
+
+  const fetchTasks = async () => {
+
+    if (!currentUser) {
+      // Handle case where currentUser is null
+      console.error('Current user is null');
+      return;
+    }
+
+    try {
+      const response = await axios.get(`http://192.168.1.17:3000/api/task/getAllTasks`, {
+        params: {
+          userId: currentUser._id
+        }
+      });
+      
+      // Count incomplete tasks
+      const incompleteCount = response.data.data.filter(event => !event.completed).length;
+      setIncompleteTasksCount(incompleteCount);
+      
+    } catch (error) {
+      console.error('Error fetching tasks:', error);
+    }
+  };
+
+
+  useEffect(() => {
+    if (currentUser) {
+      fetchTasks();
+    }
+  }, [currentUser]);
+
+
   const propertiesData = [
     { id: 1, name: 'Ruchers', value: apiariesCount.toString(), img: require('../assets/rucher.png') },
     { id: 2, name: 'Ruches', value: hivesCount.toString(), img: require('../assets/ruche.png') },
@@ -129,10 +165,14 @@ export default function HomeScreen({ navigation }) {
         </View>
       ) : (
         <>
-          <View style={styles.taskInfoContainer}>
-            <Text style={styles.taskInfoText}>5 tâches inachevées <Ionicons name="arrow-forward-outline" color="#000000" size={12} />
-            </Text>
-          </View>
+        
+       {incompleteTasksCount > 0 && (
+            <View style={styles.taskInfoContainer}>
+              <Text style={styles.taskInfoText}>
+              ⚠️ Rappel!! Vous avez {incompleteTasksCount} tâche{incompleteTasksCount > 1 ? 's' : ''} inachevée{incompleteTasksCount > 1 ? 's' : ''} 🐝
+              </Text>
+            </View>
+          )}
 
           <View style={styles.headerTextView}>
             <Text style={styles.headerText}>Bonjour </Text>
@@ -191,7 +231,7 @@ export default function HomeScreen({ navigation }) {
       </Modal>
 
       <ChangePasswordOnFirstLogin
-      
+
         visible={passwordModalVisible}
         onClose={() => setPasswordModalVisible(false)}
         userId={currentUser ? currentUser._id : null}
@@ -211,7 +251,7 @@ const styles = StyleSheet.create({
   },
 
   taskInfoContainer: {
-    backgroundColor: '#FEE502',
+ 
     borderRadius: 30,
     flexDirection: 'row',
     justifyContent: 'flex-end',
@@ -222,10 +262,10 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
   },
   taskInfoText: {
-    color: '#000000',
+    color: 'red',
     fontSize: 12,
-   },
-
+    fontWeight:'bold'
+  },
 
   headerTextView: {
     flexDirection: 'row',
