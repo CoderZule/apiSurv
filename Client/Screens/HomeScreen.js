@@ -129,12 +129,16 @@ export default function HomeScreen({ navigation }) {
         </View>
       ) : (
         <>
+          <View style={styles.taskInfoContainer}>
+            <Text style={styles.taskInfoText}>5 tâches inachevées <Ionicons name="arrow-forward-outline" color="#000000" size={12} />
+            </Text>
+          </View>
+
           <View style={styles.headerTextView}>
-            <Text style={styles.headerText1}>Bonjour</Text>
-            <Text style={styles.headerText1}></Text>
+            <Text style={styles.headerText}>Bonjour </Text>
+            <Text style={styles.headerText}></Text>
             <View style={styles.headerTextContainer}>
-              {currentUser ? (
-                <Text style={styles.headerText2}>{currentUser.Firstname}</Text>
+              {currentUser ? (<Text style={styles.headerText}>{currentUser.Firstname}</Text>
               ) : null}
             </View>
           </View>
@@ -187,6 +191,7 @@ export default function HomeScreen({ navigation }) {
       </Modal>
 
       <ChangePasswordOnFirstLogin
+      
         visible={passwordModalVisible}
         onClose={() => setPasswordModalVisible(false)}
         userId={currentUser ? currentUser._id : null}
@@ -204,17 +209,37 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FBF5E0'
   },
+
+  taskInfoContainer: {
+    backgroundColor: '#FEE502',
+    borderRadius: 30,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 2,
+    marginRight: 10,
+    alignSelf: 'flex-end',
+  },
+  taskInfoText: {
+    color: '#000000',
+    fontSize: 12,
+   },
+
+
   headerTextView: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 30,
+
   },
-  headerText1: {
+
+
+  headerText: {
     color: '#977700',
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: 'bold',
-    paddingLeft: 10,
 
   },
   headerTextContainer: {
@@ -223,19 +248,14 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 8,
   },
-  headerText2: {
-    color: '#977700',
-    fontSize: 20,
-    fontWeight: 'bold',
 
-  },
   image: {
-    width: 70, // Adjust this based on your design needs
-    height: 70, // Maintain aspect ratio or adjust as necessary
+    width: 70,
+    height: 70,
   },
   propertiesContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around', // Or 'space-between', adjust as needed
+    justifyContent: 'space-around',
     alignItems: 'center',
     marginTop: 10,
   },
@@ -267,12 +287,11 @@ const styles = StyleSheet.create({
   },
   centeredContainer: {
     alignItems: 'center',
-    //marginTop: 20,
   },
   qrScan: {
-    width: 260,
-    height: 260,
-    marginVertical: 50,
+    width: 240,
+    height: 240,
+    marginVertical: 40,
   },
   button: {
 

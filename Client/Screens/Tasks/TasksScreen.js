@@ -9,8 +9,11 @@ import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
 import { Picker } from '@react-native-picker/picker';
 import { taskpriority } from '../Data';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const TaskScreen = ({ navigation }) => {
+  const [currentUser, setCurrentUser] = useState(null);
+
   const [events, setEvents] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -23,6 +26,24 @@ const TaskScreen = ({ navigation }) => {
   const [isStartPicker, setIsStartPicker] = useState(true);
   const baseURL = 'http://192.168.1.17:3000/api/task';
 
+
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const currentUserString = await AsyncStorage.getItem('currentUser');
+        if (currentUserString) {
+          const user = JSON.parse(currentUserString);
+          setCurrentUser(user);
+        }
+      } catch (error) {
+        console.error('Error retrieving current user:', error);
+      }
+    };
+
+
+    fetchCurrentUser();
+
+  }, []);
 
   const getPriorityColor = (itemValue) => {
     switch (itemValue) {
@@ -97,26 +118,38 @@ const TaskScreen = ({ navigation }) => {
   };
 
   const fetchTasks = async () => {
+
+    if (!currentUser) {
+      // Handle case where currentUser is null
+      console.error('Current user is null');
+      return;
+    }
+    
     try {
-      const response = await axios.get(`${baseURL}/getAllTasks`);
+      const response = await axios.get(`${baseURL}/getAllTasks`, {
+        params: {
+          userId: currentUser._id
+        }
+      });
       const fetchedEvents = response.data.data.map(event => ({
         ...event,
         start: event.start ? new Date(event.start) : new Date(), // Default to current date if start is undefined
         end: event.end ? new Date(event.end) : new Date(),     // Default to current date if end is undefined
       }));
-
       setEvents(fetchedEvents);
-    } catch (error) {
+     } catch (error) {
       console.error('Error fetching tasks:', error);
       // Handle error
     }
   };
 
+   useEffect(() => {
+    if (currentUser) {
+      fetchTasks();
+    }
+  }, [currentUser]);
+  
 
-  // Call fetchTasks on component mount
-  useEffect(() => {
-    fetchTasks();
-  }, []);
 
   const createTask = async () => {
     try {
@@ -134,6 +167,7 @@ const TaskScreen = ({ navigation }) => {
           description,
           start: startDate.toISOString(), // Convert to ISO string
           end: endDate.toISOString(), // Convert to ISO string
+          user: currentUser._id
         });
 
 
@@ -144,6 +178,8 @@ const TaskScreen = ({ navigation }) => {
           description: response.data.data.description,
           start: new Date(response.data.data.start),
           end: new Date(response.data.data.end),
+          user: currentUser._id
+
         };
 
         setEvents([...events, newTask]);
@@ -289,7 +325,7 @@ const TaskScreen = ({ navigation }) => {
                       label={item}
                       value={item}
                       style={{ color: getPriorityColor(item) }}
-                      />
+                    />
                   ))}
                 </Picker>
               </View>

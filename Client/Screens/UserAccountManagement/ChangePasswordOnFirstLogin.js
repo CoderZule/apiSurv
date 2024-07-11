@@ -24,7 +24,7 @@ export default function ChangePasswordOnFirstLogin({ visible, onClose, userId })
         }
 
         try {
-            const response = await axios.post('http://192.168.1.17:3000/api/user/changePassword', {
+            const response = await axios.post('http://192.168.1.17:3000/api/user/changePasswordFirstLogin', {
                 userId,
                 newPassword
             });
@@ -67,6 +67,8 @@ export default function ChangePasswordOnFirstLogin({ visible, onClose, userId })
             animationType="slide"
             transparent={true}
             visible={visible}
+            statusBarTranslucent={true}
+
             onRequestClose={() => { }}
         >
             <View style={styles.modalContainer}>

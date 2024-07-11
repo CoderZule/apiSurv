@@ -7,6 +7,7 @@ import axios from 'axios';
 import { useIsFocused } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function StorageScreen({ navigation }) {
   const [totals, setTotals] = useState({});
@@ -16,16 +17,41 @@ export default function StorageScreen({ navigation }) {
   const [selectedUnit, setSelectedUnit] = useState('');
   const isFocused = useIsFocused();
   const [isLoading, setIsLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    if (isFocused) {
+    const fetchCurrentUser = async () => {
+      try {
+        const currentUserString = await AsyncStorage.getItem('currentUser');
+        if (currentUserString) {
+          const user = JSON.parse(currentUserString);
+          setCurrentUser(user);
+ 
+        }
+      } catch (error) {
+        console.error('Error retrieving current user:', error);
+      }
+    };
+
+    fetchCurrentUser();
+
+  }, []);
+
+  useEffect(() => {
+     if (currentUser) {
       fetchTotals();
     }
-  }, [isFocused]);
+  }, [currentUser,isFocused]);
 
   const fetchTotals = async () => {
     try {
-      const response = await axios.get('http://192.168.1.17:3000/api/storage/getAllStorages');
+      const response = await axios.get('http://192.168.1.17:3000/api/storage/getAllStorages',
+        {
+          params: {
+            userId: currentUser._id
+          }
+        });
+
       const storageData = response.data.data;
 
       const totalsMap = {};
@@ -65,7 +91,13 @@ export default function StorageScreen({ navigation }) {
       }
 
       // Fetch current storage data to validate against
-      const storageResponse = await axios.get('http://192.168.1.17:3000/api/storage/getAllStorages');
+      const storageResponse = await axios.get('http://192.168.1.17:3000/api/storage/getAllStorages',
+      {
+        params: {
+          userId: currentUser._id
+        }
+      });
+      
       const storageEntries = storageResponse.data.data;
 
       // Find the storage entry for the selected product and unit
@@ -139,31 +171,35 @@ export default function StorageScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.safeArea}>
       <HomeHeader navigation={navigation} title={'Produits en stock'} />
-      {isLoading ? (
-        <View style={[styles.container, styles.loadingContainer]}>
-          <ActivityIndicator size="large" color="#977700" />
-        </View>
-      ) : (
-        <Card style={styles.card}>
-          {HarvestProducts.map((product, index) => (
-            <View key={index}>
-              <Card.Content style={styles.cardContent}>
-                <Text style={styles.productName}>{product}</Text>
-                <Text style={styles.productDetail}>
-                  {totals[product] &&
-                    Object.entries(totals[product]).map(([unit, quantity], idx) => (
-                      <Text key={`${unit}-${idx}`}>{`${quantity} ${unit}\n`}</Text>
-                    ))}
-                </Text>
-                <TouchableOpacity onPress={() => openModal(product)}>
-                  <Ionicons name="remove-circle" size={24} color="red" />
-                </TouchableOpacity>
-              </Card.Content>
-              {index !== HarvestProducts.length - 1 && <View style={styles.divider} />}
-            </View>
-          ))}
-        </Card>
-      )}
+
+      <Card style={styles.card}>
+        {isLoading ? (
+          <View style={[styles.container, styles.loadingContainer]}>
+            <ActivityIndicator size="large" color="#977700" />
+          </View>
+        ) : (
+          <>
+            {HarvestProducts.map((product, index) => (
+              <View key={index}>
+                <Card.Content style={styles.cardContent}>
+                  <Text style={styles.productName}>{product}</Text>
+                  <Text style={styles.productDetail}>
+                    {totals[product] &&
+                      Object.entries(totals[product]).map(([unit, quantity], idx) => (
+                        <Text key={`${unit}-${idx}`}>{`${quantity} ${unit}\n`}</Text>
+                      ))}
+                  </Text>
+                  <TouchableOpacity onPress={() => openModal(product)}>
+                    <Ionicons name="remove-circle" size={24} color="red" />
+                  </TouchableOpacity>
+                </Card.Content>
+                {index !== HarvestProducts.length - 1 && <View style={styles.divider} />}
+              </View>
+            ))}
+          </>
+        )}
+      </Card>
+
 
       <Modal
         transparent={true}

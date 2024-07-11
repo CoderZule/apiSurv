@@ -37,10 +37,7 @@ export default function HarvestHistoryScreen({ navigation }) {
         if (currentUserString) {
           const user = JSON.parse(currentUserString);
           setCurrentUser(user);
-
-          if (user && user.FirstTimeLogin) {
-            setPasswordModalVisible(true);
-          }
+ 
         }
       } catch (error) {
         console.error('Error retrieving current user:', error);
@@ -93,7 +90,13 @@ export default function HarvestHistoryScreen({ navigation }) {
 
   const fetchHarvestData = async () => {
     try {
-      const response = await axios.get('http://192.168.1.17:3000/api/harvest/getAllHarvests');
+      const response = await axios.get('http://192.168.1.17:3000/api/harvest/getAllHarvests',
+       {
+        params: {
+          userId: currentUser._id
+        }
+      });
+
       setHarvests(response.data.data);
     } catch (error) {
       console.error('Error fetching harvest data:', error);
@@ -105,8 +108,10 @@ export default function HarvestHistoryScreen({ navigation }) {
   };
 
   useEffect(() => {
+    if (currentUser) {
     fetchHarvestData();
-  }, [isFocused]);
+    }
+  }, [currentUser, isFocused]);
 
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -128,7 +133,8 @@ export default function HarvestHistoryScreen({ navigation }) {
           QualityTestResults: qualityTestResults,
           Date: date.toISOString(),
           Apiary: apiaries.find(apiary => apiary._id === selectedApiary)?.Name || '',
-          Hive: hives.find(hive => hive._id === selectedHive)?.Name || ''
+          Hive: hives.find(hive => hive._id === selectedHive)?.Name || '',
+          User: currentUser._id
 
         };
 

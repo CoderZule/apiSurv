@@ -24,7 +24,7 @@ const HiveDetailsScreen = ({ route, navigation }) => {
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            <Text style={styles.title}>Ruche {hiveData.Type}{'\n'}Détails</Text>
+            <Text style={styles.title}>Ruche {hiveData.Name}{'\n'}Détails</Text>
             <ImageBackground imageStyle={{ borderRadius: 20 }}
                 source={require('../../assets/bg-hive.jpeg')} style={styles.detailsContainer}>
                 <View style={styles.buttonsRow}>
