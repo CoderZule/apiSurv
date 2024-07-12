@@ -23,6 +23,7 @@ export default function ProfilScreen({ navigation }) {
   const [Firstname, setFirstName] = useState('');
   const [Lastname, setLastName] = useState('');
   const [Email, setEmail] = useState('');
+  const [Cin, setCin] = useState('');
   const [Phone, setPhone] = useState('');
   const [currentUser, setCurrentUser] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -44,6 +45,7 @@ export default function ProfilScreen({ navigation }) {
           setCurrentUser(user);
           setFirstName(user.Firstname);
           setLastName(user.Lastname);
+          setCin(user.Cin);
           setPhone(user.Phone);
           setEmail(user.Email);
         } else {
@@ -67,6 +69,7 @@ export default function ProfilScreen({ navigation }) {
         Firstname,
         Lastname,
         Email,
+        Cin,
         Phone,
       };
 

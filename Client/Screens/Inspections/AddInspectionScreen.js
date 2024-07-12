@@ -67,68 +67,36 @@ const AddInspectionScreen = ({ route }) => {
   const years = Array.from(new Array(endYear - startYear + 1), (_, index) => startYear + index);
   years.reverse();
 
-  const [time, setTime] = useState(new Date().toLocaleTimeString('fr-FR'));
+  const [time, setTime] = useState(new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }));
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTime(new Date().toLocaleTimeString('fr-FR'));
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
+ 
 
   const [inspector, setInspector] = useState('');
   const [isLoading, setIsLoading] = useState(true); // State for loading indicator
 
 
-  // get logged in current user
+
+
+
   useEffect(() => {
-    AsyncStorage.getItem('currentUser')
-      .then((value) => {
-        if (value) {
-          const inspector = JSON.parse(value);
-          setInspector(inspector);
-          setIsLoading(false); // After fetching data, set isLoading to false
-
-        } else {
-          setInspector('Unknown Inspector');
+    const fetchCurrentUser = async () => {
+      try {
+        const currentUserString = await AsyncStorage.getItem('currentUser');
+        if (currentUserString) {
+          const user = JSON.parse(currentUserString);
+          setInspector(user);
+          console.log(user);
+          setIsLoading(false);
+           
         }
-      })
-      .catch((error) => {
-        console.error('Error retrieving currentUser from AsyncStorage:', error);
-        setInspector('Unknown Inspector');
-      });
+      } catch (error) {
+        console.error('Error retrieving current user:', error);
+      }
+    };
+
+      fetchCurrentUser();
+ 
   }, []);
-
-
-
-  const togglePickerFrom = () => {
-    setShowPickerFrom(!showPickerFrom);
-  };
-
-  const togglePickerTo = () => {
-    setShowPickerTo(!showPickerTo);
-  };
-
-  const handleDateChangeFrom = (event, selectedDate) => {
-    const currentDate = selectedDate || formData.from;
-    setShowPickerFrom(false);
-    setFormData(prevData => ({
-      ...prevData,
-      from: currentDate
-    }));
-  };
-
-  const handleDateChangeTo = (event, selectedDate) => {
-    const currentDate = selectedDate || formData.to;
-    setShowPickerTo(false);
-    setFormData(prevData => ({
-      ...prevData,
-      to: currentDate
-    }));
-  };
-
-
 
   const [formData, setFormData] = useState({
     isMarked: undefined,
@@ -174,9 +142,36 @@ const AddInspectionScreen = ({ route }) => {
 
 
 
-
-
   });
+
+  const togglePickerFrom = () => {
+    setShowPickerFrom(!showPickerFrom);
+  };
+
+  const togglePickerTo = () => {
+    setShowPickerTo(!showPickerTo);
+  };
+
+  const handleDateChangeFrom = (event, selectedDate) => {
+    const currentDate = selectedDate || formData.from;
+    setShowPickerFrom(false);
+    setFormData(prevData => ({
+      ...prevData,
+      from: currentDate
+    }));
+  };
+
+  const handleDateChangeTo = (event, selectedDate) => {
+    const currentDate = selectedDate || formData.to;
+    setShowPickerTo(false);
+    setFormData(prevData => ({
+      ...prevData,
+      to: currentDate
+    }));
+  };
+
+
+
 
 
   useEffect(() => {
@@ -284,6 +279,17 @@ const AddInspectionScreen = ({ route }) => {
   useEffect(() => {
     if (showWeatherDetails) {
       getLocationAndFetchWeather();
+    } else {
+      // Clear weather fields when showWeatherDetails is toggled off
+      setFormData(prevState => ({
+        ...prevState,
+        temperature: '',
+        humidity: '',
+        pressure: '',
+        windSpeed: '',
+        windDirection: '',
+        condition: ''
+      }));
     }
   }, [showWeatherDetails]);
 
@@ -1038,6 +1044,7 @@ const AddInspectionScreen = ({ route }) => {
                       display="default"
                       onChange={handleDateChangeFrom}
                       locale="fr"
+                      
                     />
                   )}
                 </View>

@@ -180,7 +180,7 @@ export default function HomeScreen({ navigation }) {
        {incompleteTasksCount > 0 && (
             <View style={styles.taskInfoContainer}>
               <Text style={styles.taskInfoText}>
-              ⚠️ Rappel!! Vous avez {incompleteTasksCount} tâche{incompleteTasksCount > 1 ? 's' : ''} inachevée{incompleteTasksCount > 1 ? 's' : ''} 🐝
+             Rappel!! Vous avez {incompleteTasksCount} tâche{incompleteTasksCount > 1 ? 's' : ''} inachevée{incompleteTasksCount > 1 ? 's' : ''} 🐝
               </Text>
             </View>
           )}
