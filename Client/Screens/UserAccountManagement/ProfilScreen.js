@@ -9,7 +9,7 @@ import {
   Alert,
   Modal,
   Pressable,
-  ActivityIndicator,
+ 
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -17,6 +17,7 @@ import HomeHeader from '../../Components/HomeHeader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { Card } from 'react-native-paper';
+import LottieView from "lottie-react-native";
 
 export default function ProfilScreen({ navigation }) {
   const [Firstname, setFirstName] = useState('');
@@ -155,7 +156,12 @@ export default function ProfilScreen({ navigation }) {
       <HomeHeader navigation={navigation} title={'Profil'} />
       {isLoading ? (
         <View style={[styles.container, styles.loadingContainer]}>
-          <ActivityIndicator size="large" color="#977700" />
+          <LottieView
+            source={require('../../assets/lottie/loading.json')} // Replace with your animation file path
+            autoPlay
+            loop
+            style={{ width: 100, height: 100 }}
+          />
         </View>
       ) : (
         <View style={styles.container}>
@@ -436,7 +442,7 @@ const styles = StyleSheet.create({
   },
   btnText: {
     fontSize: 16,
-    color:  '#373737',
+    color: '#373737',
     fontWeight: 'bold',
   },
   modalBackground: {
@@ -502,7 +508,7 @@ const styles = StyleSheet.create({
   textStyle: {
     fontSize: 16,
     color: '#373737',
- 
+
   },
   errorText: {
     color: 'red',

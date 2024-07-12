@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, SafeAreaView, StyleSheet, View, TouchableOpacity, Modal, TextInput, Pressable, Alert, ActivityIndicator } from 'react-native';
+import { Text, SafeAreaView, StyleSheet, View, TouchableOpacity, Modal, TextInput, Pressable, Alert } from 'react-native';
 import HomeHeader from '../../Components/HomeHeader';
 import { HarvestProducts, units } from '../Data';
 import { Card } from 'react-native-paper';
@@ -8,6 +8,7 @@ import { useIsFocused } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import LottieView from "lottie-react-native";
 
 export default function StorageScreen({ navigation }) {
   const [totals, setTotals] = useState({});
@@ -26,7 +27,7 @@ export default function StorageScreen({ navigation }) {
         if (currentUserString) {
           const user = JSON.parse(currentUserString);
           setCurrentUser(user);
- 
+
         }
       } catch (error) {
         console.error('Error retrieving current user:', error);
@@ -38,10 +39,10 @@ export default function StorageScreen({ navigation }) {
   }, []);
 
   useEffect(() => {
-     if (currentUser) {
+    if (currentUser) {
       fetchTotals();
     }
-  }, [currentUser,isFocused]);
+  }, [currentUser, isFocused]);
 
   const fetchTotals = async () => {
     try {
@@ -92,12 +93,12 @@ export default function StorageScreen({ navigation }) {
 
       // Fetch current storage data to validate against
       const storageResponse = await axios.get('http://192.168.1.17:3000/api/storage/getAllStorages',
-      {
-        params: {
-          userId: currentUser._id
-        }
-      });
-      
+        {
+          params: {
+            userId: currentUser._id
+          }
+        });
+
       const storageEntries = storageResponse.data.data;
 
       // Find the storage entry for the selected product and unit
@@ -175,7 +176,12 @@ export default function StorageScreen({ navigation }) {
       <Card style={styles.card}>
         {isLoading ? (
           <View style={[styles.container, styles.loadingContainer]}>
-            <ActivityIndicator size="large" color="#977700" />
+            <LottieView
+              source={require('../../assets/lottie/loading.json')}
+              autoPlay
+              loop
+              style={{ width: 100, height: 100 }}
+            />
           </View>
         ) : (
           <>
@@ -335,5 +341,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#373737',
 
+  },
+
+  container: {
+    flex: 1,
+
+
+    padding: 16,
+  },
+  loadingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

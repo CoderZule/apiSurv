@@ -27,6 +27,7 @@
     "expo-status-bar": "~1.12.1",
     "install": "^0.13.0",
     "lodash": "^4.17.21",
+    "lottie-react-native": "^6.7.2",
     "npx": "^10.2.2",
     "react": "18.2.0",
     "react-native": "^0.74.1",

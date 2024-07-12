@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, StyleSheet, View, Text, TouchableOpacity, Alert, FlatList, ScrollView, ActivityIndicator } from 'react-native';
+import { SafeAreaView, StyleSheet, View, Text, TouchableOpacity, Alert, FlatList, ScrollView } from 'react-native';
 import { Card } from 'react-native-paper';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import axios from 'axios';
@@ -7,6 +7,7 @@ import HomeHeader from '../../Components/HomeHeader';
 import AddHarvestModal from './AddHarvestModal';
 import { useIsFocused } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import LottieView from "lottie-react-native";
 
 export default function HarvestHistoryScreen({ navigation }) {
   const [harvests, setHarvests] = useState([]);
@@ -37,7 +38,7 @@ export default function HarvestHistoryScreen({ navigation }) {
         if (currentUserString) {
           const user = JSON.parse(currentUserString);
           setCurrentUser(user);
- 
+
         }
       } catch (error) {
         console.error('Error retrieving current user:', error);
@@ -91,11 +92,11 @@ export default function HarvestHistoryScreen({ navigation }) {
   const fetchHarvestData = async () => {
     try {
       const response = await axios.get('http://192.168.1.17:3000/api/harvest/getAllHarvests',
-       {
-        params: {
-          userId: currentUser._id
-        }
-      });
+        {
+          params: {
+            userId: currentUser._id
+          }
+        });
 
       setHarvests(response.data.data);
     } catch (error) {
@@ -109,7 +110,7 @@ export default function HarvestHistoryScreen({ navigation }) {
 
   useEffect(() => {
     if (currentUser) {
-    fetchHarvestData();
+      fetchHarvestData();
     }
   }, [currentUser, isFocused]);
 
@@ -120,7 +121,7 @@ export default function HarvestHistoryScreen({ navigation }) {
   };
 
   const handleFormSubmit = async () => {
-    if ( !selectedApiary ||!selectedHive ||!selectedProduct || !quantity || !selectedUnit || !selectedSeason || !selectedHarvestMethod) {
+    if (!selectedApiary || !selectedHive || !selectedProduct || !quantity || !selectedUnit || !selectedSeason || !selectedHarvestMethod) {
       return Alert.alert('Erreur', 'Veuillez remplir tous les champs');
     } else {
       try {
@@ -167,10 +168,10 @@ export default function HarvestHistoryScreen({ navigation }) {
     <TouchableOpacity
       style={styles.tableRow}
       onPress={() => navigation.navigate('HarvestDetailsScreen', {
-        harvestData: item, badge: index === lastItemIndex ? true : false, 
+        harvestData: item, badge: index === lastItemIndex ? true : false,
         apiaries: apiaries,
         hives: hives
-       
+
       })}
     >
       <Text style={styles.tableCell}>{item.Apiary}</Text>
@@ -203,7 +204,12 @@ export default function HarvestHistoryScreen({ navigation }) {
 
         {isLoading ? (
           <View style={[styles.container, styles.loadingContainer]}>
-            <ActivityIndicator size="large" color="#977700" />
+            <LottieView
+              source={require('../../assets/lottie/loading.json')}
+              autoPlay
+              loop
+              style={{ width: 100, height: 100 }}
+            />
           </View>
         ) : (
           <ScrollView horizontal={true}>
@@ -330,5 +336,13 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: 10,
     zIndex: 1,
+  },
+  container: {
+    flex: 1,
+    padding: 16,
+  },
+  loadingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

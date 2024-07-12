@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Modal } from 'react-native';
 import HomeHeader from '../Components/HomeHeader';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { useCameraPermissions } from 'expo-camera';
 import { useIsFocused } from '@react-navigation/native';
+import LottieView from "lottie-react-native";
 
 import ChangePasswordOnFirstLogin from './UserAccountManagement/ChangePasswordOnFirstLogin';
 
@@ -18,7 +19,11 @@ export default function HomeScreen({ navigation }) {
   const [passwordModalVisible, setPasswordModalVisible] = useState(false);
   const isFocused = useIsFocused();
   const [isLoading, setIsLoading] = useState(true); // State for loading indicator
+ 
   const [incompleteTasksCount, setIncompleteTasksCount] = useState(0);
+
+
+ 
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -160,9 +165,15 @@ export default function HomeScreen({ navigation }) {
       <HomeHeader navigation={navigation} title={'Accueil'} />
 
       {isLoading ? (
-        <View style={[styles.container, styles.loadingContainer]}>
-          <ActivityIndicator size="large" color="#977700" />
-        </View>
+             <View style={[styles.container, styles.loadingContainer]}>
+              <LottieView
+                source={require('../assets/lottie/loading.json')} // Replace with your animation file path
+                autoPlay
+                loop
+                style={{ width: 200, height: 200 }}
+              />
+            </View>
+ 
       ) : (
         <>
         
