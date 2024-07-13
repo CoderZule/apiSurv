@@ -7,7 +7,7 @@ import {
   Text,
   TouchableOpacity,
   TextInput,
-  Alert
+  Alert, Linking
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -36,13 +36,13 @@ export default function LoginScreen() {
       );
 
 
-       AsyncStorage.multiSet([
+      AsyncStorage.multiSet([
         ['token', response.data.token],
         ['currentUser', JSON.stringify(response.data.currentUser)]
       ]);
-      
+
       //Prevent user from going back to login screen after login
-       navigation.reset({
+      navigation.reset({
         index: 0,
         routes: [{ name: 'DrawerNavigator', params: { currentUser: response.data.currentUser } }],
       });
@@ -55,6 +55,28 @@ export default function LoginScreen() {
   const togglePasswordVisibility = () => {
     setForm({ ...form, hidePassword: !form.hidePassword });
   };
+
+  const handlePress = () => {
+    Alert.alert(
+      'Confirmation',
+      "Voulez-vous vraiment envoyer un email pour réinitialiser votre mot de passe?",
+      [
+        {
+          text: 'Annuler',
+          style: 'cancel',
+        },
+        {
+          text: 'Envoyer',
+          onPress: () => {
+            const subject = encodeURIComponent('Mot de passe oublié'); 
+            const body = encodeURIComponent('Bonjour,\n\nJe vous prie de réinitialiser mon mot de passe.\n\nCordialement,'); // Encode message body
+            Linking.openURL(`mailto:adminapisurv@gmail.com?subject=${subject}&body=${body}`);
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -123,7 +145,11 @@ export default function LoginScreen() {
               </TouchableOpacity>
             </View>
 
-            <Text style={styles.formLink}>Mot de passe oublié?</Text>
+            <Text style={styles.formLink} onPress={handlePress}>
+              Mot de passe oublié?
+            </Text>
+
+
           </View>
         </KeyboardAwareScrollView>
       </View>
@@ -211,6 +237,7 @@ const styles = StyleSheet.create({
     color: '#977700',
     textAlign: 'center',
     marginTop: 12,
+    textDecorationLine: 'underline',
   },
   btn: {
     flexDirection: 'row',
@@ -220,6 +247,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     backgroundColor: '#FEE502',
     borderRadius: 30,
+
   },
   btnText: {
     fontSize: 17,

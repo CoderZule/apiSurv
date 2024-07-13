@@ -142,8 +142,7 @@ export default function HarvestHistoryScreen({ navigation }) {
         const response = await axios.post('http://192.168.1.17:3000/api/harvest/create', formData);
         Alert.alert('Success', 'Récolte ajoutée avec succès');
 
-        // Reset input states and close modal
-        setSelectedApiary('');
+         setSelectedApiary('');
         setSelectedHive('');
         setSelectedProduct('');
         setQuantity('');

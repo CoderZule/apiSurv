@@ -204,7 +204,7 @@ export default function StorageScreen({ navigation }) {
                       ))}
                   </Text>
                   <TouchableOpacity onPress={() => openModal(product)}>
-                    <Ionicons name="remove-circle" size={24} color="red" />
+                    <Ionicons name="remove-circle" size={24} color="#D22B2B" />
                   </TouchableOpacity>
                 </Card.Content>
                 {index !== HarvestProducts.length - 1 && <View style={styles.divider} />}
@@ -232,12 +232,13 @@ export default function StorageScreen({ navigation }) {
               value={newQuantity}
               onChangeText={setNewQuantity}
             />
+
             <Picker
               selectedValue={selectedUnit}
               onValueChange={(itemValue) => setSelectedUnit(itemValue)}
               style={styles.picker}
             >
-              <Picker.Item label="Sélectionner..." value="" enabled={false} />
+              <Picker.Item label="Unité..." value="" enabled={false} />
               {filterUnits(selectedProduct).map((unit) => (
                 <Picker.Item label={unit} value={unit} key={unit} />
               ))}
@@ -320,7 +321,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 5,
+    borderRadius: 8,
     marginBottom: 10,
   },
   picker: {
