@@ -24,6 +24,8 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
+import LottieView from "lottie-react-native";
+
 
 
 const Option = React.memo(({ option, isSelected, onPressHandler, quantity, onQuantityChange }) => (
@@ -538,7 +540,12 @@ const AddInspectionScreen = ({ route }) => {
       <Text style={styles.title}>Ajouter une inspection</Text>
       {isLoading ? (
         <View style={[styles.container, styles.loadingContainer]}>
-          <ActivityIndicator size="large" color="#977700" />
+          <LottieView
+            source={require('../../assets/lottie/loading.json')} // Replace with your animation file path
+            autoPlay
+            loop
+            style={{ width: 100, height: 100 }}
+          />
         </View>
       ) : (
         <ScrollView contentContainerStyle={styles.scrollContainer}>

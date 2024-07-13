@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, SafeAreaView, StyleSheet, View, TouchableOpacity, Modal, TextInput, Pressable, Alert } from 'react-native';
+import { Text, SafeAreaView, StyleSheet, View, TouchableOpacity, Modal, TextInput, Pressable, Alert, Image} from 'react-native';
 import HomeHeader from '../../Components/HomeHeader';
 import { HarvestProducts, units } from '../Data';
 import { Card } from 'react-native-paper';
@@ -173,6 +173,14 @@ export default function StorageScreen({ navigation }) {
     <SafeAreaView style={styles.safeArea}>
       <HomeHeader navigation={navigation} title={'Produits en stock'} />
 
+      <View style={[ styles.centeredView]}>
+        <Image
+          source={require('../../assets/stockage.png')}
+          style={styles.image}
+          resizeMode="contain"
+        />
+      </View>
+      
       <Card style={styles.card}>
         {isLoading ? (
           <View style={[styles.container, styles.loadingContainer]}>
@@ -252,6 +260,8 @@ export default function StorageScreen({ navigation }) {
           </View>
         </View>
       </Modal>
+
+     
     </SafeAreaView>
   );
 }
@@ -263,13 +273,13 @@ const styles = StyleSheet.create({
   },
   card: {
     margin: 20,
-    padding: 10,
+    padding: 8,
   },
   cardContent: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginVertical: 5,
+    marginVertical: 4,
   },
   productName: {
     fontSize: 16,
@@ -342,15 +352,22 @@ const styles = StyleSheet.create({
     color: '#373737',
 
   },
+  centeredView: {
+    justifyContent: 'center',
+    alignItems: 'center',
+},
 
   container: {
     flex: 1,
-
-
     padding: 16,
   },
   loadingContainer: {
     justifyContent: 'center',
     alignItems: 'center',
   },
+
+  image: {
+    width: 180,
+    height: 180,
+},
 });

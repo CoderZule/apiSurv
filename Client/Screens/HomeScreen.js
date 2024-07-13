@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Modal } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, Alert } from 'react-native';
 import HomeHeader from '../Components/HomeHeader';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -160,9 +160,32 @@ export default function HomeScreen({ navigation }) {
   }
 
 
+  const handleNotificationPress = () => {
+    Alert.alert(
+      'Tâches inachevées',
+      `Vous avez ${incompleteTasksCount} tâche${incompleteTasksCount > 1 ? 's' : ''} inachevée${incompleteTasksCount > 1 ? 's' : ''}`,
+      [
+        {
+          text: 'Annuler',
+          style: 'cancel',
+        },
+        {
+          text: 'Afficher vos tâches',
+          onPress: () => navigation.navigate('Tasks'),
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
   return (
     <View style={styles.container}>
-      <HomeHeader navigation={navigation} title={'Accueil'} />
+       <HomeHeader
+        navigation={navigation}
+        title={'Accueil'}
+        incompleteTasksCount={incompleteTasksCount}
+        onNotificationPress={handleNotificationPress}
+      />
 
       {isLoading ? (
              <View style={[styles.container, styles.loadingContainer]}>
@@ -177,13 +200,7 @@ export default function HomeScreen({ navigation }) {
       ) : (
         <>
         
-       {incompleteTasksCount > 0 && (
-            <View style={styles.taskInfoContainer}>
-              <Text style={styles.taskInfoText}>
-             Rappel!! Vous avez {incompleteTasksCount} tâche{incompleteTasksCount > 1 ? 's' : ''} inachevée{incompleteTasksCount > 1 ? 's' : ''} 🐝
-              </Text>
-            </View>
-          )}
+      
 
           <View style={styles.headerTextView}>
             <Text style={styles.headerText}>Bonjour </Text>

@@ -176,14 +176,14 @@ export default function HarvestHistoryScreen({ navigation }) {
     >
       <Text style={styles.tableCell}>{item.Apiary}</Text>
       <Text style={styles.tableCell}>{item.Hive}</Text>
-      <Text style={styles.tableCell}>{item.Product}</Text>
-
-
-      {index === lastItemIndex && (
+      <Text style={styles.tableCell}>{item.Product}{'\n'}{index === lastItemIndex && (
         <View style={styles.badge}>
-          <Text style={{ color: 'white', fontSize: 9, fontWeight: 'bold' }}>Dernière récolte</Text>
+         <Text style={{ color: 'white', fontSize: 9, fontWeight: 'bold' }}>Dernière récolte</Text>
         </View>
-      )}
+      )}</Text>
+
+
+    
     </TouchableOpacity>
   );
 
@@ -192,80 +192,82 @@ export default function HarvestHistoryScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.safeArea}>
       <HomeHeader navigation={navigation} title={'Historique des récoltes'} />
+      <ScrollView horizontal={true}>
+        <Card style={styles.card}>
 
-      <Card style={styles.card}>
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={() => setShowModal(true)}
+          >
+            <FontAwesome5Icon name="plus-circle" size={30} color="#FEE502" />
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => setShowModal(true)}
-        >
-          <FontAwesome5Icon name="plus-circle" size={30} color="#FEE502" />
-        </TouchableOpacity>
-
-        {isLoading ? (
-          <View style={[styles.container, styles.loadingContainer]}>
-            <LottieView
-              source={require('../../assets/lottie/loading.json')}
-              autoPlay
-              loop
-              style={{ width: 100, height: 100 }}
-            />
-          </View>
-        ) : (
-          <ScrollView horizontal={true}>
-            <View style={styles.table}>
-              <View style={styles.tableHeader}>
-                <Text style={styles.tableHeaderText}>Rucher</Text>
-                <Text style={styles.tableHeaderText}>Ruche</Text>
-                <Text style={styles.tableHeaderText}>Produit</Text>
-
-              </View>
-
-              <FlatList
-                data={harvests}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={renderHarvestItem}
-                ListEmptyComponent={
-                  <View style={styles.tableRow}>
-                    <Text style={styles.noDataCell}>
-                      Aucune récolte trouvée.
-                    </Text>
-                  </View>
-                }
+          {isLoading ? (
+            <View style={[styles.container, styles.loadingContainer]}>
+              <LottieView
+                source={require('../../assets/lottie/loading.json')}
+                autoPlay
+                loop
+                style={{ width: 100, height: 100 }}
               />
             </View>
-          </ScrollView>)}
-      </Card>
+          ) : (
+            <ScrollView horizontal={true}>
+              <View style={styles.table}>
+                <View style={styles.tableHeader}>
+                  <Text style={styles.tableHeaderText}>Rucher</Text>
+                  <Text style={styles.tableHeaderText}>Ruche</Text>
+                  <Text style={styles.tableHeaderText}>Produit</Text>
 
-      {showModal && (
-        <AddHarvestModal
-          selectedApiary={selectedApiary}
-          setSelectedApiary={setSelectedApiary}
-          selectedHive={selectedHive}
-          setSelectedHive={setSelectedHive}
-          selectedProduct={selectedProduct}
-          setSelectedProduct={setSelectedProduct}
-          quantity={quantity}
-          setQuantity={setQuantity}
-          selectedUnit={selectedUnit}
-          setSelectedUnit={setSelectedUnit}
-          selectedSeason={selectedSeason}
-          setSelectedSeason={setSelectedSeason}
-          selectedHarvestMethod={selectedHarvestMethod}
-          setSelectedHarvestMethod={setSelectedHarvestMethod}
-          qualityTestResults={qualityTestResults}
-          setQualityTestResults={setQualityTestResults}
-          date={date}
-          showDatePicker={showDatePicker}
-          setShowDatePicker={setShowDatePicker}
-          handleDateChange={handleDateChange}
-          handleFormSubmit={handleFormSubmit}
-          closeModal={() => setShowModal(false)}
-          apiaries={apiaries}
-          filteredHives={filteredHives}
+                </View>
 
-        />
-      )}
+                <FlatList
+                  data={harvests}
+                  keyExtractor={(item, index) => index.toString()}
+                  renderItem={renderHarvestItem}
+                  ListEmptyComponent={
+                    <View style={styles.tableRow}>
+                      <Text style={styles.noDataCell}>
+                        Aucune récolte trouvée.
+                      </Text>
+                    </View>
+                  }
+                />
+              </View>
+            </ScrollView>)}
+        </Card>
+
+
+        {showModal && (
+          <AddHarvestModal
+            selectedApiary={selectedApiary}
+            setSelectedApiary={setSelectedApiary}
+            selectedHive={selectedHive}
+            setSelectedHive={setSelectedHive}
+            selectedProduct={selectedProduct}
+            setSelectedProduct={setSelectedProduct}
+            quantity={quantity}
+            setQuantity={setQuantity}
+            selectedUnit={selectedUnit}
+            setSelectedUnit={setSelectedUnit}
+            selectedSeason={selectedSeason}
+            setSelectedSeason={setSelectedSeason}
+            selectedHarvestMethod={selectedHarvestMethod}
+            setSelectedHarvestMethod={setSelectedHarvestMethod}
+            qualityTestResults={qualityTestResults}
+            setQualityTestResults={setQualityTestResults}
+            date={date}
+            showDatePicker={showDatePicker}
+            setShowDatePicker={setShowDatePicker}
+            handleDateChange={handleDateChange}
+            handleFormSubmit={handleFormSubmit}
+            closeModal={() => setShowModal(false)}
+            apiaries={apiaries}
+            filteredHives={filteredHives}
+
+          />
+        )}
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -315,8 +317,8 @@ const styles = StyleSheet.create({
     minHeight: 60,
   },
   tableCell: {
-    padding: 10,
-    width: 100,
+    padding: 12,
+    width: 80,
     flex: 1,
     textAlign: 'center',
 
@@ -328,14 +330,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   badge: {
-    position: 'absolute',
-    bottom: 4,
-    right: 4,
+  
+ 
     backgroundColor: "#2EB922",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 10,
-    zIndex: 1,
+    paddingHorizontal: 4,
+    paddingVertical: 2,
+    borderRadius: 5,
+ 
+ 
+ 
   },
   container: {
     flex: 1,

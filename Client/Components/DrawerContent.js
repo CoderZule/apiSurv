@@ -64,7 +64,7 @@ export default function DrawerContent(props) {
 
                 <DrawerItem
                     label="Tâches"
-                    icon={() => <Ionicons name='checkbox-outline' size={24} color="#977700" />}
+                    icon={() => <Ionicons name='calendar-outline' size={24} color="#977700" />}
                     onPress={() => props.navigation.navigate('Tasks')}
                     labelStyle={styles.drawerItemLabel}
                 />
