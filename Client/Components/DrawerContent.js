@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, Switch, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
@@ -39,12 +39,9 @@ export default function DrawerContent(props) {
         );
     };
 
-
-
     return (
         <View style={styles.container}>
             <View style={styles.logoContainer}>
-                {/* Your logo image with an orange background */}
                 <Image source={require('../assets/logo.png')} style={styles.logoImage} />
             </View>
 
@@ -70,7 +67,21 @@ export default function DrawerContent(props) {
                 />
 
                 <DrawerItem
-                    label="Historique des récoltes"
+                    label="Traitements"
+                    icon={() => <Ionicons name='pulse-outline' size={24} color="#977700" />}
+                    onPress={() => props.navigation.navigate('Treatment')}
+                    labelStyle={styles.drawerItemLabel}
+                />
+
+                <DrawerItem
+                    label="Nourrissement"
+                    icon={() => <Ionicons name='flower-outline' size={24} color="#977700" />}
+                    onPress={() => props.navigation.navigate('Feeding')}
+                    labelStyle={styles.drawerItemLabel}
+                />
+
+                <DrawerItem
+                    label="Récoltes"
                     icon={() => <Ionicons name='flask-outline' size={24} color="#977700" />}
                     onPress={() => props.navigation.navigate('Harvest')}
                     labelStyle={styles.drawerItemLabel}
@@ -83,7 +94,6 @@ export default function DrawerContent(props) {
                     labelStyle={styles.drawerItemLabel}
                 />
 
-
                 <DrawerItem
                     label="Finances"
                     icon={() => <Ionicons name='cash-outline' size={24} color="#977700" />}
@@ -95,6 +105,13 @@ export default function DrawerContent(props) {
                     label="Statistiques"
                     icon={() => <Ionicons name='bar-chart-outline' size={24} color="#977700" />}
                     onPress={() => props.navigation.navigate('Stats')}
+                    labelStyle={styles.drawerItemLabel}
+                />
+
+                <DrawerItem
+                    label="Gallery"
+                    icon={() => <Ionicons name='images-outline' size={24} color="#977700" />}
+                    onPress={() => props.navigation.navigate('Gallery')}
                     labelStyle={styles.drawerItemLabel}
                 />
 
@@ -118,8 +135,7 @@ export default function DrawerContent(props) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#FBF5E0'
-
+        backgroundColor: '#FBF5E0',
     },
     contentContainer: {
         paddingTop: 20,
@@ -127,8 +143,7 @@ const styles = StyleSheet.create({
     divider: {
         borderBottomColor: '#977700',
         borderBottomWidth: 0.2,
-        marginTop: 10
-
+        marginVertical: 10,
     },
     logoContainer: {
         backgroundColor: '#977700',
@@ -155,6 +170,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row', // Arrange items horizontally
         alignItems: 'center', // Centers the content vertically
         justifyContent: 'center', // Centers the content horizontally
-        paddingTop: 60, // Adjust the top padding as needed
+        marginBottom:30,
+        marginVertical: 10,
     },
 });

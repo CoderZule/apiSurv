@@ -1,6 +1,4 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import HomeScreen from '../Screens/HomeScreen';
 import ProfilScreen from '../Screens/UserAccountManagement/ProfilScreen';
@@ -11,7 +9,12 @@ import StatsScreen from '../Screens/Stats/StatsScreen';
 import DrawerContent from '../Components/DrawerContent';
 import AboutAppScreen from '../Screens/AboutAppScreen';
 import StorageScreen from '../Screens/Storage/StorageScreen';
+import TreatmentScreen from '../Screens/BeeHealthFeeding/TreatmentScreen';
+import FeedingScreen from '../Screens/BeeHealthFeeding/FeedingScreeen';
+import GalleryScreen from '../Screens/GalleryScreen';
  
+
+import { createDrawerNavigator } from '@react-navigation/drawer';
 
 
 
@@ -36,11 +39,16 @@ export default function DrawerNavigator() {
             <Drawer.Screen name="Home" component={HomeScreen} />
             <Drawer.Screen name="Profil" component={ProfilScreen} />
             <Drawer.Screen name="Tasks" component={TasksScreen} />
-            <Drawer.Screen name="Finances" component={FinancesScreen} />
             <Drawer.Screen name="Harvest" component={HarvestHistoryScreen} />
+            <Drawer.Screen name="Storage" component={StorageScreen}/>
+            <Drawer.Screen name="Treatment" component={TreatmentScreen} />
+            <Drawer.Screen name="Feeding" component={FeedingScreen} />
+            <Drawer.Screen name="Finances" component={FinancesScreen} />
+            <Drawer.Screen name="Gallery" component={GalleryScreen} />
             <Drawer.Screen name="Stats" component={StatsScreen} />
             <Drawer.Screen name="AboutApp" component={AboutAppScreen}/>
-            <Drawer.Screen name="Storage" component={StorageScreen}/>
+
+           
 
 
 

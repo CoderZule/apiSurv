@@ -190,7 +190,7 @@ export default function HarvestHistoryScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <HomeHeader navigation={navigation} title={'Historique des récoltes'} />
+      <HomeHeader navigation={navigation} title={'Récoltes'} />
       <ScrollView horizontal={true}>
         <Card style={styles.card}>
 
