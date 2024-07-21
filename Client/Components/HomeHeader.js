@@ -1,5 +1,3 @@
-// HomeHeader.js
-
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, StatusBar } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -16,13 +14,12 @@ export default function HomeHeader({ navigation, title, incompleteTasksCount, on
     if (navigation && navigation.toggleDrawer) {
       navigation.toggleDrawer();
     }
-    // Add fallback logic if needed
-  };
+   };
 
   return (
     <View style={styles.header}>
       <TouchableOpacity onPress={handleMenuPress} style={styles.menuButton}>
-        <Ionicons name="menu" color="white" size={32} />
+        <Ionicons name="menu" color="white" size={35} />
       </TouchableOpacity>
       <View style={styles.titleContainer}>
         <Text style={styles.headerTitle}>{title}</Text>
@@ -30,7 +27,7 @@ export default function HomeHeader({ navigation, title, incompleteTasksCount, on
 
       {incompleteTasksCount > 0 && (
         <TouchableOpacity onPress={onNotificationPress} style={styles.notificationButton}>
-          <Ionicons name="calendar-outline" color="white" size={27} />
+          <Ionicons name="calendar-outline" color="white" size={28} />
           <View style={styles.notificationBadge}>
             <Text style={styles.notificationCount}>{incompleteTasksCount}</Text>
           </View>
@@ -44,24 +41,30 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     backgroundColor: '#977700',
-    height: 63,
+    height: 70,
     alignItems: 'center',
     paddingHorizontal: 10,
+    paddingTop:5
   },
   titleContainer: {
     flex: 1,
+    marginTop:9,
     alignItems: 'center',
     justifyContent: 'center',
   },
   headerTitle: {
     color: 'white',
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: 'bold',
   },
 
+  menuButton: {
+  marginTop:9,
+  marginLeft:5
+  },
   notificationButton: {
-    position: 'absolute',
-    right: 20,
+     marginTop:9,
+    right: 15,
   },
   notificationBadge: {
     backgroundColor: '#D22B2B',
