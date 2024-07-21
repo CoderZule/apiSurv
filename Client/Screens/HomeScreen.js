@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, Alert } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, Alert, Button } from 'react-native';
 import HomeHeader from '../Components/HomeHeader';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -19,11 +19,11 @@ export default function HomeScreen({ navigation }) {
   const [passwordModalVisible, setPasswordModalVisible] = useState(false);
   const isFocused = useIsFocused();
   const [isLoading, setIsLoading] = useState(true); // State for loading indicator
- 
+
   const [incompleteTasksCount, setIncompleteTasksCount] = useState(0);
 
 
- 
+
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -110,11 +110,11 @@ export default function HomeScreen({ navigation }) {
           userId: currentUser._id
         }
       });
-      
+
       // Count incomplete tasks
       const incompleteCount = response.data.data.filter(event => !event.completed).length;
       setIncompleteTasksCount(incompleteCount);
-      
+
     } catch (error) {
       console.error('Error fetching tasks:', error);
     }
@@ -152,10 +152,14 @@ export default function HomeScreen({ navigation }) {
 
   if (!permission.granted) {
     return (
-      <View style={styles.container}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
         <Text style={{ textAlign: 'center' }}>Nous avons besoin de votre autorisation pour afficher la caméra</Text>
-        <Button onPress={requestPermission} title="grant permission" />
+
+        <TouchableOpacity style={styles.button} onPress={requestPermission}>
+          <Text style={styles.buttonText}>Donner la permission</Text>
+        </TouchableOpacity>
       </View>
+
     );
   }
 
@@ -180,7 +184,7 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-       <HomeHeader
+      <HomeHeader
         navigation={navigation}
         title={'Accueil'}
         incompleteTasksCount={incompleteTasksCount}
@@ -188,19 +192,19 @@ export default function HomeScreen({ navigation }) {
       />
 
       {isLoading ? (
-             <View style={[styles.container, styles.loadingContainer]}>
-              <LottieView
-                source={require('../assets/lottie/loading.json')} // Replace with your animation file path
-                autoPlay
-                loop
-                style={{ width: 200, height: 200 }}
-              />
-            </View>
- 
+        <View style={[styles.container, styles.loadingContainer]}>
+          <LottieView
+            source={require('../assets/lottie/loading.json')} // Replace with your animation file path
+            autoPlay
+            loop
+            style={{ width: 200, height: 200 }}
+          />
+        </View>
+
       ) : (
         <>
-        
-      
+
+
 
           <View style={styles.headerTextView}>
             <Text style={styles.headerText}>Bonjour </Text>
@@ -279,7 +283,7 @@ const styles = StyleSheet.create({
   },
 
   taskInfoContainer: {
- 
+
     borderRadius: 30,
     flexDirection: 'row',
     justifyContent: 'flex-end',
@@ -292,7 +296,7 @@ const styles = StyleSheet.create({
   taskInfoText: {
     color: 'red',
     fontSize: 12,
-    fontWeight:'bold'
+    fontWeight: 'bold'
   },
 
   headerTextView: {
