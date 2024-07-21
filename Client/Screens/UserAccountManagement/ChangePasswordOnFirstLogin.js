@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Modal, Alert } from 'react-native';
-import axios from 'axios';
+import axios from '../../axiosConfig';
 import { FontAwesome5 } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -24,7 +24,7 @@ export default function ChangePasswordOnFirstLogin({ visible, onClose, userId })
         }
 
         try {
-            const response = await axios.post('http://192.168.1.17:3000/api/user/changePasswordFirstLogin', {
+            const response = await axios.post('/user/changePasswordFirstLogin', {
                 userId,
                 newPassword
             });

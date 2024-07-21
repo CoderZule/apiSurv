@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ScrollView, View, Text, StyleSheet, Modal, Switch, Alert, TextInput, Pressable, Platform, TouchableHighlight, TouchableOpacity } from 'react-native'; // Added Pressable and Platform
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
-import axios from 'axios';
+import axios from '../../axiosConfig';
 import {
     queenColors,
     queen_cells,
@@ -57,9 +57,9 @@ const EditInspectionModal = ({
     const [showPickerFrom, setShowPickerFrom] = useState(false);
     const [showPickerTo, setShowPickerTo] = useState(false);
 
- 
 
-    
+
+
 
     const togglePickerFrom = () => {
         setShowPickerFrom(!showPickerFrom);
@@ -205,23 +205,25 @@ const EditInspectionModal = ({
                 return Alert.alert('Erreur', 'Les informations de la colonie sont requises');
             }
 
+            if (updatedFormData.Queen) {
 
-            if (updatedFormData.Queen.seen) {
-                if (updatedFormData.Queen.isMarked && updatedFormData.Queen.color === '') {
-                    return Alert.alert('Erreur', 'Veuillez choisir une couleur pour la reine');
+                if (updatedFormData.Queen.seen) {
+                    if (updatedFormData.Queen.isMarked && updatedFormData.Queen.color === '') {
+                        return Alert.alert('Erreur', 'Veuillez choisir une couleur pour la reine');
+                    }
+                    if (!updatedFormData.Queen.temperament || !updatedFormData.Queen.queenCells) {
+                        return Alert.alert('Erreur', 'Veuillez compléter les informations sur la reine');
+                    }
+                } else {
+                    updatedFormData.Queen.seen = false;
+                    updatedFormData.Queen.isMarked = false;
+                    updatedFormData.Queen.color = '';
+                    updatedFormData.Queen.clipped = false;
+                    updatedFormData.Queen.temperament = '';
+                    updatedFormData.Queen.note = '';
+                    updatedFormData.Queen.queenCells = '';
+                    updatedFormData.Queen.isSwarmed = false;
                 }
-                if (!updatedFormData.Queen.temperament || !updatedFormData.Queen.queenCells) {
-                    return Alert.alert('Erreur', 'Veuillez compléter les informations sur la reine');
-                }
-            } else {
-                updatedFormData.Queen.seen= false;
-                updatedFormData.Queen.isMarked = false;
-                updatedFormData.Queen.color = '';
-                updatedFormData.Queen.clipped = false;
-                updatedFormData.Queen.temperament = '';
-                updatedFormData.Queen.note = '';
-                updatedFormData.Queen.queenCells = '';
-                updatedFormData.Queen.isSwarmed = false;
             }
 
 
@@ -238,7 +240,7 @@ const EditInspectionModal = ({
             if (!updatedFormData.PollenStores) {
                 return Alert.alert('Erreur', 'Les réserves de pollen sont requises');
             }
-            const response = await axios.post('http://192.168.1.17:3000/api/inspection/editInspection', updatedFormData);
+            const response = await axios.post('/inspection/editInspection', updatedFormData);
 
             if (response.status === 200) {
                 Alert.alert(

@@ -15,7 +15,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { FontAwesome5 } from '@expo/vector-icons';
 import HomeHeader from '../../Components/HomeHeader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
+import axios from '../../axiosConfig';
 import { Card } from 'react-native-paper';
 import LottieView from "lottie-react-native";
 
@@ -74,7 +74,7 @@ export default function ProfilScreen({ navigation }) {
       };
 
       const response = await axios.post(
-        'http://192.168.1.17:3000/api/user/editUser',
+        '/user/editUser',
         updatedUserData
       );
 
@@ -119,7 +119,7 @@ export default function ProfilScreen({ navigation }) {
       };
 
       const response = await axios.post(
-        'http://192.168.1.17:3000/api/user/changeProfilPassword',
+        '/user/changeProfilPassword',
         updatedUserData
       );
 

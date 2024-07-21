@@ -3,7 +3,7 @@ import { StyleSheet, ScrollView, View, Text, TextInput, TouchableOpacity, Switch
 import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import axios from 'axios';
+import axios from '../../axiosConfig';
 import * as Location from 'expo-location';
 import {
   queenColors,
@@ -71,7 +71,7 @@ const AddInspectionScreen = ({ route }) => {
 
   const [time, setTime] = useState(new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }));
 
- 
+
 
   const [inspector, setInspector] = useState('');
   const [isLoading, setIsLoading] = useState(true); // State for loading indicator
@@ -87,22 +87,21 @@ const AddInspectionScreen = ({ route }) => {
         if (currentUserString) {
           const user = JSON.parse(currentUserString);
           setInspector(user);
-          console.log(user);
           setIsLoading(false);
-           
+
         }
       } catch (error) {
         console.error('Error retrieving current user:', error);
       }
     };
 
-      fetchCurrentUser();
- 
+    fetchCurrentUser();
+
   }, []);
 
   const [formData, setFormData] = useState({
     isMarked: undefined,
-    color: hiveData.Queen && hiveData.Queen.color ? hiveData.Queen.color : null ,
+    color: hiveData.Queen && hiveData.Queen.color ? hiveData.Queen.color : null,
     clipped: undefined,
     seen: false,
     isSwarmed: undefined,
@@ -359,16 +358,6 @@ const AddInspectionScreen = ({ route }) => {
           hiveName: hiveData.Name,
         },
 
-        Queen: {
-          seen: formData.seen,
-          isMarked: formData.isMarked,
-          color: formData.color,
-          clipped: formData.clipped,
-          temperament: formData.q_temperament,
-          note: formData.queenNote,
-          queenCells: formData.queenCells,
-          isSwarmed: formData.isSwarmed
-        },
         Colony: {
           strength: formData.strength,
           temperament: formData.c_temperament,
@@ -432,26 +421,44 @@ const AddInspectionScreen = ({ route }) => {
         Note: formData.InspectionNote,
 
         Hive: hiveData._id
+
+
+
       };
 
 
+      if (hiveData.Queen) {
+        formattedData.Queen = {
+          seen: formData.seen,
+          isMarked: formData.isMarked,
+          color: formData.color,
+          clipped: formData.clipped,
+          temperament: formData.q_temperament,
+          note: formData.queenNote,
+          queenCells: formData.queenCells,
+          isSwarmed: formData.isSwarmed,
+        };
 
-      if (formattedData.Queen.seen) {
-        if (formattedData.Queen.isMarked && formattedData.Queen.color === '') {
-          return Alert.alert('Erreur', 'Veuillez choisir une couleur pour la reine');
+
+        if (formattedData.Queen.seen) {
+          if (formattedData.Queen.isMarked && formattedData.Queen.color === '') {
+            return Alert.alert('Erreur', 'Veuillez choisir une couleur pour la reine');
+          }
+          if (!formattedData.Queen.temperament || !formattedData.Queen.queenCells) {
+            return Alert.alert('Erreur', 'Veuillez compléter les informations sur la reine');
+          }
+        } else {
+          formattedData.Queen.isMarked = false;
+          formattedData.Queen.color = '';
+          formattedData.Queen.clipped = false;
+          formattedData.Queen.temperament = '';
+          formattedData.Queen.note = '';
+          formattedData.Queen.queenCells = '';
+          formattedData.Queen.isSwarmed = false;
         }
-        if (!formattedData.Queen.temperament || !formattedData.Queen.queenCells) {
-          return Alert.alert('Erreur', 'Veuillez compléter les informations sur la reine');
-        }
-      } else {
-        formattedData.Queen.isMarked = false;
-        formattedData.Queen.color = '';
-        formattedData.Queen.clipped = false;
-        formattedData.Queen.temperament = '';
-        formattedData.Queen.note = '';
-        formattedData.Queen.queenCells = '';
-        formattedData.Queen.isSwarmed = false;
       }
+
+     
 
       if (!formattedData.Colony.supers | !formattedData.Colony.pollenFrames | !formattedData.Colony.TotalFrames) {
         return Alert.alert('Erreur', 'Les informations concernant les équipements sont requises');
@@ -500,7 +507,7 @@ const AddInspectionScreen = ({ route }) => {
 
 
 
-      const response = await axios.post('http://192.168.1.17:3000/api/inspection/create', formattedData);
+      const response = await axios.post('/inspection/create', formattedData);
 
       if (response.status === 201) {
         Alert.alert('Succès', 'Inspection ajoutée avec succès', [
@@ -600,7 +607,7 @@ const AddInspectionScreen = ({ route }) => {
                 />
               </View>
               <View style={[styles.detailItem, styles.inline]}>
-                <Text style={styles.label}>Ruche <FontAwesome5 name="archive" size={14} color="#977700" style={styles.icon} /></Text>
+                <Text style={styles.label}>Ruche   <FontAwesome5 name="archive" size={14} color="#977700" style={styles.icon} /></Text>
                 <TextInput
                   style={[styles.textInput, styles.inlineInput, styles.disabledTextInput]}
                   value={hiveData.Name}
@@ -615,8 +622,7 @@ const AddInspectionScreen = ({ route }) => {
             <View style={styles.fieldset}>
               <Text style={styles.fieldsetTitle}>Date et Heure</Text>
               <View style={[styles.detailItem, styles.inline]}>
-                <Text style={styles.label}>Date <FontAwesome5 name="calendar-alt" size={14} color="#977700" style={styles.icon} />
-                </Text>
+                <Text style={styles.label}>Date <FontAwesome5 name="calendar-alt" size={14} color="#977700" style={styles.icon} />   </Text>
                 <TextInput
                   style={[styles.textInput, styles.inlineInput, styles.disabledTextInput]}
                   value={new Date().toLocaleDateString('fr-FR')}
@@ -701,7 +707,7 @@ const AddInspectionScreen = ({ route }) => {
                             selectedValue={formData.color}
                             onValueChange={(value) => handleInputChange('color', value)}
                           >
-                             {queenColors.map((color, index) => (
+                            {queenColors.map((color, index) => (
                               <Picker.Item key={index} label={color} value={color} />
                             ))}
                           </Picker>
@@ -1051,14 +1057,14 @@ const AddInspectionScreen = ({ route }) => {
                       display="default"
                       onChange={handleDateChangeFrom}
                       locale="fr"
-                      
+
                     />
                   )}
                 </View>
 
                 <View>
                   <View style={[styles.detailItem, styles.inline]}>
-                    <Text style={styles.label}>À</Text>
+                    <Text style={styles.label}>À               </Text>
                     <Pressable onPress={togglePickerTo}>
                       <Text style={[styles.textInput, styles.inlineInput]}>
                         {formData.to ? formData.to.toLocaleDateString('fr-FR') : 'Sélectionner une date'}
@@ -1301,7 +1307,7 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     backgroundColor: '#FBF5E0',
-    padding: 15,
+    padding: 20,
     borderRadius: 30,
     marginBottom: 50
   },
@@ -1311,6 +1317,7 @@ const styles = StyleSheet.create({
     color: '#977700',
     textAlign: 'center',
     marginBottom: 20,
+    marginTop:20,
   },
 
   inputIcon: {

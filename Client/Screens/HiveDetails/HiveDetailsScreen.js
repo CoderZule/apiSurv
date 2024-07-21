@@ -161,10 +161,12 @@ const HiveDetailsScreen = ({ route, navigation }) => {
                                             <Text style={styles.label}>Supers</Text>
                                             <Text style={styles.text}>{hiveData.Colony.supers}</Text>
                                         </View>
-                                        <View style={styles.detailItem}>
+                                        {hiveData.Colony.pollenFrames && (<View style={styles.detailItem}>
                                             <Text style={styles.label}>Cadres de pollen</Text>
                                             <Text style={styles.text}>{hiveData.Colony.pollenFrames}</Text>
-                                        </View>
+                                        </View>)}
+
+
                                         <View style={styles.detailItem}>
                                             <Text style={styles.label}>Cadres au total</Text>
                                             <Text style={styles.text}>{hiveData.Colony.TotalFrames}</Text>
@@ -172,7 +174,7 @@ const HiveDetailsScreen = ({ route, navigation }) => {
                                     </View>
 
 
-                                    {hiveData.Queen && (
+                                    {hiveData.Queen ? (
                                         <>
 
                                             <View style={styles.divider} />
@@ -244,7 +246,18 @@ const HiveDetailsScreen = ({ route, navigation }) => {
 
                                             </View>
                                         </>
-                                    )}
+
+                                    ) : (<>
+
+                                        <View style={styles.divider} />
+                                        <View style={styles.section}>
+                                            <Text style={styles.header}>Reine (n'existe pas)</Text>
+
+
+
+
+                                        </View>
+                                    </>)}
                                 </ScrollView>
                             </View>
                         </TouchableWithoutFeedback>

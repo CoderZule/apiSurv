@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { SafeAreaView, StyleSheet, View, Text, TouchableOpacity, Alert, FlatList, ScrollView } from 'react-native';
 import { Card } from 'react-native-paper';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
-import axios from 'axios';
+import axios from '../../axiosConfig';
 import HomeHeader from '../../Components/HomeHeader';
 import AddHarvestModal from './AddHarvestModal';
 import { useIsFocused } from '@react-navigation/native';
@@ -55,8 +55,8 @@ export default function HarvestHistoryScreen({ navigation }) {
         if (!currentUser) {
           return; // Exit early if currentUser is null or undefined
         }
-        const apiariesResponse = await axios.get('http://192.168.1.17:3000/api/apiary/getAllApiaries');
-        const hivesResponse = await axios.get('http://192.168.1.17:3000/api/hive/getAllHives');
+        const apiariesResponse = await axios.get('/apiary/getAllApiaries');
+        const hivesResponse = await axios.get('/hive/getAllHives');
 
         const userApiaries = apiariesResponse.data.data.filter(apiary => apiary.Owner._id === currentUser._id);
         setApiaries(userApiaries);
@@ -91,7 +91,7 @@ export default function HarvestHistoryScreen({ navigation }) {
 
   const fetchHarvestData = async () => {
     try {
-      const response = await axios.get('http://192.168.1.17:3000/api/harvest/getAllHarvests',
+      const response = await axios.get('/harvest/getAllHarvests',
         {
           params: {
             userId: currentUser._id
@@ -139,7 +139,7 @@ export default function HarvestHistoryScreen({ navigation }) {
 
         };
 
-        const response = await axios.post('http://192.168.1.17:3000/api/harvest/create', formData);
+        const response = await axios.post('/harvest/create', formData);
         Alert.alert('Success', 'Récolte ajoutée avec succès');
 
          setSelectedApiary('');

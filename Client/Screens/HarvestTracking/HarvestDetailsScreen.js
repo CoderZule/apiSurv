@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import EditHarvestModal from './EditHarvestModal';
-import axios from 'axios';
+import axios from '../../axiosConfig';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 const HarvestDetailsScreen = ({ route, navigation }) => {
@@ -22,7 +22,7 @@ const HarvestDetailsScreen = ({ route, navigation }) => {
 
     const handleDelete = async (harvestId) => {
         try {
-            const response = await axios.delete(`http://192.168.1.17:3000/api/harvest/deleteHarvest/${harvestId}`);
+            const response = await axios.delete(`/harvest/deleteHarvest/${harvestId}`);
             if (response.status === 200) {
                 console.log('Harvest deleted successfully');
                 showAlertAndNavigate('Récolte supprimée avec succès');

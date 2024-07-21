@@ -3,7 +3,7 @@ import { Modal, StyleSheet, View, Text, TouchableOpacity, TextInput, ScrollView,
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { HarvestMethods, HarvestSeasons, HarvestProducts, units } from '../Data';
-import axios from 'axios';
+import axios from '../../axiosConfig';
 
 const EditHarvestModal = ({ visible, onSave, onCancel, formData, onInputChange, apiaries, hives
 }) => {
@@ -39,7 +39,7 @@ const EditHarvestModal = ({ visible, onSave, onCancel, formData, onInputChange, 
     }
 
     try {
-      const response = await axios.post('http://192.168.1.17:3000/api/harvest/editHarvest', formData);
+      const response = await axios.post('/harvest/editHarvest', formData);
 
       if (response.status === 200) {
         showAlert('Modification de la récolte réussie', 'La récolte a été mise à jour avec succès');

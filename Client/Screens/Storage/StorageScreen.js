@@ -3,7 +3,7 @@ import { Text, SafeAreaView, StyleSheet, View, TouchableOpacity, Modal, TextInpu
 import HomeHeader from '../../Components/HomeHeader';
 import { HarvestProducts, units } from '../Data';
 import { Card } from 'react-native-paper';
-import axios from 'axios';
+import axios from '../../axiosConfig';
 import { useIsFocused } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
@@ -46,7 +46,7 @@ export default function StorageScreen({ navigation }) {
 
   const fetchTotals = async () => {
     try {
-      const response = await axios.get('http://192.168.1.17:3000/api/storage/getAllStorages',
+      const response = await axios.get('/storage/getAllStorages',
         {
           params: {
             userId: currentUser._id
@@ -92,7 +92,7 @@ export default function StorageScreen({ navigation }) {
       }
 
       // Fetch current storage data to validate against
-      const storageResponse = await axios.get('http://192.168.1.17:3000/api/storage/getAllStorages',
+      const storageResponse = await axios.get('/storage/getAllStorages',
         {
           params: {
             userId: currentUser._id
@@ -124,7 +124,7 @@ export default function StorageScreen({ navigation }) {
       }
 
       // All validations passed, proceed with the update request
-      const response = await axios.put('http://192.168.1.17:3000/api/storage/updateQuantity', {
+      const response = await axios.put('/storage/updateQuantity', {
         product: selectedProduct,
         unit: selectedUnit,
         newQuantity: Number(newQuantity),

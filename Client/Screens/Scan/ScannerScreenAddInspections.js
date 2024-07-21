@@ -3,13 +3,13 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { CameraView} from 'expo-camera';
-import axios from 'axios';
+import axios from '../../axiosConfig';
 
 export default function ScannerScreenAddInspections({ navigation }) {
 
    const handleBarCodeScanned = async ({ type, data }) => {
     try {
-        const response = await axios.get(`http://192.168.1.17:3000/api/hive/getHiveById/${data}`);
+        const response = await axios.get(`/hive/getHiveById/${data}`);
         const hiveData = response.data;
         navigation.navigate('AddInspectionScreen', { hiveData }); 
     } catch (error) {

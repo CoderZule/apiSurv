@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { FontAwesome5 } from '@expo/vector-icons';
-import axios from 'axios';
+import axios from '../../axiosConfig'
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -28,7 +28,7 @@ export default function LoginScreen() {
   const handleLogin = async () => {
     try {
       const response = await axios.post(
-        'http://192.168.1.17:3000/api/user/login',
+        '/user/login',
         {
           Email: form.email,
           Password: form.password,
@@ -68,8 +68,8 @@ export default function LoginScreen() {
         {
           text: 'Envoyer',
           onPress: () => {
-            const subject = encodeURIComponent('Mot de passe oublié'); 
-            const body = encodeURIComponent('Bonjour,\n\nJe vous prie de réinitialiser mon mot de passe.\n\nCordialement,'); // Encode message body
+            const subject = encodeURIComponent('Réinitialisation du mot de passe'); 
+            const body = encodeURIComponent('Bonjour,\n\nJe vous prie de réinitialiser mon mot de passe.\n\nCordialement,');         
             Linking.openURL(`mailto:adminapisurv@gmail.com?subject=${subject}&body=${body}`);
           },
         },

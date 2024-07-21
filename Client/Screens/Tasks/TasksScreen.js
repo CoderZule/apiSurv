@@ -6,7 +6,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import HomeHeader from '../../Components/HomeHeader';
 import { Card } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
-import axios from 'axios';
+import axios from '../../axiosConfig';
 import { Picker } from '@react-native-picker/picker';
 import { taskpriority } from '../Data';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -25,8 +25,7 @@ const TaskScreen = ({ navigation }) => {
   const [completed, setCompleted] = useState(false);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [isStartPicker, setIsStartPicker] = useState(true);
-  const baseURL = 'http://192.168.1.17:3000/api/task';
-
+ 
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -131,7 +130,7 @@ const TaskScreen = ({ navigation }) => {
     }
 
     try {
-      const response = await axios.get(`${baseURL}/getAllTasks`, {
+      const response = await axios.get(`/task/getAllTasks`, {
         params: {
           userId: currentUser._id
         }
@@ -166,7 +165,7 @@ const TaskScreen = ({ navigation }) => {
         const endDate = new Date(end);
 
 
-        const response = await axios.post(`${baseURL}/create`, {
+        const response = await axios.post(`/task/create`, {
           title,
           priority,
           description,
@@ -213,7 +212,7 @@ const TaskScreen = ({ navigation }) => {
           completed
         };
 
-        const response = await axios.post(`${baseURL}/editTask`, editedTaskData);
+        const response = await axios.post(`/task/editTask`, editedTaskData);
         if (response.status === 200) {
           const updatedTask = {
             ...selectedEvent,
@@ -264,7 +263,7 @@ const TaskScreen = ({ navigation }) => {
       });
 
       if (confirmDelete) {
-        const response = await axios.post(`${baseURL}/deleteTask`, { taskId: selectedEvent._id });
+        const response = await axios.post(`/task/deleteTask`, { taskId: selectedEvent._id });
         if (response.status === 200) {
           setEvents(events.filter(event => event._id !== selectedEvent._id));
           closeModal();

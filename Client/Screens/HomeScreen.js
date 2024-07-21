@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, Alert } from 'r
 import HomeHeader from '../Components/HomeHeader';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
+import axios from '../axiosConfig';
 import { useCameraPermissions } from 'expo-camera';
 import { useIsFocused } from '@react-navigation/native';
 import LottieView from "lottie-react-native";
@@ -51,7 +51,7 @@ export default function HomeScreen({ navigation }) {
     const fetchApiariesCount = async () => {
       try {
         if (currentUser) {
-          const response = await axios.get('http://192.168.1.17:3000/api/apiary/getAllApiaries');
+          const response = await axios.get('/apiary/getAllApiaries');
           const apiaries = response.data.data;
 
           const userApiaries = apiaries.filter(apiary => apiary.Owner._id === currentUser._id);
@@ -69,11 +69,11 @@ export default function HomeScreen({ navigation }) {
     const fetchHivesCount = async () => {
       try {
         if (currentUser) {
-          const response = await axios.get('http://192.168.1.17:3000/api/hive/getAllHives');
+          const response = await axios.get('/hive/getAllHives');
           const hives = response.data.data;
 
           // Fetch all apiaries owned by the current user
-          const apiariesResponse = await axios.get('http://192.168.1.17:3000/api/apiary/getAllApiaries');
+          const apiariesResponse = await axios.get('/apiary/getAllApiaries');
           const userApiaries = apiariesResponse.data.data.filter(apiary => apiary.Owner._id === currentUser._id);
 
           // Filter hives based on the apiaries owned by the current user
@@ -105,7 +105,7 @@ export default function HomeScreen({ navigation }) {
     }
 
     try {
-      const response = await axios.get(`http://192.168.1.17:3000/api/task/getAllTasks`, {
+      const response = await axios.get(`/task/getAllTasks`, {
         params: {
           userId: currentUser._id
         }

@@ -109,7 +109,7 @@ export default function DrawerContent(props) {
                 />
 
                 <DrawerItem
-                    label="Gallery"
+                    label="Galerie"
                     icon={() => <Ionicons name='images-outline' size={24} color="#977700" />}
                     onPress={() => props.navigation.navigate('Gallery')}
                     labelStyle={styles.drawerItemLabel}

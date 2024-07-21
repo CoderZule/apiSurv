@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ScrollView, View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import EditInspectionModal from './EditInspectionModal';
-  import axios from 'axios';
+  import axios from '../../axiosConfig';
 
 const InspectionDetailsScreen = ({ route, navigation }) => {
   const { inspectionData, badge } = route.params;
@@ -139,7 +139,7 @@ const InspectionDetailsScreen = ({ route, navigation }) => {
 
   const handleDelete = async (inspectionId) => {
     try {
-      const response = await axios.post('http://192.168.1.17:3000/api/inspection/deleteInspection', { inspectionId });
+      const response = await axios.post('/inspection/deleteInspection', { inspectionId });
 
       if (response.status === 200) {
         console.log('Inspection supprimée avec succès');
