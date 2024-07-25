@@ -303,13 +303,14 @@ const styles = StyleSheet.create({
         color: '#373737',
     },
     datePickerContainer: {
+        width: '100%',
         marginBottom: 15,
-        borderBottomWidth: 1,
-        borderBottomColor: '#CCCCCC',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        width: '100%', // Ensure full width
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+        borderRadius: 5,
+        borderColor: '#CCCCCC',
+        borderWidth: 1,
+        backgroundColor: '#FBF5E0',
     },
     datePickerText: {
         color: '#333333',

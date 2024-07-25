@@ -106,3 +106,9 @@ export const HarvestMethods = [
 
 export const taskpriority = ['Faible', 'Élevée', 'Normale', 'Critique'];
 
+
+export const IncomeCategory = ['Miel', 'Pollen', 'Pollinisation', 'Propolis', 'Essaim', 'Cire'];
+export const ExpenseCategory = ['Équipement', 'Nourriture', 'Ruches', 'Médicament','Outils', 'Transport'];
+
+
+

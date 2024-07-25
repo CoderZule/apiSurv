@@ -15,6 +15,7 @@ import ScannerScreenAddInspections from '../Screens/Scan/ScannerScreenAddInspect
 import InspectionsHistoryScreen from '../Screens/Inspections/InspectionsHistoryScreen';
 import InspectionDetailsScreen from '../Screens/Inspections/InspectionDetailsScreen';
 import HarvestDetailsScreen from '../Screens/Harvest/HarvestDetailsScreen';
+import TransactionDetailsScreen from '../Screens/Finances/TransactionDetailsScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -53,6 +54,9 @@ export function IntroStack() {
 
 
           <Stack.Screen name="HarvestDetailsScreen" component={HarvestDetailsScreen} options={{ title: 'Harvest Details Screen' }} />
+
+          
+          <Stack.Screen name="TransactionDetailsScreen" component={TransactionDetailsScreen} options={{ title: 'Transaction Details Screen' }} />
 
         </>
       )}

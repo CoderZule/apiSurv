@@ -53,7 +53,7 @@ export default function HarvestHistoryScreen({ navigation }) {
     const fetchData = async () => {
       try {
         if (!currentUser) {
-          return; // Exit early if currentUser is null or undefined
+          return;  
         }
         const apiariesResponse = await axios.get('/apiary/getAllApiaries');
         const hivesResponse = await axios.get('/hive/getAllHives');
@@ -332,11 +332,12 @@ const styles = StyleSheet.create({
   
  
     backgroundColor: "#2EB922",
-    paddingHorizontal: 4,
-    paddingVertical: 2,
-    borderRadius: 5,
- 
- 
+    borderRadius: 12,         
+    padding: 4,               
+    alignItems: 'center',
+    justifyContent: 'center',
+
+
  
   },
   container: {

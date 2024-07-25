@@ -19,7 +19,7 @@ export default function HomeHeader({ navigation, title, incompleteTasksCount, on
   return (
     <View style={styles.header}>
       <TouchableOpacity onPress={handleMenuPress} style={styles.menuButton}>
-        <Ionicons name="menu" color="white" size={35} />
+        <Ionicons name="menu" color="#faf0ce" size={35} />
       </TouchableOpacity>
       <View style={styles.titleContainer}>
         <Text style={styles.headerTitle}>{title}</Text>
@@ -27,7 +27,7 @@ export default function HomeHeader({ navigation, title, incompleteTasksCount, on
 
       {incompleteTasksCount > 0 && (
         <TouchableOpacity onPress={onNotificationPress} style={styles.notificationButton}>
-          <Ionicons name="calendar-outline" color="white" size={28} />
+          <Ionicons name="calendar-outline" color="#faf0ce" size={28} />
           <View style={styles.notificationBadge}>
             <Text style={styles.notificationCount}>{incompleteTasksCount}</Text>
           </View>
@@ -53,14 +53,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   headerTitle: {
-    color: 'white',
+    color: '#faf0ce',
     fontSize: 24,
     fontWeight: 'bold',
   },
 
   menuButton: {
   marginTop:9,
-  marginLeft:5
+  
   },
   notificationButton: {
      marginTop:9,
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     right: -7,
   },
   notificationCount: {
-    color: '#fff',
+    color: '#faf0ce',
     fontSize: 12,
     fontWeight: 'bold',
   },

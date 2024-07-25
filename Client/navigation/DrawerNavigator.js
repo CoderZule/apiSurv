@@ -3,7 +3,7 @@ import React from 'react';
 import HomeScreen from '../Screens/HomeScreen';
 import ProfilScreen from '../Screens/UserAccountManagement/ProfilScreen';
 import TasksScreen from '../Screens/Tasks/TasksScreen';
-import TransactionsScreen from '../Screens/Finances/TrasnactionsScreen';
+import TransactionsHistoryScreen from '../Screens/Finances/TrasnactionsHistoryScreen';
 import HarvestHistoryScreen from '../Screens/Harvest/HarvestHistoryScreen';
 import StatsScreen from '../Screens/Stats/StatsScreen';
 import DrawerContent from '../Components/DrawerContent';
@@ -43,7 +43,7 @@ export default function DrawerNavigator() {
             <Drawer.Screen name="Storage" component={StorageScreen}/>
             <Drawer.Screen name="Treatment" component={TreatmentScreen} />
             <Drawer.Screen name="Feeding" component={FeedingScreen} />
-            <Drawer.Screen name="Finances" component={TransactionsScreen} />
+            <Drawer.Screen name="Finances" component={TransactionsHistoryScreen} />
             <Drawer.Screen name="Gallery" component={GalleryScreen} />
             <Drawer.Screen name="Stats" component={StatsScreen} />
             <Drawer.Screen name="AboutApp" component={AboutAppScreen}/>

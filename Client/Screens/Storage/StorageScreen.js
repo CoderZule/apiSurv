@@ -21,6 +21,7 @@ export default function StorageScreen({ navigation }) {
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
+    
     const fetchCurrentUser = async () => {
       try {
         const currentUserString = await AsyncStorage.getItem('currentUser');
@@ -59,7 +60,7 @@ export default function StorageScreen({ navigation }) {
       storageData.forEach(entry => {
         if (!entry.Quantities) {
           console.error('Invalid entry structure:', entry);
-          return; // Skip invalid entries
+          return;  
         }
 
         if (!totalsMap[entry.Product]) {
@@ -175,7 +176,7 @@ export default function StorageScreen({ navigation }) {
 
       <View style={[ styles.centeredView]}>
         <Image
-          source={require('../../assets/stockage.png')}
+          source={require('../../assets/storage.png')}
           style={styles.image}
           resizeMode="contain"
         />
@@ -204,7 +205,7 @@ export default function StorageScreen({ navigation }) {
                       ))}
                   </Text>
                   <TouchableOpacity onPress={() => openModal(product)}>
-                    <Ionicons name="remove-circle" size={24} color="#D22B2B" />
+                    <Ionicons name="remove-circle" size={24} color="#2EB922" />
                   </TouchableOpacity>
                 </Card.Content>
                 {index !== HarvestProducts.length - 1 && <View style={styles.divider} />}
@@ -268,14 +269,17 @@ export default function StorageScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  
   safeArea: {
     flex: 1,
     backgroundColor: '#FBF5E0',
   },
+
   card: {
     margin: 20,
     padding: 8,
   },
+
   cardContent: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -368,7 +372,8 @@ const styles = StyleSheet.create({
   },
 
   image: {
-    width: 180,
-    height: 180,
+    marginTop:15,
+    width: 220,
+    height: 220,
 },
 });
