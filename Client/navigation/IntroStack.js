@@ -14,7 +14,7 @@ import AddInspectionScreen from '../Screens/Inspections/AddInspectionScreen';
 import ScannerScreenAddInspections from '../Screens/Scan/ScannerScreenAddInspections';
 import InspectionsHistoryScreen from '../Screens/Inspections/InspectionsHistoryScreen';
 import InspectionDetailsScreen from '../Screens/Inspections/InspectionDetailsScreen';
-import HarvestDetailsScreen from '../Screens/HarvestTracking/HarvestDetailsScreen';
+import HarvestDetailsScreen from '../Screens/Harvest/HarvestDetailsScreen';
 
 const Stack = createNativeStackNavigator();
 

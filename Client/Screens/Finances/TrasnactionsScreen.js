@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import HomeHeader from '../../Components/HomeHeader';
 
-export default function FinancesScreen({navigation}) {
+export default function TransactionsScreen({navigation}) {
   return (
     <SafeAreaView style={styles.safeArea}>
       <HomeHeader navigation={navigation} title={'Finances'} />
