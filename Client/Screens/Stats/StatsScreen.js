@@ -258,6 +258,10 @@ const styles = StyleSheet.create({
     color: '#977700'
 
   },
+  loadingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   chart: {
     marginVertical: 10,
     borderRadius: 16
