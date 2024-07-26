@@ -87,22 +87,10 @@ export default function DrawerContent(props) {
                     onPress={() => props.navigation.navigate('Finances')}
                     labelStyle={styles.drawerItemLabel}
                 />
-                <DrawerItem
-                    label="Traitements"
-                    icon={() => <Ionicons name='pulse-outline' size={24} color="#977700" />}
-                    onPress={() => props.navigation.navigate('Treatment')}
-                    labelStyle={styles.drawerItemLabel}
-                />
+
 
                 <DrawerItem
-                    label="Nourrissement"
-                    icon={() => <Ionicons name='flower-outline' size={24} color="#977700" />}
-                    onPress={() => props.navigation.navigate('Feeding')}
-                    labelStyle={styles.drawerItemLabel}
-                />
-
-                <DrawerItem
-                    label="Statistiques"
+                    label="Stats et Graphs"
                     icon={() => <Ionicons name='bar-chart-outline' size={24} color="#977700" />}
                     onPress={() => props.navigation.navigate('Stats')}
                     labelStyle={styles.drawerItemLabel}
@@ -167,10 +155,10 @@ const styles = StyleSheet.create({
         marginRight: 10,
     },
     logoutContainer: {
-        flexDirection: 'row', // Arrange items horizontally
-        alignItems: 'center', // Centers the content vertically
-        justifyContent: 'center', // Centers the content horizontally
-        marginBottom: 30,
+        flexDirection: 'row',  
+        alignItems: 'center', 
+        justifyContent: 'center',  
+        marginBottom: 20,
         marginVertical: 10,
     },
 });

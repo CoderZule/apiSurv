@@ -136,7 +136,7 @@ export default function StatsScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <HomeHeader navigation={navigation} title={'Statistiques'} />
+      <HomeHeader navigation={navigation} title={'Stats et Graphs'} />
       <View style={styles.container}>
         <Card
           style={styles.card}

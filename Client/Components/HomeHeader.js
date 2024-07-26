@@ -19,7 +19,7 @@ export default function HomeHeader({ navigation, title, incompleteTasksCount, on
   return (
     <View style={styles.header}>
       <TouchableOpacity onPress={handleMenuPress} style={styles.menuButton}>
-        <Ionicons name="menu" color="#faf0ce" size={35} />
+        <Ionicons name="menu" color="#faf0ce" size={37} />
       </TouchableOpacity>
       <View style={styles.titleContainer}>
         <Text style={styles.headerTitle}>{title}</Text>
