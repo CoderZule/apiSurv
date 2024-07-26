@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, SafeAreaView, StyleSheet, View, ScrollView } from 'react-native';
+import { Text, SafeAreaView, StyleSheet, View } from 'react-native';
 import { BarChart } from 'react-native-chart-kit';
 import HomeHeader from '../../Components/HomeHeader';
 import { Card } from 'react-native-paper';
@@ -7,12 +7,14 @@ import axios from '../../axiosConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 import LottieView from "lottie-react-native";
+import { Picker } from '@react-native-picker/picker';
 
 export default function StatsScreen({ navigation }) {
   const [cardWidth, setCardWidth] = useState(0);
   const [currentUser, setCurrentUser] = useState(null);
   const isFocused = useIsFocused();
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedReport, setSelectedReport] = useState('Finances');
 
   const [chartData, setChartData] = useState({
     labels: [],
@@ -52,7 +54,6 @@ export default function StatsScreen({ navigation }) {
         });
         const transactions = response.data.data;
 
-        // Calculate total, revenues, and expenses for the current and previous year
         const currentYearTotals = {
           revenues: 0,
           expenses: 0,
@@ -83,11 +84,9 @@ export default function StatsScreen({ navigation }) {
           }
         });
 
-        // Calculate totals
         const currentYearTotal = currentYearTotals.revenues - currentYearTotals.expenses;
         const previousYearTotal = previousYearTotals.revenues - previousYearTotals.expenses;
 
-        // Set the chart data with totals instead of individual transactions
         setChartData({
           labels: [currentYear.toString(), previousYear.toString()],
           datasets: [{
@@ -105,8 +104,7 @@ export default function StatsScreen({ navigation }) {
         });
       } catch (error) {
         console.error('Error fetching transactions:', error);
-      }
-      finally {
+      } finally {
         setIsLoading(false);
       }
     };
@@ -131,96 +129,122 @@ export default function StatsScreen({ navigation }) {
       stroke: "#e3e3e3",
       strokeDasharray: "0",
     },
-    formatYLabel: (value) => `${Math.floor(value).toLocaleString()} د.ت `, // Format to only show the integer part
+    formatYLabel: (value) => `${Math.floor(value).toLocaleString()} د.ت `,
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <HomeHeader navigation={navigation} title={'Stats et Graphs'} />
       <View style={styles.container}>
-        <Card
-          style={styles.card}
-          onLayout={(event) => {
-            const { width } = event.nativeEvent.layout;
-            setCardWidth(width);
-          }}
+        <Picker
+          selectedValue={selectedReport}
+          style={styles.picker}
+          onValueChange={(itemValue) => setSelectedReport(itemValue)}
         >
-          <Text style={styles.title}>Transactions Récentes</Text>
-          {isLoading ? (
-            <View style={[styles.container, styles.loadingContainer]}>
-              <LottieView
-                source={require('../../assets/lottie/loading.json')} // Replace with your animation file path
-                autoPlay
-                loop
-                style={{ width: 100, height: 100 }}
-              />
+          <Picker.Item label="Finances" value="Finances" />
+          <Picker.Item label="Force" value="Force" />
+          <Picker.Item label="Récoltes" value="Récoltes" />
+
+        </Picker>
+
+        {selectedReport === 'Finances' && (
+          <Card
+            style={styles.card}
+            onLayout={(event) => {
+              const { width } = event.nativeEvent.layout;
+              setCardWidth(width);
+            }}
+          >
+            <Text style={styles.title}>Transactions Récentes</Text>
+            {isLoading ? (
+              <View style={[styles.container, styles.loadingContainer]}>
+                <LottieView
+                  source={require('../../assets/lottie/loading.json')}
+                  autoPlay
+                  loop
+                  style={{ width: 100, height: 100 }}
+                />
+              </View>
+            ) : (
+              cardWidth > 0 && (
+                <BarChart
+                  style={styles.chart}
+                  data={chartData}
+                  width={cardWidth - 20}
+                  height={300}
+                  chartConfig={chartConfig}
+                  verticalLabelRotation={0}
+                  xLabelsOffset={-10}
+                />
+              )
+            )}
+
+            <View style={styles.balanceContainer}>
+              <View style={styles.balanceSection}>
+                <Text style={styles.balanceTitle}>Solde Année Courante</Text>
+                <View style={styles.divider} />
+                <View style={styles.inlineContainer}>
+                  <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Total: </Text>
+                  <Text style={styles.balanceTextTotal}>{financialData.currentYearTotal} د.ت</Text>
+                </View>
+                <View style={styles.inlineContainer}>
+                  <Text>Revenus: </Text>
+                  <Text style={styles.balanceTextRevenus}>{financialData.currentYearRevenues} د.ت</Text>
+                </View>
+                <View style={styles.inlineContainer}>
+                  <Text>Dépenses: </Text>
+                  <Text style={styles.balanceTextDepenses}>{financialData.currentYearExpenses} د.ت -</Text>
+                </View>
+              </View>
+              <View style={styles.balanceSection}>
+                <Text style={styles.balanceTitle}>Solde Année Précédente</Text>
+                <View style={styles.divider} />
+                <View style={styles.inlineContainer}>
+                  <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Total: </Text>
+                  <Text style={styles.balanceTextTotal}>{financialData.previousYearTotal} د.ت</Text>
+                </View>
+                <View style={styles.inlineContainer}>
+                  <Text>Revenus: </Text>
+                  <Text style={styles.balanceTextRevenus}>{financialData.previousYearRevenues} د.ت</Text>
+                </View>
+                <View style={styles.inlineContainer}>
+                  <Text>Dépenses: </Text>
+                  <Text style={styles.balanceTextDepenses}>{financialData.previousYearExpenses} د.ت -</Text>
+                </View>
+              </View>
             </View>
-          ) : (
+          </Card>
+        )}
 
-            cardWidth > 0 && (
-              <BarChart
-                style={styles.chart}
-                data={chartData}
-                width={cardWidth - 20}
-                height={300}
-                chartConfig={chartConfig}
-                verticalLabelRotation={0}
-                xLabelsOffset={-10}
-              />
-            )
-          )}
-
-          <View style={styles.balanceContainer}>
-            <View style={styles.balanceSection}>
-              <Text style={styles.balanceTitle}>Solde Année Courante</Text>
-              <View style={styles.divider} />
-              <View style={styles.inlineContainer}>
-                <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Total: </Text>
-                <Text style={styles.balanceTextTotal}>{financialData.currentYearTotal} د.ت</Text>
-              </View>
-              <View style={styles.inlineContainer}>
-                <Text>Revenus: </Text>
-                <Text style={styles.balanceTextRevenus}>{financialData.currentYearRevenues} د.ت</Text>
-              </View>
-              <View style={styles.inlineContainer}>
-                <Text>Dépenses: </Text>
-                <Text style={styles.balanceTextDepenses}>{financialData.currentYearExpenses} د.ت -</Text>
-              </View>
+        {selectedReport === 'Force' && (
+          <Card
+            style={styles.card}
+            onLayout={(event) => {
+              const { width } = event.nativeEvent.layout;
+              setCardWidth(width);
+            }}
+          >
+            <Text style={styles.title}>Force moyenne des abeilles</Text>
+            <View style={styles.balanceContainer}>
+              <Text>Content for Top Performers</Text>
             </View>
-            <View style={styles.balanceSection}>
-              <Text style={styles.balanceTitle}>Solde Année Précédente</Text>
-              <View style={styles.divider} />
-              <View style={styles.inlineContainer}>
-                <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Total: </Text>
-                <Text style={styles.balanceTextTotal}>{financialData.previousYearTotal} د.ت</Text>
-              </View>
-              <View style={styles.inlineContainer}>
-                <Text>Revenus: </Text>
-                <Text style={styles.balanceTextRevenus}>{financialData.previousYearRevenues} د.ت</Text>
-              </View>
-              <View style={styles.inlineContainer}>
-                <Text>Dépenses: </Text>
-                <Text style={styles.balanceTextDepenses}>{financialData.previousYearExpenses} د.ت -</Text>
-              </View>
+          </Card>
+        )}
+
+        {selectedReport === 'Récoltes' && (
+          <Card
+            style={styles.card}
+            onLayout={(event) => {
+              const { width } = event.nativeEvent.layout;
+              setCardWidth(width);
+            }}
+          >
+            <Text style={styles.title}>Récoltes</Text>
+            <View style={styles.balanceContainer}>
+              <Text>Content for Harvest</Text>
             </View>
-          </View>
-
-
-        </Card>
-
-
-         <Card
-          style={styles.card}
-          onLayout={(event) => {
-            const { width } = event.nativeEvent.layout;
-            setCardWidth(width);
-          }}
-        >
-          <Text style={styles.title}>Force moyenne des abeilles</Text>
-           <View style={styles.balanceContainer}>
-            </View>
-        </Card>
-
+          </Card>
+        )}
       </View>
     </SafeAreaView>
   );
@@ -243,59 +267,69 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 8,
-    marginBottom: 20, // Add margin to separate cards
+    shadowRadius: 4,
   },
   title: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
     textAlign: 'center',
-    color: '#977700'
-
-  },
-  loadingContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    color: '#977700',
   },
   chart: {
+    borderRadius: 16,
     marginVertical: 10,
-    borderRadius: 16
   },
   balanceContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginTop: 20,
+    marginTop: 10,
   },
   balanceSection: {
     flex: 1,
-    paddingHorizontal: 10,
+    padding: 10,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    marginHorizontal: 5,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
   },
   balanceTitle: {
-    fontSize: 15,
-    fontWeight: '300',
+    fontWeight: 'bold',
+    fontSize: 16,
+    color: '#555555',
     textAlign: 'center',
+    marginBottom: 5,
   },
   divider: {
-    width: '100%',
     height: 1,
-    backgroundColor: '#000',
+    backgroundColor: '#ccc',
     marginVertical: 5,
   },
   inlineContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    marginBottom: 5,
   },
   balanceTextTotal: {
     fontWeight: 'bold',
-    color: '#2EB922',
   },
   balanceTextRevenus: {
-    color: '#0A76A6',
+    color: '#2EB922',
   },
   balanceTextDepenses: {
-    color: '#A63434',
+    color: '#ff0000',
   },
+  loadingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  picker: {
+    backgroundColor: '#FEE502',
+    width: '100%',
+    marginBottom: 20,
+  }
 });

@@ -22,7 +22,14 @@ export default function HomeScreen({ navigation }) {
 
   const [incompleteTasksCount, setIncompleteTasksCount] = useState(0);
 
-
+  const [financialData, setFinancialData] = useState({
+    currentYearTotal: 0,
+    currentYearRevenues: 0,
+    currentYearExpenses: 0,
+    previousYearTotal: 0,
+    previousYearRevenues: 0,
+    previousYearExpenses: 0
+  });
 
 
   useEffect(() => {
@@ -46,6 +53,75 @@ export default function HomeScreen({ navigation }) {
       fetchCurrentUser();
     }
   }, [isFocused]);
+
+
+
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const response = await axios.get('/transaction/getAllTransactions', {
+          params: { userId: currentUser?._id },
+        });
+        const transactions = response.data.data;
+
+        // Calculate total, revenues, and expenses for the current and previous year
+        const currentYearTotals = {
+          revenues: 0,
+          expenses: 0,
+        };
+
+        const previousYearTotals = {
+          revenues: 0,
+          expenses: 0,
+        };
+
+        const currentYear = new Date().getFullYear();
+        const previousYear = currentYear - 1;
+
+        transactions.forEach(transaction => {
+          const transactionYear = new Date(transaction.TransactionDate).getFullYear();
+          if (transactionYear === currentYear) {
+            if (transaction.OperationType === 'Revenus') {
+              currentYearTotals.revenues += transaction.Amount;
+            } else if (transaction.OperationType === 'Dépenses') {
+              currentYearTotals.expenses += transaction.Amount;
+            }
+          } else if (transactionYear === previousYear) {
+            if (transaction.OperationType === 'Revenus') {
+              previousYearTotals.revenues += transaction.Amount;
+            } else if (transaction.OperationType === 'Dépenses') {
+              previousYearTotals.expenses += transaction.Amount;
+            }
+          }
+        });
+
+        // Calculate totals
+        const currentYearTotal = currentYearTotals.revenues - currentYearTotals.expenses;
+        const previousYearTotal = previousYearTotals.revenues - previousYearTotals.expenses;
+
+
+
+        setFinancialData({
+          currentYearTotal,
+          currentYearRevenues: currentYearTotals.revenues,
+          currentYearExpenses: currentYearTotals.expenses,
+          previousYearTotal,
+          previousYearRevenues: previousYearTotals.revenues,
+          previousYearExpenses: previousYearTotals.expenses
+        });
+      } catch (error) {
+        console.error('Error fetching transactions:', error);
+      }
+      finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (currentUser) {
+      fetchTransactions();
+    }
+  }, [currentUser, isFocused]);
+
 
   useEffect(() => {
     const fetchApiariesCount = async () => {
@@ -131,7 +207,7 @@ export default function HomeScreen({ navigation }) {
   const propertiesData = [
     { id: 1, name: 'Ruchers', value: apiariesCount.toString(), img: require('../assets/rucher.png') },
     { id: 2, name: 'Ruches', value: hivesCount.toString(), img: require('../assets/ruche.png') },
-    { id: 3, name: 'Solde', value: '0.00 د.ت', img: require('../assets/solde.png') },
+    { id: 3, name: 'Solde', value: `${Math.floor(financialData.currentYearTotal).toLocaleString()} د.ت `, img: require('../assets/solde.png') },
     { id: 4, name: 'Force', value: '70%', img: require('../assets/force.png') },
   ];
 
@@ -196,8 +272,9 @@ export default function HomeScreen({ navigation }) {
             source={require('../assets/lottie/loading.json')} // Replace with your animation file path
             autoPlay
             loop
-            style={{ width: 200, height: 200 }}
+            style={{ width: 150, height: 150 }}
           />
+          <Text>Connexion en cours..</Text>
         </View>
 
       ) : (
