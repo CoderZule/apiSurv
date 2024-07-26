@@ -424,8 +424,8 @@ const styles = StyleSheet.create({
   },
   addButton: {
     position: 'absolute',
-    right: 20,
-    bottom: 50,
+    right: 10,
+    bottom: 113,
     width: 50,
     height: 50,
     borderRadius: 25,

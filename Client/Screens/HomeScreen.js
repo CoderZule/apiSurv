@@ -153,8 +153,7 @@ export default function HomeScreen({ navigation }) {
   if (!permission.granted) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
-        <Text style={{ textAlign: 'center' }}>Nous avons besoin de votre autorisation pour afficher la caméra</Text>
-
+        <Text style={{ textAlign: 'center', marginBottom: 10 }}>Nous avons besoin de votre autorisation pour afficher la caméra 📷</Text>
         <TouchableOpacity style={styles.button} onPress={requestPermission}>
           <Text style={styles.buttonText}>Donner la permission</Text>
         </TouchableOpacity>
