@@ -119,7 +119,7 @@ export default function StatsScreen({ navigation }) {
   const chartConfig = {
     backgroundGradientFrom: "#FBF5E0",
     backgroundGradientTo: "#FBF5E0",
-    color: () => `#FEE502`,
+    color: () => `#2EB922`,
     barPercentage: 0.5,
     useShadowColorFromDataset: false,
     labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
@@ -209,8 +209,7 @@ export default function StatsScreen({ navigation }) {
         </Card>
 
 
-        {/* New Card for Average Bee Force */}
-        <Card
+         <Card
           style={styles.card}
           onLayout={(event) => {
             const { width } = event.nativeEvent.layout;
@@ -218,11 +217,8 @@ export default function StatsScreen({ navigation }) {
           }}
         >
           <Text style={styles.title}>Force moyenne des abeilles</Text>
-          {/* You can add content for the new card here */}
-          <View style={styles.balanceContainer}>
-            {/* Replace with actual data or components as needed */}
-            <Text style={styles.balanceTextTotal}>Data or visualization for average bee force goes here</Text>
-          </View>
+           <View style={styles.balanceContainer}>
+            </View>
         </Card>
 
       </View>
@@ -294,7 +290,7 @@ const styles = StyleSheet.create({
   },
   balanceTextTotal: {
     fontWeight: 'bold',
-    color: '#1D7A00',
+    color: '#2EB922',
   },
   balanceTextRevenus: {
     color: '#0A76A6',
