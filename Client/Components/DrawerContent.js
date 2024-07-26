@@ -66,19 +66,6 @@ export default function DrawerContent(props) {
                     labelStyle={styles.drawerItemLabel}
                 />
 
-                <DrawerItem
-                    label="Traitements"
-                    icon={() => <Ionicons name='pulse-outline' size={24} color="#977700" />}
-                    onPress={() => props.navigation.navigate('Treatment')}
-                    labelStyle={styles.drawerItemLabel}
-                />
-
-                <DrawerItem
-                    label="Nourrissement"
-                    icon={() => <Ionicons name='flower-outline' size={24} color="#977700" />}
-                    onPress={() => props.navigation.navigate('Feeding')}
-                    labelStyle={styles.drawerItemLabel}
-                />
 
                 <DrawerItem
                     label="Récoltes"
@@ -98,6 +85,19 @@ export default function DrawerContent(props) {
                     label="Finances"
                     icon={() => <Ionicons name='cash-outline' size={24} color="#977700" />}
                     onPress={() => props.navigation.navigate('Finances')}
+                    labelStyle={styles.drawerItemLabel}
+                />
+                <DrawerItem
+                    label="Traitements"
+                    icon={() => <Ionicons name='pulse-outline' size={24} color="#977700" />}
+                    onPress={() => props.navigation.navigate('Treatment')}
+                    labelStyle={styles.drawerItemLabel}
+                />
+
+                <DrawerItem
+                    label="Nourrissement"
+                    icon={() => <Ionicons name='flower-outline' size={24} color="#977700" />}
+                    onPress={() => props.navigation.navigate('Feeding')}
                     labelStyle={styles.drawerItemLabel}
                 />
 
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row', // Arrange items horizontally
         alignItems: 'center', // Centers the content vertically
         justifyContent: 'center', // Centers the content horizontally
-        marginBottom:30,
+        marginBottom: 30,
         marginVertical: 10,
     },
 });
