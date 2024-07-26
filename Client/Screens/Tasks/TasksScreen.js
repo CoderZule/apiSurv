@@ -416,15 +416,16 @@ const TaskScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#FBF5E0'
   },
   card: {
-    margin: 10,
+    margin: 16,
+    
   },
   addButton: {
     position: 'absolute',
     right: 20,
-    bottom: 20,
+    bottom: 50,
     width: 50,
     height: 50,
     borderRadius: 25,
@@ -443,7 +444,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 20,
     width: '90%',
-    maxHeight: '80%', // Adjust the height as needed
+    maxHeight: '80%',  
   },
   scrollViewContent: {
     paddingVertical: 20,
@@ -488,8 +489,6 @@ const styles = StyleSheet.create({
     color: 'white',
     marginLeft: 5,
   },
-
-
 
   buttonContainer: {
     flexDirection: 'row',

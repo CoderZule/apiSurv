@@ -79,15 +79,15 @@ export default function TransactionsHistoryScreen({ navigation }) {
   };
 
   const handleFormSubmit = async () => {
-    if (  !description || !amount  || !date) {
+    if (!description || !amount || !date) {
       return Alert.alert('Erreur', 'Veuillez remplir tous les champs');
     }
-    if ( operationType && !selectedCategory)  {
+    if (operationType && !selectedCategory) {
       return Alert.alert('Erreur', "Veuillez sélectionner une catégorie");
-    } 
-    if ( !operationType)  {
+    }
+    if (!operationType) {
       return Alert.alert('Erreur', "Veuillez préciser le type d'opération");
-    } 
+    }
     else {
       try {
         const formData = {
@@ -161,27 +161,29 @@ export default function TransactionsHistoryScreen({ navigation }) {
             style={styles.addButton}
             onPress={() => setShowModal(true)}
           >
-            <FontAwesome5Icon name="plus-circle" size={30} color="#FEE502" />
+            <FontAwesome5Icon name="plus-circle" size={35} color="#FEE502" />
           </TouchableOpacity>
 
-          {isLoading ? (
-            <View style={[styles.container, styles.loadingContainer]}>
-              <LottieView
-                source={require('../../assets/lottie/loading.json')}
-                autoPlay
-                loop
-                style={{ width: 100, height: 100 }}
-              />
-            </View>
-          ) : (
-            <ScrollView horizontal={true}>
-              <View style={styles.table}>
-                <View style={styles.tableHeader}>
-                  <Text style={styles.tableHeaderText}>Catégorie</Text>
-                  <Text style={styles.tableHeaderText}>Montant</Text>
-                  <Text style={styles.tableHeaderText}>Date</Text>
 
+          <ScrollView horizontal={true}>
+            <View style={styles.table}>
+              <View style={styles.tableHeader}>
+                <Text style={styles.tableHeaderText}>Catégorie</Text>
+                <Text style={styles.tableHeaderText}>Montant</Text>
+                <Text style={styles.tableHeaderText}>Date</Text>
+
+              </View>
+
+              {isLoading ? (
+                <View style={[styles.container, styles.loadingContainer]}>
+                  <LottieView
+                    source={require('../../assets/lottie/loading.json')}
+                    autoPlay
+                    loop
+                    style={{ width: 100, height: 100 }}
+                  />
                 </View>
+              ) : (
 
                 <FlatList
                   data={transactions}
@@ -195,8 +197,9 @@ export default function TransactionsHistoryScreen({ navigation }) {
                     </View>
                   }
                 />
-              </View>
-            </ScrollView>)}
+              )}
+            </View>
+          </ScrollView>
         </Card>
 
 

@@ -363,7 +363,7 @@ const styles = StyleSheet.create({
   qrScan: {
     width: 240,
     height: 240,
-    marginVertical: 40,
+    marginVertical: 47,
   },
   button: {
 

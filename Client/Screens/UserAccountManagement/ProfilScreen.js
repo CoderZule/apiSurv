@@ -384,8 +384,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-
-
     padding: 16,
   },
   loadingContainer: {
@@ -439,7 +437,7 @@ const styles = StyleSheet.create({
   },
   btn: {
     backgroundColor: '#FEE502',
-    borderRadius: 8,
+    borderRadius: 20,
     paddingVertical: 12,
     alignItems: 'center',
   },

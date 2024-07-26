@@ -53,7 +53,7 @@ export default function HarvestHistoryScreen({ navigation }) {
     const fetchData = async () => {
       try {
         if (!currentUser) {
-          return;  
+          return;
         }
         const apiariesResponse = await axios.get('/apiary/getAllApiaries');
         const hivesResponse = await axios.get('/hive/getAllHives');
@@ -142,7 +142,7 @@ export default function HarvestHistoryScreen({ navigation }) {
         const response = await axios.post('/harvest/create', formData);
         Alert.alert('Success', 'Récolte ajoutée avec succès');
 
-         setSelectedApiary('');
+        setSelectedApiary('');
         setSelectedHive('');
         setSelectedProduct('');
         setQuantity('');
@@ -177,12 +177,12 @@ export default function HarvestHistoryScreen({ navigation }) {
       <Text style={styles.tableCell}>{item.Hive}</Text>
       <Text style={styles.tableCell}>{item.Product}{'\n'}{index === lastItemIndex && (
         <View style={styles.badge}>
-         <Text style={{ color: 'white', fontSize: 9, fontWeight: 'bold' }}>Dernière récolte</Text>
+          <Text style={{ color: 'white', fontSize: 9, fontWeight: 'bold' }}>Dernière récolte</Text>
         </View>
       )}</Text>
 
 
-    
+
     </TouchableOpacity>
   );
 
@@ -198,28 +198,28 @@ export default function HarvestHistoryScreen({ navigation }) {
             style={styles.addButton}
             onPress={() => setShowModal(true)}
           >
-            <FontAwesome5Icon name="plus-circle" size={30} color="#FEE502" />
+            <FontAwesome5Icon name="plus-circle" size={35} color="#FEE502" />
           </TouchableOpacity>
 
-          {isLoading ? (
-            <View style={[styles.container, styles.loadingContainer]}>
-              <LottieView
-                source={require('../../assets/lottie/loading.json')}
-                autoPlay
-                loop
-                style={{ width: 100, height: 100 }}
-              />
-            </View>
-          ) : (
-            <ScrollView horizontal={true}>
-              <View style={styles.table}>
-                <View style={styles.tableHeader}>
-                  <Text style={styles.tableHeaderText}>Rucher</Text>
-                  <Text style={styles.tableHeaderText}>Ruche</Text>
-                  <Text style={styles.tableHeaderText}>Produit</Text>
 
+          <ScrollView horizontal={true}>
+            <View style={styles.table}>
+              <View style={styles.tableHeader}>
+                <Text style={styles.tableHeaderText}>Rucher</Text>
+                <Text style={styles.tableHeaderText}>Ruche</Text>
+                <Text style={styles.tableHeaderText}>Produit</Text>
+
+              </View>
+              {isLoading ? (
+                <View style={[styles.container, styles.loadingContainer]}>
+                  <LottieView
+                    source={require('../../assets/lottie/loading.json')}
+                    autoPlay
+                    loop
+                    style={{ width: 100, height: 100 }}
+                  />
                 </View>
-
+              ) : (
                 <FlatList
                   data={harvests}
                   keyExtractor={(item, index) => index.toString()}
@@ -232,8 +232,9 @@ export default function HarvestHistoryScreen({ navigation }) {
                     </View>
                   }
                 />
-              </View>
-            </ScrollView>)}
+              )}
+            </View>
+          </ScrollView>
         </Card>
 
 
@@ -286,6 +287,7 @@ const styles = StyleSheet.create({
   },
   addButton: {
     alignSelf: 'flex-end',
+
     marginBottom: 10,
   },
   table: {
@@ -329,16 +331,16 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   badge: {
-  
- 
+
+
     backgroundColor: "#2EB922",
-    borderRadius: 12,         
-    padding: 4,               
+    borderRadius: 12,
+    padding: 4,
     alignItems: 'center',
     justifyContent: 'center',
 
 
- 
+
   },
   container: {
     flex: 1,
