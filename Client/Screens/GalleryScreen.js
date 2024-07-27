@@ -313,15 +313,21 @@ export default function GalleryScreen({ navigation }) {
       </Modal>
 
 
-      {/* Modal for Upload Progress */}
       <Modal
         animationType="slide"
         transparent={true}
         visible={isUploadModalVisible}
+        onRequestClose={() => setUploadModalVisible(false)}
       >
-        <View style={styles.uploadModalContainer}>
-          <View style={styles.uploadModalContent}>
-            <Text style={styles.uploadProgressText}>Téléchargement en cours : {uploadProgress.toFixed(2)}%</Text>
+        <View style={styles.modalBackground}>
+          <View style={styles.uploadModal}>
+            <LottieView
+              source={require('../assets/lottie/loading.json')}
+              autoPlay
+              loop
+              style={{ width: 150, height: 150 }}
+            />
+            <Text>Uploading: {Math.round(uploadProgress)}%</Text>
           </View>
         </View>
       </Modal>
