@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, SafeAreaView, StyleSheet, View, TouchableOpacity, Modal, TextInput, Pressable, Alert, Image} from 'react-native';
+import { Text, SafeAreaView, StyleSheet, View, TouchableOpacity, Modal, TextInput, Pressable, Alert, Image } from 'react-native';
 import HomeHeader from '../../Components/HomeHeader';
 import { HarvestProducts, units } from '../Data';
 import { Card } from 'react-native-paper';
@@ -21,14 +21,12 @@ export default function StorageScreen({ navigation }) {
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    
     const fetchCurrentUser = async () => {
       try {
         const currentUserString = await AsyncStorage.getItem('currentUser');
         if (currentUserString) {
           const user = JSON.parse(currentUserString);
           setCurrentUser(user);
-
         }
       } catch (error) {
         console.error('Error retrieving current user:', error);
@@ -36,7 +34,6 @@ export default function StorageScreen({ navigation }) {
     };
 
     fetchCurrentUser();
-
   }, []);
 
   useEffect(() => {
@@ -47,27 +44,26 @@ export default function StorageScreen({ navigation }) {
 
   const fetchTotals = async () => {
     try {
-      const response = await axios.get('/storage/getAllStorages',
-        {
-          params: {
-            userId: currentUser._id
-          }
-        });
+      const response = await axios.get('/storage/getAllStorages', {
+        params: {
+          userId: currentUser._id,
+        },
+      });
 
       const storageData = response.data.data;
 
       const totalsMap = {};
-      storageData.forEach(entry => {
+      storageData.forEach((entry) => {
         if (!entry.Quantities) {
           console.error('Invalid entry structure:', entry);
-          return;  
+          return;
         }
 
         if (!totalsMap[entry.Product]) {
           totalsMap[entry.Product] = {};
         }
 
-        entry.Quantities.forEach(quantityEntry => {
+        entry.Quantities.forEach((quantityEntry) => {
           if (quantityEntry.Unit && quantityEntry.Total !== undefined) {
             totalsMap[entry.Product][quantityEntry.Unit] = quantityEntry.Total;
           } else {
@@ -86,45 +82,37 @@ export default function StorageScreen({ navigation }) {
 
   const handleUpdateQuantity = async () => {
     try {
-      // Basic validation checks before making the request
       if (!selectedProduct || !selectedUnit || !newQuantity || isNaN(newQuantity) || newQuantity <= 0) {
         Alert.alert('Erreur', 'Veuillez remplir tous les champs et entrer une quantité valide.');
         return;
       }
 
-      // Fetch current storage data to validate against
-      const storageResponse = await axios.get('/storage/getAllStorages',
-        {
-          params: {
-            userId: currentUser._id
-          }
-        });
+      const storageResponse = await axios.get('/storage/getAllStorages', {
+        params: {
+          userId: currentUser._id,
+        },
+      });
 
       const storageEntries = storageResponse.data.data;
-
-      // Find the storage entry for the selected product and unit
-      const storageEntry = storageEntries.find(entry => entry.Product === selectedProduct);
+      const storageEntry = storageEntries.find((entry) => entry.Product === selectedProduct);
 
       if (!storageEntry) {
         Alert.alert('Erreur', `Produit "${selectedProduct}" non trouvé dans le stock.`);
         return;
       }
 
-      // Find the quantity entry for the selected unit
-      const quantityEntry = storageEntry.Quantities.find(q => q.Unit === selectedUnit);
+      const quantityEntry = storageEntry.Quantities.find((q) => q.Unit === selectedUnit);
 
       if (!quantityEntry) {
         Alert.alert('Erreur', `Unité "${selectedUnit}" non trouvée pour le produit "${selectedProduct}".`);
         return;
       }
 
-      // Ensure the newQuantity does not exceed the current quantity
       if (newQuantity > quantityEntry.Total) {
         Alert.alert('Erreur', 'La quantité réduite ne peut pas être supérieure à la quantité actuelle.');
         return;
       }
 
-      // All validations passed, proceed with the update request
       const response = await axios.put('/storage/updateQuantity', {
         product: selectedProduct,
         unit: selectedUnit,
@@ -146,8 +134,8 @@ export default function StorageScreen({ navigation }) {
 
   const openModal = (product) => {
     setSelectedProduct(product);
-    setNewQuantity(''); // Reset new quantity
-    setSelectedUnit(''); // Reset selected unit
+    setNewQuantity('');
+    setSelectedUnit('');
     setShowModal(true);
   };
 
@@ -155,16 +143,16 @@ export default function StorageScreen({ navigation }) {
     switch (product) {
       case 'Miel':
       case 'Pollen':
-        return units.filter(unit => unit !== 'Millilitre (ml)');
+        return units.filter((unit) => unit !== 'Millilitre (ml)');
       case 'Cire d\'abeille':
       case 'Propolis':
-        return units.filter(unit => unit !== 'Litre (L)' && unit !== 'Millilitre (ml)');
+        return units.filter((unit) => unit !== 'Litre (L)' && unit !== 'Millilitre (ml)');
       case 'Gelée royale':
-        return units.filter(unit => unit !== 'Kilogramme (kg)' && unit !== 'Litre (L)');
+        return units.filter((unit) => unit !== 'Kilogramme (kg)' && unit !== 'Litre (L)');
       case 'Pain d\'abeille':
-        return units.filter(unit => unit !== 'Litre (L)' && unit !== 'Millilitre (ml)');
+        return units.filter((unit) => unit !== 'Litre (L)' && unit !== 'Millilitre (ml)');
       case 'Venin d\'abeille':
-        return units.filter(unit => unit !== 'Kilogramme (kg)' && unit !== 'Litre (L)');
+        return units.filter((unit) => unit !== 'Kilogramme (kg)' && unit !== 'Litre (L)');
       default:
         return units;
     }
@@ -174,14 +162,14 @@ export default function StorageScreen({ navigation }) {
     <SafeAreaView style={styles.safeArea}>
       <HomeHeader navigation={navigation} title={'Produits en stock'} />
 
-      <View style={[ styles.centeredView]}>
+      <View style={[styles.centeredView]}>
         <Image
           source={require('../../assets/storage.png')}
           style={styles.image}
           resizeMode="contain"
         />
       </View>
-      
+
       <Card style={styles.card}>
         {isLoading ? (
           <View style={[styles.container, styles.loadingContainer]}>
@@ -194,27 +182,36 @@ export default function StorageScreen({ navigation }) {
           </View>
         ) : (
           <>
-            {HarvestProducts.map((product, index) => (
-              <View key={index}>
-                <Card.Content style={styles.cardContent}>
-                  <Text style={styles.productName}>{product}</Text>
-                  <Text style={styles.productDetail}>
-                    {totals[product] &&
-                      Object.entries(totals[product]).map(([unit, quantity], idx) => (
-                        <Text key={`${unit}-${idx}`}>{`${quantity} ${unit}\n`}</Text>
-                      ))}
-                  </Text>
-                  <TouchableOpacity onPress={() => openModal(product)}>
-                    <Ionicons name="remove-circle" size={24} color="#2EB922" />
-                  </TouchableOpacity>
-                </Card.Content>
-                {index !== HarvestProducts.length - 1 && <View style={styles.divider} />}
-              </View>
-            ))}
+            {HarvestProducts.map((product, index) => {
+              const productTotals = totals[product];
+              const isInStock = productTotals && Object.keys(productTotals).length > 0;
+
+              return (
+                <View key={index}>
+                  <Card.Content style={styles.cardContent}>
+                    <Text style={styles.productName}>{product}</Text>
+                    <View style={styles.productDetailContainer}>
+                      {isInStock ? (
+                        Object.entries(productTotals).map(([unit, quantity], idx) => (
+                          <Text key={`${unit}-${idx}`} style={styles.productDetail}>{`${quantity} ${unit}`}</Text>
+                        ))
+                      ) : (
+                        <Text style={[styles.productDetail, styles.notInStock]}>Pas en stock</Text>
+                      )}
+                    </View>
+                    {isInStock && (
+                      <TouchableOpacity onPress={() => openModal(product)}>
+                        <Ionicons name="remove-circle" size={24} color="#2EB922" />
+                      </TouchableOpacity>
+                    )}
+                  </Card.Content>
+                  {index !== HarvestProducts.length - 1 && <View style={styles.divider} />}
+                </View>
+              );
+            })}
           </>
         )}
       </Card>
-
 
       <Modal
         transparent={true}
@@ -224,7 +221,7 @@ export default function StorageScreen({ navigation }) {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Diminuer la quantité</Text>
+            <Text style={styles.modalTitle}>Diminution de la quantité</Text>
             <Text style={styles.modalProduct}>{selectedProduct}</Text>
             <TextInput
               style={styles.input}
@@ -255,48 +252,64 @@ export default function StorageScreen({ navigation }) {
                 style={[styles.modalButton, styles.buttonSave]}
                 onPress={handleUpdateQuantity}
               >
-                <Text style={styles.textStyle}>Sauvegarder</Text>
+                <Text style={styles.textStyle}>Enregistrer</Text>
               </Pressable>
             </View>
-
           </View>
         </View>
       </Modal>
-
-     
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  
   safeArea: {
     flex: 1,
     backgroundColor: '#FBF5E0',
+    
   },
-
+  centeredView: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
+    
+  },
+  image: {
+    width: 180,
+    height: 180,
+  },
   card: {
-    margin: 20,
-    padding: 8,
+    margin: 16,
+    borderRadius: 10,
+    padding: 10,
   },
-
   cardContent: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginVertical: 4,
   },
   productName: {
     fontSize: 16,
     fontWeight: 'bold',
   },
+  productDetailContainer: {
+    flex: 1,
+    marginLeft: 20,
+  },
   productDetail: {
     fontSize: 16,
+    color: '#6b6b6b',
+
+    marginVertical: 3, // Add vertical margin for spacing between units
+  },
+  notInStock: {
+    color: 'red',
   },
   divider: {
-    borderBottomColor: 'rgba(0, 0, 0, 0.1)',
-    borderBottomWidth: 1,
-    marginHorizontal: 10,
+    height: 1,
+    backgroundColor: '#cccccc',
+    marginVertical: 10,
   },
   modalContainer: {
     flex: 1,
@@ -305,20 +318,24 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
-    width: 300,
-    padding: 20,
     backgroundColor: 'white',
-    borderRadius: 10,
+    borderRadius: 20,
+    padding: 20,
     alignItems: 'center',
+    width: '80%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
   modalTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 10,
   },
   modalProduct: {
-    fontSize: 16,
-    marginBottom: 10,
+    fontSize: 18,
+    marginVertical: 10,
   },
   input: {
     width: '100%',
@@ -333,17 +350,16 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     backgroundColor: '#FBF5E0',
   },
-
   modalButtons: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     width: '100%',
   },
   modalButton: {
-    flex: 1,
-    margin: 4,
-    padding: 12,
-    borderRadius: 8,
+    borderRadius: 10,
+    padding: 10,
+    elevation: 2,
+    width: '45%',
     alignItems: 'center',
   },
   buttonClose: {
@@ -355,25 +371,9 @@ const styles = StyleSheet.create({
   textStyle: {
     fontSize: 16,
     color: '#373737',
-
-  },
-  centeredView: {
-    justifyContent: 'center',
-    alignItems: 'center',
-},
-
-  container: {
-    flex: 1,
-    padding: 16,
   },
   loadingContainer: {
     justifyContent: 'center',
     alignItems: 'center',
   },
-
-  image: {
-    marginTop:15,
-    width: 220,
-    height: 220,
-},
 });
