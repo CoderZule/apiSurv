@@ -266,14 +266,14 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#FBF5E0',
-    
+
   },
   centeredView: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 20,
-    
+
   },
   image: {
     width: 180,
@@ -293,15 +293,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+
   productDetailContainer: {
     flex: 1,
-    marginLeft: 20,
-  },
+   },
+
   productDetail: {
     fontSize: 16,
     color: '#6b6b6b',
-
-    marginVertical: 3, // Add vertical margin for spacing between units
+    justifyContent: 'center',
+    textAlign:'center',
+    marginVertical: 3, 
   },
   notInStock: {
     color: 'red',
