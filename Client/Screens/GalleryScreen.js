@@ -99,9 +99,16 @@ export default function GalleryScreen({ navigation }) {
       Alert.alert("Une autorisation d'accès à la caméra est requise!");
       return;
     }
-
-    const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images });
-    if (!result.canceled && result.assets) {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: false,
+      quality: 1,
+    });
+     if (!result.canceled && result.assets) {
+      if (selectedBottomTab !== 'pictures') {
+        Alert.alert('Erreur', 'Vous ne pouvez ajouter que des vidéos dans cette section.');
+        return;
+      }
       uploadFile(result.assets[0], 'image');
     }
   };
@@ -113,8 +120,17 @@ export default function GalleryScreen({ navigation }) {
       return;
     }
 
-    const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Videos });
+     const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+      allowsEditing: false,
+      quality: 1,
+    });
+
     if (!result.canceled && result.assets) {
+      if (selectedBottomTab !== 'videos') {
+        Alert.alert('Erreur', 'Vous ne pouvez ajouter que des photos dans cette section.');
+        return;
+      }
       uploadFile(result.assets[0], 'video');
     }
   };
@@ -327,7 +343,7 @@ export default function GalleryScreen({ navigation }) {
               loop
               style={{ width: 150, height: 150 }}
             />
-            <Text>Uploading: {Math.round(uploadProgress)}%</Text>
+            <Text>Téléchargement: {Math.round(uploadProgress)}%</Text>
           </View>
         </View>
       </Modal>
