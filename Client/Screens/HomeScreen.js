@@ -31,6 +31,7 @@ export default function HomeScreen({ navigation }) {
     previousYearExpenses: 0
   });
 
+  const [strengthPercentage, setStrengthPercentage] = useState(0);
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -204,11 +205,59 @@ export default function HomeScreen({ navigation }) {
   }, [currentUser]);
 
 
+  const strengthMapping = {
+    "Très Faible": 0,
+    "Faible": 25,
+    "Modérée": 50,
+    "Forte": 75,
+    "Très Forte": 100,
+  };
+
+
+  useEffect(() => {
+    const fetchHivesStrength = async () => {
+      try {
+        if (currentUser) {
+          const response = await axios.get('/hive/getAllHives');
+          const hives = response.data.data;
+
+          // Fetch all apiaries owned by the current user
+          const apiariesResponse = await axios.get('/apiary/getAllApiaries');
+          const userApiaries = apiariesResponse.data.data.filter(apiary => apiary.Owner._id === currentUser._id);
+
+          const userHives = hives.filter(hive => userApiaries.some(apiary => apiary._id === hive.Apiary._id));
+
+          // console.log('User Hives:', userHives);
+
+          const totalStrength = userHives.reduce((total, hive) => {
+            const strengthValue = strengthMapping[hive.Colony.strength] || 0;
+            console.log(`Hive Strength: ${hive.Colony.strength}, Value: ${strengthValue}`);
+            return total + strengthValue;
+          }, 0);
+
+          const averageStrength = userHives.length ? totalStrength / userHives.length : 0;
+          console.log('Total Strength:', totalStrength);
+          console.log('Average Strength:', averageStrength);
+
+          // Set the average strength percentage
+          setStrengthPercentage(averageStrength);
+        }
+      } catch (error) {
+        console.error('Error fetching hives strength:', error);
+      }
+    };
+
+    if (currentUser) {
+      fetchHivesStrength();
+    }
+  }, [currentUser]);
+
+
   const propertiesData = [
     { id: 1, name: 'Ruchers', value: apiariesCount.toString(), img: require('../assets/rucher.png') },
     { id: 2, name: 'Ruches', value: hivesCount.toString(), img: require('../assets/ruche.png') },
     { id: 3, name: 'Solde', value: `${Math.floor(financialData.currentYearTotal).toLocaleString()} د.ت `, img: require('../assets/solde.png') },
-    { id: 4, name: 'Force', value: '70%', img: require('../assets/force.png') },
+    { id: 4, name: 'Force', value: `${strengthPercentage.toFixed(0)}%`, img: require('../assets/force.png') }, // Update here
   ];
 
 

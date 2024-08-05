@@ -17,6 +17,11 @@ export default function StatsScreen({ navigation }) {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedReport, setSelectedReport] = useState('Finances');
   const [selectedUnit, setSelectedUnit] = useState('Litre (L)');
+  const [apiaries, setApiaries] = useState([]);
+  const [transactions, setTransactions] = useState([]);
+
+  const [selectedApiary, setSelectedApiary] = useState('');
+
 
   const [chartDataFinances, setChartDataFinances] = useState({
     labels: [],
@@ -24,6 +29,11 @@ export default function StatsScreen({ navigation }) {
   });
 
   const [chartDataHarvest, setChartDataHarvest] = useState({
+    labels: [],
+    datasets: [{ data: [] }]
+  });
+
+  const [chartDataStrength, setChartDataStrength] = useState({
     labels: [],
     datasets: [{ data: [] }]
   });
@@ -60,8 +70,9 @@ export default function StatsScreen({ navigation }) {
           params: { userId: currentUser?._id },
         });
         const transactions = response.data.data;
+        setTransactions(transactions);
 
-        const currentYearTotals = {
+         const currentYearTotals = {
           revenues: 0,
           expenses: 0,
         };
@@ -213,7 +224,109 @@ export default function StatsScreen({ navigation }) {
     formatYLabel: (value) => `${parseFloat(value).toFixed(1)} ${unitAbbreviations[selectedUnit]}`,
   };
 
-  const currentQuantity = chartDataHarvest.datasets[0].data[0]; // Current year quantity for the selected unit
+  const currentQuantity = chartDataHarvest.datasets[0].data[0];
+
+
+
+
+  useEffect(() => {
+    const fetchApiaries = async () => {
+      try {
+        const response = await axios.get('/apiary/getAllApiaries', {
+          params: { userId: currentUser._id },
+        });
+        const apiaries = response.data.data;
+
+        const userApiaries = apiaries.filter(apiary => apiary.Owner._id === currentUser._id);
+        setApiaries(userApiaries);
+
+
+      } catch (error) {
+        console.error('Error fetching apiaries:', error);
+      }
+    };
+
+    if (currentUser) {
+      fetchApiaries();
+    }
+  }, [currentUser, isFocused]);
+
+
+  const strengthMapping = {
+    "Très Faible": 0,
+    "Faible": 25,
+    "Modérée": 50,
+    "Forte": 75,
+    "Très Forte": 100,
+  };
+
+
+  useEffect(() => {
+    const fetchHivesByApiary = async () => {
+      if (!selectedApiary) return;
+
+      try {
+        setIsLoading(true);
+        const response = await axios.get('/hive/getHivesByApiary', {
+          params: { apiaryId: selectedApiary },
+        });
+
+        const hives = response.data.data; // Ensure you're accessing the right property
+
+        // Check if there are no hives
+        if (!Array.isArray(hives) || hives.length === 0) {
+          setChartDataStrength({
+            labels: [],
+            datasets: [{ data: [] }],
+          }); // Set empty structure for chart data
+          return;
+        }
+
+        // Calculate colony strengths and get top 3
+        const colonyStrengths = hives
+          .map(hive => ({
+            name: hive.Name,
+            strength: strengthMapping[hive.Colony.strength] || 0, // Map strength string to percentage
+          }))
+          .sort((a, b) => b.strength - a.strength) // Sort descending
+          .slice(0, 3); // Get top 3
+
+        setChartDataStrength({
+          labels: colonyStrengths.map(colony => colony.name),
+          datasets: [{
+            data: colonyStrengths.map(colony => colony.strength),
+          }]
+        });
+      } catch (error) {
+        console.error('Error fetching hives:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchHivesByApiary();
+  }, [selectedApiary]);
+
+
+  const chartConfigStrength = {
+    backgroundGradientFrom: "#FBF5E0",
+    backgroundGradientTo: "#FBF5E0",
+    color: () => `#2EB922`,
+    barPercentage: 0.5,
+    useShadowColorFromDataset: false,
+    labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+    style: {
+      borderRadius: 16,
+    },
+    propsForBackgroundLines: {
+      strokeWidth: 1,
+      stroke: "#e3e3e3",
+      strokeDasharray: "0",
+    },
+    formatYLabel: (value) => `${parseFloat(value).toFixed(0)} %`,
+
+  };
+
 
 
   return (
@@ -226,92 +339,125 @@ export default function StatsScreen({ navigation }) {
           onValueChange={(itemValue) => setSelectedReport(itemValue)}
         >
           <Picker.Item label="Finances" value="Finances" />
-          <Picker.Item label="Force" value="Force" />
           <Picker.Item label="Récoltes" value="Récoltes" />
+          <Picker.Item label="Force" value="Force" />
+
 
         </Picker>
 
         {selectedReport === 'Finances' && (
-          <Card
-            style={styles.card}
-            onLayout={(event) => {
-              const { width } = event.nativeEvent.layout;
-              setCardWidth(width);
-            }}
-          >
-            <Text style={styles.title}>Transactions Récentes</Text>
-            {isLoading ? (
-              <View style={[styles.container, styles.loadingContainer]}>
-                <LottieView
-                  source={require('../../assets/lottie/loading.json')}
-                  autoPlay
-                  loop
-                  style={{ width: 100, height: 100 }}
-                />
+  <Card
+    style={styles.card}
+    onLayout={(event) => {
+      const { width } = event.nativeEvent.layout;
+      setCardWidth(width);
+    }}
+  >
+    <Text style={styles.title}>Dernières Transactions</Text>
+    {isLoading ? (
+      <View style={[styles.container, styles.loadingContainer]}>
+        <LottieView
+          source={require('../../assets/lottie/loading.json')}
+          autoPlay
+          loop
+          style={{ width: 100, height: 100 }}
+        />
+      </View>
+    ) : (
+      transactions.length > 0 ? (
+        <>
+          {cardWidth > 0 && (
+            <BarChart
+              style={styles.chart}
+              data={chartDataFinances}
+              width={cardWidth - 20}
+              height={300}
+              chartConfig={chartConfigFinances}
+              verticalLabelRotation={0}
+              xLabelsOffset={-10}
+            />
+          )}
+          <View style={styles.balanceContainer}>
+            <View style={styles.balanceSection}>
+              <Text style={styles.balanceTitle}>Solde Année Courante</Text>
+              <View style={styles.divider} />
+              <View style={styles.inlineContainer}>
+                <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Total: </Text>
+                <Text style={styles.balanceTextTotal}>{financialData.currentYearTotal} د.ت</Text>
               </View>
-            ) : (
-              cardWidth > 0 && (
-                <BarChart
-                  style={styles.chart}
-                  data={chartDataFinances}
-                  width={cardWidth - 20}
-                  height={300}
-                  chartConfig={chartConfigFinances}
-                  verticalLabelRotation={0}
-                  xLabelsOffset={-10}
-                />
-              )
-            )}
-
-            <View style={styles.balanceContainer}>
-              <View style={styles.balanceSection}>
-                <Text style={styles.balanceTitle}>Solde Année Courante</Text>
-                <View style={styles.divider} />
-                <View style={styles.inlineContainer}>
-                  <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Total: </Text>
-                  <Text style={styles.balanceTextTotal}>{financialData.currentYearTotal} د.ت</Text>
-                </View>
-                <View style={styles.inlineContainer}>
-                  <Text>Revenus: </Text>
-                  <Text style={styles.balanceTextRevenus}>{financialData.currentYearRevenues} د.ت</Text>
-                </View>
-                <View style={styles.inlineContainer}>
-                  <Text>Dépenses: </Text>
-                  <Text style={styles.balanceTextDepenses}>{financialData.currentYearExpenses} د.ت -</Text>
-                </View>
+              <View style={styles.inlineContainer}>
+                <Text>Revenus: </Text>
+                <Text style={styles.balanceTextRevenus}>{financialData.currentYearRevenues} د.ت</Text>
               </View>
-              <View style={styles.balanceSection}>
-                <Text style={styles.balanceTitle}>Solde Année Précédente</Text>
-                <View style={styles.divider} />
-                <View style={styles.inlineContainer}>
-                  <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Total: </Text>
-                  <Text style={styles.balanceTextTotal}>{financialData.previousYearTotal} د.ت</Text>
-                </View>
-                <View style={styles.inlineContainer}>
-                  <Text>Revenus: </Text>
-                  <Text style={styles.balanceTextRevenus}>{financialData.previousYearRevenues} د.ت</Text>
-                </View>
-                <View style={styles.inlineContainer}>
-                  <Text>Dépenses: </Text>
-                  <Text style={styles.balanceTextDepenses}>{financialData.previousYearExpenses} د.ت -</Text>
-                </View>
+              <View style={styles.inlineContainer}>
+                <Text>Dépenses: </Text>
+                <Text style={styles.balanceTextDepenses}>{financialData.currentYearExpenses} د.ت -</Text>
               </View>
             </View>
-          </Card>
-        )}
+            <View style={styles.balanceSection}>
+              <Text style={styles.balanceTitle}>Solde Année Précédente</Text>
+              <View style={styles.divider} />
+              <View style={styles.inlineContainer}>
+                <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Total: </Text>
+                <Text style={styles.balanceTextTotal}>{financialData.previousYearTotal} د.ت</Text>
+              </View>
+              <View style={styles.inlineContainer}>
+                <Text>Revenus: </Text>
+                <Text style={styles.balanceTextRevenus}>{financialData.previousYearRevenues} د.ت</Text>
+              </View>
+              <View style={styles.inlineContainer}>
+                <Text>Dépenses: </Text>
+                <Text style={styles.balanceTextDepenses}>{financialData.previousYearExpenses} د.ت -</Text>
+              </View>
+            </View>
+          </View>
+        </>
+      ) : (
+        <Text style={styles.noDataText}>Vous n'avez aucune transaction pour l'instant.</Text>
+      )
+    )}
+  </Card>
+)}
+
+
 
         {selectedReport === 'Force' && (
-          <Card
-            style={styles.card}
-            onLayout={(event) => {
-              const { width } = event.nativeEvent.layout;
-              setCardWidth(width);
-            }}
-          >
-            <Text style={styles.title}>Force moyenne des abeilles</Text>
-            <View style={styles.balanceContainer}>
-              <Text>Content for Top Performers</Text>
-            </View>
+          <Card style={[styles.card, { width: cardWidth }]} onLayout={(event) => setCardWidth(event.nativeEvent.layout.width)}>
+            <Text style={styles.title}>Top 3 Ruches en Force</Text>
+
+            {apiaries.length > 0 ? (
+              <View>
+                <View style={styles.pickerContainer}>
+                  <Text style={styles.pickerTitle}>Rucher:</Text>
+                  <Picker
+                    selectedValue={selectedApiary}
+                    onValueChange={(itemValue) => setSelectedApiary(itemValue)}
+                    style={styles.pickerSelect}
+                  >
+                    {apiaries.map(apiary => (
+                      <Picker.Item key={apiary._id} label={apiary.Name} value={apiary._id} />
+                    ))}
+                  </Picker>
+                </View>
+
+                {chartDataStrength && chartDataStrength.datasets[0].data.length > 0 ? (
+                  <BarChart
+                    style={styles.chart}
+                    data={chartDataStrength}
+                    width={cardWidth - 20}
+                    height={300}
+                    chartConfig={chartConfigStrength}
+                    verticalLabelRotation={0}
+                    xLabelsOffset={-10}
+                  />
+                ) : (
+                  <Text style={styles.noDataText}>Aucune donnée disponible pour ce rucher</Text>
+                )}
+              </View>
+            ) : (
+              <Text style={styles.noDataText}>Vous n'avez aucun rucher pour l'instant.
+              </Text>
+            )}
           </Card>
         )}
 
@@ -323,16 +469,23 @@ export default function StatsScreen({ navigation }) {
               setCardWidth(width);
             }}
           >
-            <Text style={styles.title}>Récoltes</Text>
-            <Picker
-              selectedValue={selectedUnit}
-              style={styles.picker}
-              onValueChange={(itemValue) => setSelectedUnit(itemValue)}
-            >
-              {units.map(unit => (
-                <Picker.Item key={unit} label={unit} value={unit} />
-              ))}
-            </Picker>
+            <Text style={styles.title}>Dernières Récoltes</Text>
+
+            <View style={styles.pickerContainer}>
+
+              <Text style={styles.pickerTitle}>Unité:</Text>
+              <Picker
+                selectedValue={selectedUnit}
+                style={styles.pickerSelect}
+                onValueChange={(itemValue) => setSelectedUnit(itemValue)}
+              >
+
+                {units.map(unit => (
+                  <Picker.Item key={unit} label={unit} value={unit} />
+                ))}
+              </Picker>
+            </View>
+
             {isLoading ? (
               <View style={[styles.container, styles.loadingContainer]}>
                 <LottieView
@@ -345,15 +498,16 @@ export default function StatsScreen({ navigation }) {
             ) : (
               currentQuantity > 0 ? (
                 <BarChart
+                  style={styles.chart}
                   data={chartDataHarvest}
                   width={cardWidth - 20}
-                  height={220}
-                  yAxisLabel=""
+                  height={300}
                   chartConfig={chartConfigHarvest}
-                  verticalLabelRotation={30}
+                  verticalLabelRotation={0}
+                  xLabelsOffset={-10}
                 />
               ) : (
-                <Text style={styles.noDataText}>Aucune donnée disponible pour {selectedUnit}</Text>
+                <Text style={styles.noDataText}>Aucune donnée disponible pour cette Unité ({selectedUnit})</Text>
               )
             )}
           </Card>
@@ -445,10 +599,28 @@ const styles = StyleSheet.create({
     width: '100%',
     marginBottom: 20,
   },
+
   noDataText: {
     textAlign: 'center',
     fontSize: 16,
     color: '#888',
     marginTop: 20,
+  },
+  pickerContainer: {
+    marginTop: 15,
+    flexDirection: 'row', // Set direction to row for inline display
+    alignItems: 'center', // Center items vertically
+  },
+  pickerTitle: {
+    fontSize: 16,
+    marginTop: 15,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    marginRight: 10, // Add some space between title and picker
+    textAlign: 'center',
+  },
+  pickerSelect: {
+    backgroundColor: '#E8E8E8',
+    width: '75%',
   },
 });
