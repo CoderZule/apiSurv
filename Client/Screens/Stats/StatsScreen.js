@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 import LottieView from "lottie-react-native";
 import { Picker } from '@react-native-picker/picker';
+import { units } from '../Data';
 
 export default function StatsScreen({ navigation }) {
   const [cardWidth, setCardWidth] = useState(0);
@@ -15,8 +16,14 @@ export default function StatsScreen({ navigation }) {
   const isFocused = useIsFocused();
   const [isLoading, setIsLoading] = useState(true);
   const [selectedReport, setSelectedReport] = useState('Finances');
+  const [selectedUnit, setSelectedUnit] = useState('Litre (L)');
 
-  const [chartData, setChartData] = useState({
+  const [chartDataFinances, setChartDataFinances] = useState({
+    labels: [],
+    datasets: [{ data: [] }]
+  });
+
+  const [chartDataHarvest, setChartDataHarvest] = useState({
     labels: [],
     datasets: [{ data: [] }]
   });
@@ -87,7 +94,7 @@ export default function StatsScreen({ navigation }) {
         const currentYearTotal = currentYearTotals.revenues - currentYearTotals.expenses;
         const previousYearTotal = previousYearTotals.revenues - previousYearTotals.expenses;
 
-        setChartData({
+        setChartDataFinances({
           labels: [currentYear.toString(), previousYear.toString()],
           datasets: [{
             data: [currentYearTotal, previousYearTotal]
@@ -114,7 +121,7 @@ export default function StatsScreen({ navigation }) {
     }
   }, [currentUser, isFocused]);
 
-  const chartConfig = {
+  const chartConfigFinances = {
     backgroundGradientFrom: "#FBF5E0",
     backgroundGradientTo: "#FBF5E0",
     color: () => `#2EB922`,
@@ -131,6 +138,83 @@ export default function StatsScreen({ navigation }) {
     },
     formatYLabel: (value) => `${Math.floor(value).toLocaleString()} د.ت `,
   };
+
+
+  useEffect(() => {
+    const fetchHarvests = async () => {
+      try {
+        setIsLoading(true);
+        const response = await axios.get('/harvest/getAllHarvests', {
+          params: { userId: currentUser?._id },
+        });
+        const harvests = response.data.data;
+
+        const currentYearTotals = {};
+        const previousYearTotals = {};
+
+        const currentYear = new Date().getFullYear();
+        const previousYear = currentYear - 1;
+
+        units.forEach(unit => {
+          currentYearTotals[unit] = 0;
+          previousYearTotals[unit] = 0;
+        });
+
+        harvests.forEach(harvest => {
+          const harvestYear = new Date(harvest.Date).getFullYear();
+          if (harvestYear === currentYear) {
+            currentYearTotals[harvest.Unit] += harvest.Quantity;
+          } else if (harvestYear === previousYear) {
+            previousYearTotals[harvest.Unit] += harvest.Quantity;
+          }
+        });
+
+        setChartDataHarvest({
+          labels: [currentYear.toString(), previousYear.toString()],
+          datasets: [{
+            data: [currentYearTotals[selectedUnit], previousYearTotals[selectedUnit]]
+          }]
+        });
+      } catch (error) {
+        console.error('Error fetching harvests:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (currentUser) {
+      fetchHarvests();
+    }
+  }, [currentUser, isFocused, selectedUnit]);
+
+
+  const unitAbbreviations = {
+    "Litre (L)": "L",
+    "Kilogramme (kg)": "kg",
+    "Gramme (g)": "g",
+    "Millilitre (ml)": "ml",
+  };
+
+  const chartConfigHarvest = {
+    backgroundGradientFrom: "#FBF5E0",
+    backgroundGradientTo: "#FBF5E0",
+    color: () => `#2EB922`,
+    barPercentage: 0.5,
+    useShadowColorFromDataset: false,
+    labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+    style: {
+      borderRadius: 16,
+    },
+    propsForBackgroundLines: {
+      strokeWidth: 1,
+      stroke: "#e3e3e3",
+      strokeDasharray: "0",
+    },
+    formatYLabel: (value) => `${parseFloat(value).toFixed(1)} ${unitAbbreviations[selectedUnit]}`,
+  };
+
+  const currentQuantity = chartDataHarvest.datasets[0].data[0]; // Current year quantity for the selected unit
+
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -169,10 +253,10 @@ export default function StatsScreen({ navigation }) {
               cardWidth > 0 && (
                 <BarChart
                   style={styles.chart}
-                  data={chartData}
+                  data={chartDataFinances}
                   width={cardWidth - 20}
                   height={300}
-                  chartConfig={chartConfig}
+                  chartConfig={chartConfigFinances}
                   verticalLabelRotation={0}
                   xLabelsOffset={-10}
                 />
@@ -240,9 +324,38 @@ export default function StatsScreen({ navigation }) {
             }}
           >
             <Text style={styles.title}>Récoltes</Text>
-            <View style={styles.balanceContainer}>
-              <Text>Content for Harvest</Text>
-            </View>
+            <Picker
+              selectedValue={selectedUnit}
+              style={styles.picker}
+              onValueChange={(itemValue) => setSelectedUnit(itemValue)}
+            >
+              {units.map(unit => (
+                <Picker.Item key={unit} label={unit} value={unit} />
+              ))}
+            </Picker>
+            {isLoading ? (
+              <View style={[styles.container, styles.loadingContainer]}>
+                <LottieView
+                  source={require('../../assets/lottie/loading.json')}
+                  autoPlay
+                  loop
+                  style={{ width: 100, height: 100 }}
+                />
+              </View>
+            ) : (
+              currentQuantity > 0 ? (
+                <BarChart
+                  data={chartDataHarvest}
+                  width={cardWidth - 20}
+                  height={220}
+                  yAxisLabel=""
+                  chartConfig={chartConfigHarvest}
+                  verticalLabelRotation={30}
+                />
+              ) : (
+                <Text style={styles.noDataText}>Aucune donnée disponible pour {selectedUnit}</Text>
+              )
+            )}
           </Card>
         )}
       </View>
@@ -331,5 +444,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#FEE502',
     width: '100%',
     marginBottom: 20,
-  }
+  },
+  noDataText: {
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#888',
+    marginTop: 20,
+  },
 });
