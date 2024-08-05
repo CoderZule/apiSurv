@@ -19,6 +19,7 @@ import { storage } from '../firebase';
 import { ref, uploadBytesResumable, getDownloadURL, listAll, deleteObject } from 'firebase/storage';
 import { Video } from 'expo-av';
 import LottieView from 'lottie-react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function GalleryScreen({ navigation }) {
   const [selectedBottomTab, setSelectedBottomTab] = useState('pictures');
@@ -38,9 +39,10 @@ export default function GalleryScreen({ navigation }) {
 
   const fetchMedia = async () => {
     try {
-      const listRef = ref(storage, 'files/');
+      const currentUserId = await AsyncStorage.getItem('currentUser');
+      const listRef = ref(storage, `files/${currentUserId}/`);  
       const response = await listAll(listRef);
-
+  
       const fetchedMedia = await Promise.all(
         response.items.map(async (itemRef) => {
           const url = await getDownloadURL(itemRef);
@@ -48,17 +50,19 @@ export default function GalleryScreen({ navigation }) {
           return { url, type, ref: itemRef };
         })
       );
-
+  
       setMedia(fetchedMedia);
     } catch (error) {
       console.error('Error fetching media:', error);
       Alert.alert('Erreur', 'Échec de la récupération du fichier.');
     }
   };
-
+  
   const uploadFile = async (file, type) => {
-    const fileRef = ref(storage, `files/${Date.now()}_${file.fileName || file.uri.split('/').pop()}`);
-
+    const currentUserId = await AsyncStorage.getItem('currentUser'); // Assuming you store the user ID
+    const fileRef = ref(storage, `files/${currentUserId}/${Date.now()}_${file.fileName || file.uri.split('/').pop()}`);
+  
+ 
     try {
       const response = await fetch(file.uri);
       const blob = await response.blob();
