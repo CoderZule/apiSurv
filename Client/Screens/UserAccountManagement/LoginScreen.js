@@ -27,24 +27,20 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post(
-        '/user/login',
-        {
-          Email: form.email,
-          Password: form.password,
-        }
-      );
+      const response = await axios.post('/user/login', {
+        Email: form.email,
+        Password: form.password,
+      });
 
-
-      AsyncStorage.multiSet([
+      await AsyncStorage.multiSet([
         ['token', response.data.token],
-        ['currentUser', JSON.stringify(response.data.currentUser)]
+        ['currentUser', JSON.stringify(response.data.currentUser)],
       ]);
 
-      //Prevent user from going back to login screen after login
+      // Prevent user from going back to the login screen after login
       navigation.reset({
         index: 0,
-        routes: [{ name: 'DrawerNavigator', params: { currentUser: response.data.currentUser } }],
+        routes: [{ name: 'DrawerNavigator' }], // Reset to the drawer navigator
       });
 
     } catch (error) {

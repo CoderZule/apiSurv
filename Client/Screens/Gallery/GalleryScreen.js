@@ -12,10 +12,10 @@ import {
   Modal,
   TouchableWithoutFeedback
 } from 'react-native';
-import HomeHeader from '../Components/HomeHeader';
+import HomeHeader from '../../Components/HomeHeader';
 import { FontAwesome5 } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-import { storage } from '../firebase';
+import { storage } from '../../firebase';
 import { ref, uploadBytesResumable, getDownloadURL, listAll, deleteObject } from 'firebase/storage';
 import { Video } from 'expo-av';
 import LottieView from 'lottie-react-native';
@@ -226,7 +226,7 @@ export default function GalleryScreen({ navigation }) {
                   {isVideoLoading && (
                     <View style={styles.loadingOverlay}>
                       <LottieView
-                        source={require('../assets/lottie/loading.json')}
+                        source={require('../../assets/lottie/loading.json')}
                         autoPlay
                         loop
                         style={{ width: 50, height: 50 }}
@@ -296,7 +296,7 @@ export default function GalleryScreen({ navigation }) {
             {isVideoLoading && (
               <View style={styles.loadingOverlay}>
                 <LottieView
-                  source={require('../assets/lottie/loading.json')}
+                  source={require('../../assets/lottie/loading.json')}
                   autoPlay
                   loop
                   style={{ width: 50, height: 50 }}
@@ -342,7 +342,7 @@ export default function GalleryScreen({ navigation }) {
         <View style={styles.modalBackground}>
           <View style={styles.uploadModal}>
             <LottieView
-              source={require('../assets/lottie/loading.json')}
+              source={require('../../assets/lottie/loading.json')}
               autoPlay
               loop
               style={{ width: 150, height: 150 }}

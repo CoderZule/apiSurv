@@ -16,6 +16,7 @@ import InspectionsHistoryScreen from '../Screens/Inspections/InspectionsHistoryS
 import InspectionDetailsScreen from '../Screens/Inspections/InspectionDetailsScreen';
 import HarvestDetailsScreen from '../Screens/Harvest/HarvestDetailsScreen';
 import TransactionDetailsScreen from '../Screens/Finances/TransactionDetailsScreen';
+import HomeNiveauStratScreen from '../Screens/HomeNiveauStratScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -42,6 +43,8 @@ export function IntroStack() {
           <Stack.Screen name="Index" component={Index} />
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="HomeNiveauStrat" component={HomeNiveauStratScreen} />
+ 
           <Stack.Screen name="DrawerNavigator" component={DrawerNavigator} />
           <Stack.Screen name="ScannerScreenInspectionsDetails" component={ScannerScreenInspectionsDetails} />
           <Stack.Screen name="ScannerScreenAddInspections" component={ScannerScreenAddInspections} />
@@ -54,8 +57,6 @@ export function IntroStack() {
 
 
           <Stack.Screen name="HarvestDetailsScreen" component={HarvestDetailsScreen} options={{ title: 'Harvest Details Screen' }} />
-
-          
           <Stack.Screen name="TransactionDetailsScreen" component={TransactionDetailsScreen} options={{ title: 'Transaction Details Screen' }} />
 
         </>
