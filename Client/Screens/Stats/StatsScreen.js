@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Text, SafeAreaView, StyleSheet, View } from 'react-native';
-import { BarChart } from 'react-native-chart-kit';
+import { BarChart, LineChart } from 'react-native-chart-kit';
 import HomeHeader from '../../Components/HomeHeader';
 import { Card } from 'react-native-paper';
 import axios from '../../axiosConfig';
@@ -21,6 +21,7 @@ export default function StatsScreen({ navigation }) {
   const [transactions, setTransactions] = useState([]);
 
   const [selectedApiary, setSelectedApiary] = useState('');
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
 
   const [chartDataFinances, setChartDataFinances] = useState({
@@ -72,7 +73,7 @@ export default function StatsScreen({ navigation }) {
         const transactions = response.data.data;
         setTransactions(transactions);
 
-         const currentYearTotals = {
+        const currentYearTotals = {
           revenues: 0,
           expenses: 0,
         };
@@ -160,30 +161,23 @@ export default function StatsScreen({ navigation }) {
         });
         const harvests = response.data.data;
 
-        const currentYearTotals = {};
-        const previousYearTotals = {};
-
-        const currentYear = new Date().getFullYear();
-        const previousYear = currentYear - 1;
+        const yearTotals = {};
 
         units.forEach(unit => {
-          currentYearTotals[unit] = 0;
-          previousYearTotals[unit] = 0;
+          yearTotals[unit] = 0;
         });
 
         harvests.forEach(harvest => {
           const harvestYear = new Date(harvest.Date).getFullYear();
-          if (harvestYear === currentYear) {
-            currentYearTotals[harvest.Unit] += harvest.Quantity;
-          } else if (harvestYear === previousYear) {
-            previousYearTotals[harvest.Unit] += harvest.Quantity;
+          if (harvestYear === selectedYear) {
+            yearTotals[harvest.Unit] += harvest.Quantity;
           }
         });
 
         setChartDataHarvest({
-          labels: [currentYear.toString(), previousYear.toString()],
+          labels: [selectedYear.toString()],
           datasets: [{
-            data: [currentYearTotals[selectedUnit], previousYearTotals[selectedUnit]]
+            data: [yearTotals[selectedUnit]]
           }]
         });
       } catch (error) {
@@ -196,8 +190,7 @@ export default function StatsScreen({ navigation }) {
     if (currentUser) {
       fetchHarvests();
     }
-  }, [currentUser, isFocused, selectedUnit]);
-
+  }, [currentUser, isFocused, selectedUnit, selectedYear]);
 
   const unitAbbreviations = {
     "Litre (L)": "L",
@@ -346,78 +339,78 @@ export default function StatsScreen({ navigation }) {
         </Picker>
 
         {selectedReport === 'Finances' && (
-  <Card
-    style={styles.card}
-    onLayout={(event) => {
-      const { width } = event.nativeEvent.layout;
-      setCardWidth(width);
-    }}
-  >
-    <Text style={styles.title}>Dernières Transactions</Text>
-    {isLoading ? (
-      <View style={[styles.container, styles.loadingContainer]}>
-        <LottieView
-          source={require('../../assets/lottie/loading.json')}
-          autoPlay
-          loop
-          style={{ width: 100, height: 100 }}
-        />
-      </View>
-    ) : (
-      transactions.length > 0 ? (
-        <>
-          {cardWidth > 0 && (
-            <BarChart
-              style={styles.chart}
-              data={chartDataFinances}
-              width={cardWidth - 20}
-              height={300}
-              chartConfig={chartConfigFinances}
-              verticalLabelRotation={0}
-              xLabelsOffset={-10}
-            />
-          )}
-          <View style={styles.balanceContainer}>
-            <View style={styles.balanceSection}>
-              <Text style={styles.balanceTitle}>Solde Année Courante</Text>
-              <View style={styles.divider} />
-              <View style={styles.inlineContainer}>
-                <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Total: </Text>
-                <Text style={styles.balanceTextTotal}>{financialData.currentYearTotal} د.ت</Text>
+          <Card
+            style={styles.card}
+            onLayout={(event) => {
+              const { width } = event.nativeEvent.layout;
+              setCardWidth(width);
+            }}
+          >
+            <Text style={styles.title}>Dernières Transactions</Text>
+            {isLoading ? (
+              <View style={[styles.container, styles.loadingContainer]}>
+                <LottieView
+                  source={require('../../assets/lottie/loading.json')}
+                  autoPlay
+                  loop
+                  style={{ width: 100, height: 100 }}
+                />
               </View>
-              <View style={styles.inlineContainer}>
-                <Text>Revenus: </Text>
-                <Text style={styles.balanceTextRevenus}>{financialData.currentYearRevenues} د.ت</Text>
-              </View>
-              <View style={styles.inlineContainer}>
-                <Text>Dépenses: </Text>
-                <Text style={styles.balanceTextDepenses}>{financialData.currentYearExpenses} د.ت -</Text>
-              </View>
-            </View>
-            <View style={styles.balanceSection}>
-              <Text style={styles.balanceTitle}>Solde Année Précédente</Text>
-              <View style={styles.divider} />
-              <View style={styles.inlineContainer}>
-                <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Total: </Text>
-                <Text style={styles.balanceTextTotal}>{financialData.previousYearTotal} د.ت</Text>
-              </View>
-              <View style={styles.inlineContainer}>
-                <Text>Revenus: </Text>
-                <Text style={styles.balanceTextRevenus}>{financialData.previousYearRevenues} د.ت</Text>
-              </View>
-              <View style={styles.inlineContainer}>
-                <Text>Dépenses: </Text>
-                <Text style={styles.balanceTextDepenses}>{financialData.previousYearExpenses} د.ت -</Text>
-              </View>
-            </View>
-          </View>
-        </>
-      ) : (
-        <Text style={styles.noDataText}>Vous n'avez aucune transaction pour l'instant.</Text>
-      )
-    )}
-  </Card>
-)}
+            ) : (
+              transactions.length > 0 ? (
+                <>
+                  {cardWidth > 0 && (
+                    <LineChart
+                      style={styles.chart}
+                      data={chartDataFinances}
+                      width={cardWidth - 20}
+                      height={300}
+                      chartConfig={chartConfigFinances}
+                      verticalLabelRotation={20}
+                      xLabelsOffset={-10}
+                    />
+                  )}
+                  <View style={styles.balanceContainer}>
+                    <View style={styles.balanceSection}>
+                      <Text style={styles.balanceTitle}>Solde Année Courante</Text>
+                      <View style={styles.divider} />
+                      <View style={styles.inlineContainer}>
+                        <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Total: </Text>
+                        <Text style={styles.balanceTextTotal}>{financialData.currentYearTotal} د.ت</Text>
+                      </View>
+                      <View style={styles.inlineContainer}>
+                        <Text>Revenus: </Text>
+                        <Text style={styles.balanceTextRevenus}>{financialData.currentYearRevenues} د.ت</Text>
+                      </View>
+                      <View style={styles.inlineContainer}>
+                        <Text>Dépenses: </Text>
+                        <Text style={styles.balanceTextDepenses}>{financialData.currentYearExpenses} د.ت -</Text>
+                      </View>
+                    </View>
+                    <View style={styles.balanceSection}>
+                      <Text style={styles.balanceTitle}>Solde Année Précédente</Text>
+                      <View style={styles.divider} />
+                      <View style={styles.inlineContainer}>
+                        <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Total: </Text>
+                        <Text style={styles.balanceTextTotal}>{financialData.previousYearTotal} د.ت</Text>
+                      </View>
+                      <View style={styles.inlineContainer}>
+                        <Text>Revenus: </Text>
+                        <Text style={styles.balanceTextRevenus}>{financialData.previousYearRevenues} د.ت</Text>
+                      </View>
+                      <View style={styles.inlineContainer}>
+                        <Text>Dépenses: </Text>
+                        <Text style={styles.balanceTextDepenses}>{financialData.previousYearExpenses} د.ت -</Text>
+                      </View>
+                    </View>
+                  </View>
+                </>
+              ) : (
+                <Text style={styles.noDataText}>Vous n'avez aucune transaction pour l'instant.</Text>
+              )
+            )}
+          </Card>
+        )}
 
 
 
@@ -448,7 +441,8 @@ export default function StatsScreen({ navigation }) {
                     height={300}
                     chartConfig={chartConfigStrength}
                     verticalLabelRotation={0}
-                    xLabelsOffset={-10}
+                    xLabelsOffset={-5}
+
                   />
                 ) : (
                   <Text style={styles.noDataText}>Aucune donnée disponible pour ce rucher</Text>
@@ -486,6 +480,22 @@ export default function StatsScreen({ navigation }) {
               </Picker>
             </View>
 
+
+            <View style={styles.pickerContainer}>
+
+              <Text style={styles.pickerTitle}>Année:</Text>
+              <Picker
+                selectedValue={selectedYear}
+                onValueChange={(itemValue) => setSelectedYear(itemValue)}
+                style={styles.pickerSelect}
+              >
+                {[...Array(10)].map((_, index) => {
+                  const year = new Date().getFullYear() - index;
+                  return <Picker.Item key={year} label={year.toString()} value={year} />;
+                })}
+              </Picker>
+            </View>
+
             {isLoading ? (
               <View style={[styles.container, styles.loadingContainer]}>
                 <LottieView
@@ -498,13 +508,13 @@ export default function StatsScreen({ navigation }) {
             ) : (
               currentQuantity > 0 ? (
                 <BarChart
-                  style={styles.chart}
                   data={chartDataHarvest}
-                  width={cardWidth - 20}
-                  height={300}
+                  width={cardWidth - 40}
+                  height={220}
                   chartConfig={chartConfigHarvest}
                   verticalLabelRotation={0}
-                  xLabelsOffset={-10}
+                  fromZero={true}
+                  style={{ borderRadius: 16, marginVertical: 10 }}
                 />
               ) : (
                 <Text style={styles.noDataText}>Aucune donnée disponible pour cette Unité ({selectedUnit})</Text>
