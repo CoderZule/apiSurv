@@ -73,7 +73,7 @@ export default function DrawerContent(props) {
 
                     {role === 'Assistance intermédiaire' &&
                         <DrawerItem
-                            label="Santé des Abeilles"
+                            label="Présence de maladies"
                             icon={() => <Ionicons name='pulse-outline' size={24} color="#977700" />}
                             onPress={() => props.navigation.navigate('AlertBeekeepers')}
                             labelStyle={styles.drawerItemLabel}

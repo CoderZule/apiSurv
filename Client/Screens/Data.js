@@ -80,7 +80,7 @@ export const treatments = [
   'Tylosine'
 ];
 
-export const doses = ["Gouttes", "Grammes", "Millilitres"];
+export const doses = ["Gouttes", "Milligramme","Grammes", "Millilitres"];
 export const HoneyPollenHarvest = ["Faible", "Moyenne", "Élevée"];
 export const options = [
   { name: "Couvain ouvert", requiresNumberInput: true },
