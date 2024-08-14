@@ -10,7 +10,9 @@ import {
   Alert, Linking
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
+
 import axios from '../../axiosConfig'
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -93,7 +95,7 @@ export default function LoginScreen() {
             <View style={styles.input}>
               <Text style={styles.inputLabel}>E-mail</Text>
               <View style={styles.inputContainer}>
-                <FontAwesome5 name="envelope" size={20} color="#977700" style={styles.inputIcon} />
+              <FontAwesome5 name="envelope" size={22} color="#977700" style={styles.inputIcon} />
                 <TextInput
                   autoCapitalize="none"
                   autoCorrect={false}
@@ -111,7 +113,7 @@ export default function LoginScreen() {
             <View style={styles.input}>
               <Text style={styles.inputLabel}>Mot de passe</Text>
               <View style={styles.inputContainer}>
-                <FontAwesome5 name="lock" size={20} color="#977700" style={styles.inputIcon} />
+              <FontAwesome5  name="lock" size={22} color="#977700" style={styles.inputIcon} />
                 <TextInput
                   autoCorrect={false}
                   clearButtonMode="while-editing"
@@ -123,9 +125,9 @@ export default function LoginScreen() {
                   value={form.password}
                 />
                 <TouchableOpacity onPress={togglePasswordVisibility}>
-                  <FontAwesome5
+                <FontAwesome5 
                     name={form.hidePassword ? 'eye-slash' : 'eye'}
-                    size={20}
+                    size={22}
                     color="#6b7280"
                     style={styles.inputIcon}
                   />

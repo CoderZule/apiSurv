@@ -135,7 +135,8 @@ export default function HarvestHistoryScreen({ navigation }) {
           Date: date.toISOString(),
           Apiary: apiaries.find(apiary => apiary._id === selectedApiary)?.Name || '',
           Hive: hives.find(hive => hive._id === selectedHive)?.Name || '',
-          User: currentUser._id
+          User: currentUser._id,
+          ApiaryRef: apiaries.find(apiary => apiary._id === selectedApiary)?._id || null
 
         };
 

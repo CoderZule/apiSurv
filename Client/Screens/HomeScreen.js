@@ -227,17 +227,14 @@ export default function HomeScreen({ navigation }) {
 
           const userHives = hives.filter(hive => userApiaries.some(apiary => apiary._id === hive.Apiary._id));
 
-          // console.log('User Hives:', userHives);
-
+ 
           const totalStrength = userHives.reduce((total, hive) => {
             const strengthValue = strengthMapping[hive.Colony.strength] || 0;
-            console.log(`Hive Strength: ${hive.Colony.strength}, Value: ${strengthValue}`);
-            return total + strengthValue;
+             return total + strengthValue;
           }, 0);
 
           const averageStrength = userHives.length ? totalStrength / userHives.length : 0;
-          console.log('Total Strength:', totalStrength);
-          console.log('Average Strength:', averageStrength);
+        
 
           // Set the average strength percentage
           setStrengthPercentage(averageStrength);
@@ -256,7 +253,12 @@ export default function HomeScreen({ navigation }) {
   const propertiesData = [
     { id: 1, name: 'Ruchers', value: apiariesCount.toString(), img: require('../assets/rucher.png') },
     { id: 2, name: 'Ruches', value: hivesCount.toString(), img: require('../assets/ruche.png') },
-    { id: 3, name: 'Solde', value: `${Math.floor(financialData.currentYearTotal).toLocaleString()} د.ت `, img: require('../assets/solde.png') },
+    {
+      id: 3,
+      name: 'Solde',
+      value: `${Math.abs(financialData.currentYearTotal).toLocaleString()} ${financialData.currentYearTotal < 0 ? '-' : ''} د.ت `,
+      img: require('../assets/solde.png')
+    },   
     { id: 4, name: 'Force', value: `${strengthPercentage.toFixed(0)}%`, img: require('../assets/force.png') }, // Update here
   ];
 

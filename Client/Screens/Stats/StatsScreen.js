@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 import LottieView from "lottie-react-native";
 import { Picker } from '@react-native-picker/picker';
-import { units } from '../Data';
+import { units, HarvestProducts } from '../Data';
 
 export default function StatsScreen({ navigation }) {
   const [cardWidth, setCardWidth] = useState(0);
@@ -17,8 +17,11 @@ export default function StatsScreen({ navigation }) {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedReport, setSelectedReport] = useState('Finances');
   const [selectedUnit, setSelectedUnit] = useState('Litre (L)');
+  const [selectedProduct, setSelectedProduct] = useState('Miel');
+
   const [apiaries, setApiaries] = useState([]);
   const [transactions, setTransactions] = useState([]);
+  const [singleHiveMessage, setSingleHiveMessage] = useState('');
 
   const [selectedApiary, setSelectedApiary] = useState('');
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
@@ -64,6 +67,7 @@ export default function StatsScreen({ navigation }) {
     fetchCurrentUser();
   }, []);
 
+
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
@@ -103,14 +107,13 @@ export default function StatsScreen({ navigation }) {
           }
         });
 
+        // Ensure the totals reflect income and expense difference
         const currentYearTotal = currentYearTotals.revenues - currentYearTotals.expenses;
         const previousYearTotal = previousYearTotals.revenues - previousYearTotals.expenses;
 
         setChartDataFinances({
-          labels: [currentYear.toString(), previousYear.toString()],
-          datasets: [{
-            data: [currentYearTotal, previousYearTotal]
-          }]
+          labels: [previousYear.toString(), currentYear.toString()],
+          datasets: [{ data: [previousYearTotal, currentYearTotal] }]
         });
 
         setFinancialData({
@@ -162,14 +165,13 @@ export default function StatsScreen({ navigation }) {
         const harvests = response.data.data;
 
         const yearTotals = {};
-
         units.forEach(unit => {
           yearTotals[unit] = 0;
         });
 
         harvests.forEach(harvest => {
           const harvestYear = new Date(harvest.Date).getFullYear();
-          if (harvestYear === selectedYear) {
+          if (harvestYear === selectedYear && harvest.Product === selectedProduct) {
             yearTotals[harvest.Unit] += harvest.Quantity;
           }
         });
@@ -177,7 +179,7 @@ export default function StatsScreen({ navigation }) {
         setChartDataHarvest({
           labels: [selectedYear.toString()],
           datasets: [{
-            data: [yearTotals[selectedUnit]]
+            data: [yearTotals[selectedUnit]],
           }]
         });
       } catch (error) {
@@ -190,7 +192,8 @@ export default function StatsScreen({ navigation }) {
     if (currentUser) {
       fetchHarvests();
     }
-  }, [currentUser, isFocused, selectedUnit, selectedYear]);
+  }, [currentUser, isFocused, selectedUnit, selectedYear, selectedProduct]);
+
 
   const unitAbbreviations = {
     "Litre (L)": "L",
@@ -253,7 +256,6 @@ export default function StatsScreen({ navigation }) {
     "Très Forte": 100,
   };
 
-
   useEffect(() => {
     const fetchHivesByApiary = async () => {
       if (!selectedApiary) return;
@@ -263,7 +265,6 @@ export default function StatsScreen({ navigation }) {
         const response = await axios.get('/hive/getHivesByApiary', {
           params: { apiaryId: selectedApiary },
         });
-
         const hives = response.data.data; // Ensure you're accessing the right property
 
         // Check if there are no hives
@@ -271,25 +272,35 @@ export default function StatsScreen({ navigation }) {
           setChartDataStrength({
             labels: [],
             datasets: [{ data: [] }],
-          }); // Set empty structure for chart data
+          });
+          setSingleHiveMessage('Aucune ruche disponible dans ce rucher.'); // Add message for no hives
           return;
         }
 
-        // Calculate colony strengths and get top 3
-        const colonyStrengths = hives
-          .map(hive => ({
-            name: hive.Name,
-            strength: strengthMapping[hive.Colony.strength] || 0, // Map strength string to percentage
-          }))
-          .sort((a, b) => b.strength - a.strength) // Sort descending
-          .slice(0, 3); // Get top 3
+        // Calculate colony strengths
+        const colonyStrengths = hives.map(hive => ({
+          name: hive.Name,
+          strength: strengthMapping[hive.Colony.strength] || 0, // Map strength string to percentage
+        }));
 
-        setChartDataStrength({
-          labels: colonyStrengths.map(colony => colony.name),
-          datasets: [{
-            data: colonyStrengths.map(colony => colony.strength),
-          }]
-        });
+        // Handle case when there is only one hive
+        if (colonyStrengths.length === 1) {
+          const singleHive = colonyStrengths[0]; // Get the single hive's data
+          setSingleHiveMessage(`Vous n'avez qu'une seule ruche avec une force de ${singleHive.strength}%`);
+        } else {
+          // Get top 3 for multiple hives
+          const topColonyStrengths = colonyStrengths
+            .sort((a, b) => b.strength - a.strength) // Sort descending
+            .slice(0, 3); // Get top 3
+
+          setChartDataStrength({
+            labels: topColonyStrengths.map(colony => colony.name),
+            datasets: [{
+              data: topColonyStrengths.map(colony => colony.strength),
+            }]
+          });
+          setSingleHiveMessage(''); // Clear message when there are multiple hives
+        }
       } catch (error) {
         console.error('Error fetching hives:', error);
       } finally {
@@ -299,7 +310,6 @@ export default function StatsScreen({ navigation }) {
 
     fetchHivesByApiary();
   }, [selectedApiary]);
-
 
   const chartConfigStrength = {
     backgroundGradientFrom: "#FBF5E0",
@@ -317,9 +327,7 @@ export default function StatsScreen({ navigation }) {
       strokeDasharray: "0",
     },
     formatYLabel: (value) => `${parseFloat(value).toFixed(0)} %`,
-
   };
-
 
 
   return (
@@ -376,7 +384,7 @@ export default function StatsScreen({ navigation }) {
                       <View style={styles.divider} />
                       <View style={styles.inlineContainer}>
                         <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Total: </Text>
-                        <Text style={styles.balanceTextTotal}>{financialData.currentYearTotal} د.ت</Text>
+                        <Text style={styles.balanceTextTotal}>{Math.abs(financialData.currentYearTotal).toLocaleString()} {financialData.currentYearTotal >= 0 ? '' : '-'} د.ت </Text>
                       </View>
                       <View style={styles.inlineContainer}>
                         <Text>Revenus: </Text>
@@ -384,7 +392,7 @@ export default function StatsScreen({ navigation }) {
                       </View>
                       <View style={styles.inlineContainer}>
                         <Text>Dépenses: </Text>
-                        <Text style={styles.balanceTextDepenses}>{financialData.currentYearExpenses} د.ت -</Text>
+                        <Text style={styles.balanceTextDepenses}>{financialData.currentYearExpenses} - د.ت </Text>
                       </View>
                     </View>
                     <View style={styles.balanceSection}>
@@ -392,7 +400,7 @@ export default function StatsScreen({ navigation }) {
                       <View style={styles.divider} />
                       <View style={styles.inlineContainer}>
                         <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Total: </Text>
-                        <Text style={styles.balanceTextTotal}>{financialData.previousYearTotal} د.ت</Text>
+                        <Text style={styles.balanceTextTotal}>{Math.abs(financialData.previousYearTotal).toLocaleString()} {financialData.previousYearTotal >= 0 ? '' : '-'} د.ت </Text>
                       </View>
                       <View style={styles.inlineContainer}>
                         <Text>Revenus: </Text>
@@ -400,7 +408,7 @@ export default function StatsScreen({ navigation }) {
                       </View>
                       <View style={styles.inlineContainer}>
                         <Text>Dépenses: </Text>
-                        <Text style={styles.balanceTextDepenses}>{financialData.previousYearExpenses} د.ت -</Text>
+                        <Text style={styles.balanceTextDepenses}>{financialData.previousYearExpenses} - د.ت </Text>
                       </View>
                     </View>
                   </View>
@@ -418,13 +426,22 @@ export default function StatsScreen({ navigation }) {
           <Card style={[styles.card, { width: cardWidth }]} onLayout={(event) => setCardWidth(event.nativeEvent.layout.width)}>
             <Text style={styles.title}>Top 3 Ruches en Force</Text>
 
+
+
             {apiaries.length > 0 ? (
               <View>
                 <View style={styles.pickerContainer}>
                   <Text style={styles.pickerTitle}>Rucher:</Text>
                   <Picker
                     selectedValue={selectedApiary}
-                    onValueChange={(itemValue) => setSelectedApiary(itemValue)}
+                    onValueChange={(itemValue) => {
+                      setSelectedApiary(itemValue);
+                      setSingleHiveMessage(''); // Clear the message when a new apiary is selected
+                      setChartDataStrength({
+                        labels: [],
+                        datasets: [{ data: [] }],
+                      });
+                    }}
                     style={styles.pickerSelect}
                   >
                     {apiaries.map(apiary => (
@@ -432,26 +449,39 @@ export default function StatsScreen({ navigation }) {
                     ))}
                   </Picker>
                 </View>
-
-                {chartDataStrength && chartDataStrength.datasets[0].data.length > 0 ? (
-                  <BarChart
-                    style={styles.chart}
-                    data={chartDataStrength}
-                    width={cardWidth - 20}
-                    height={300}
-                    chartConfig={chartConfigStrength}
-                    verticalLabelRotation={0}
-                    xLabelsOffset={-5}
-
-                  />
+                {isLoading ? (
+                  <View style={[styles.container, styles.loadingContainer]}>
+                    <LottieView
+                      source={require('../../assets/lottie/loading.json')}
+                      autoPlay
+                      loop
+                      style={{ width: 100, height: 100 }}
+                    />
+                  </View>
                 ) : (
-                  <Text style={styles.noDataText}>Aucune donnée disponible pour ce rucher</Text>
-                )}
+                  chartDataStrength && chartDataStrength.datasets[0].data.length > 0 ? (
+                    <BarChart
+                      style={styles.chart}
+                      data={chartDataStrength}
+                      width={cardWidth - 20}
+                      height={300}
+                      chartConfig={chartConfigStrength}
+                      verticalLabelRotation={0}
+                      xLabelsOffset={-5}
+
+                    />
+                  ) : (
+
+                    <Text style={styles.textMessage}>{singleHiveMessage}</Text>
+                  ))}
+
               </View>
             ) : (
+
               <Text style={styles.noDataText}>Vous n'avez aucun rucher pour l'instant.
               </Text>
             )}
+
           </Card>
         )}
 
@@ -466,6 +496,26 @@ export default function StatsScreen({ navigation }) {
             <Text style={styles.title}>Dernières Récoltes</Text>
 
             <View style={styles.pickerContainer}>
+
+
+              <Text style={styles.pickerTitle}>Produit:</Text>
+              <Picker
+                selectedValue={selectedProduct}
+                style={styles.pickerSelect}
+                onValueChange={(itemValue) => {
+                  setSelectedProduct(itemValue);
+
+                }}
+              >
+                {HarvestProducts.map(product => (
+                  <Picker.Item key={product} label={product} value={product} />
+                ))}
+              </Picker>
+            </View>
+
+
+            <View style={styles.pickerContainer}>
+
 
               <Text style={styles.pickerTitle}>Unité:</Text>
               <Picker
@@ -517,7 +567,9 @@ export default function StatsScreen({ navigation }) {
                   style={{ borderRadius: 16, marginVertical: 10 }}
                 />
               ) : (
-                <Text style={styles.noDataText}>Aucune donnée disponible pour cette Unité ({selectedUnit})</Text>
+
+                <Text style={styles.noDataText}>Aucune donnée disponible</Text>
+
               )
             )}
           </Card>
@@ -601,6 +653,7 @@ const styles = StyleSheet.create({
     color: '#ff0000',
   },
   loadingContainer: {
+    marginTop: 30,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -612,6 +665,7 @@ const styles = StyleSheet.create({
 
   noDataText: {
     textAlign: 'center',
+    justifyContent:'center',
     fontSize: 16,
     color: '#888',
     marginTop: 20,
