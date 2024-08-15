@@ -8,16 +8,17 @@ import LottieView from "lottie-react-native";
 import { Picker } from '@react-native-picker/picker';
 
 export default function AlertBeekeepersScreen({ navigation }) {
+
     const [inspections, setInspections] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedGovernorate, setSelectedGovernorate] = useState('');
+
     const [governorates, setGovernorates] = useState([
         "Ariana", "Beja", "Ben Arous", "Bizerte", "Gabes", "Gafsa", "Jendouba", "Kairouan",
         "Kasserine", "Kebili", "Kef", "Mahdia", "Mannouba", "Medenine",
         "Monastir", "Nabeul", "Sfax", "Sidi Bouzid", "Siliana", "Sousse", "Tataouine",
         "Tozeur", "Tunis", "Zaghouan"
     ]);
-    
 
     useEffect(() => {
         const fetchInspectionsWithDiseases = async () => {
@@ -58,7 +59,6 @@ export default function AlertBeekeepersScreen({ navigation }) {
     return (
         <SafeAreaView style={styles.safeArea}>
             <HomeHeader navigation={navigation} title={'Présence de maladies'} />
-
             <View style={styles.pickerContainer}>
                 <Picker
                     selectedValue={selectedGovernorate}
@@ -76,28 +76,29 @@ export default function AlertBeekeepersScreen({ navigation }) {
                     filteredInspections.map((inspection, index) => (
                         <Card key={index} style={styles.card}>
                             <Card.Content>
-                                <MaterialCommunityIcons
-                                    name="pulse"
-                                    size={30}
-                                    color="#000"
-                                    style={styles.icon}
-                                />
-                                <Title style={styles.title}>{inspection.Hive.Name}</Title>
-                                <Paragraph style={styles.subtitle}>Présence de maladies</Paragraph>
-                                <Paragraph>Rucher: <Text style={styles.boldText}>{`${inspection.Hive.Apiary.Name}`}</Text></Paragraph>
-                                <Paragraph>Emplacement: <Text style={styles.boldText}>{`${inspection.Hive.Apiary.Location.city}, ${inspection.Hive.Apiary.Location.governorate}`}</Text></Paragraph>
+                                <View style={styles.iconTitleContainer}>
+                                    <MaterialCommunityIcons
+                                        name="pulse"
+                                        size={30}
+                                        color="#FF5722"
+                                        style={styles.icon}
+                                    />
+                                    <Title style={styles.title}>{inspection.Hive.Name}</Title>
+                                </View>
+                                <Paragraph style={styles.subtitle}>Rucher: <Text style={styles.boldText}>{`${inspection.Hive.Apiary.Name}`}</Text></Paragraph>
+                                <Paragraph style={styles.subtitle}>Emplacement: <Text style={styles.boldText}>{`${inspection.Hive.Apiary.Location.city}, ${inspection.Hive.Apiary.Location.governorate}`}</Text></Paragraph>
                                 <Paragraph style={styles.disease}>{`Maladie: ${inspection.BeeHealth.disease}`}</Paragraph>
                                 <Paragraph style={styles.date}>{`Date: ${new Date(inspection.InspectionDateTime).toLocaleDateString('fr-FR')}`}</Paragraph>
                                 <Button
                                     mode="contained"
                                     style={styles.button}
+                                    labelStyle={styles.buttonText}
                                     onPress={() => {
                                         console.log('Button pressed: Alerter les apiculteurs');
                                     }}
                                 >
                                     Alerter les apiculteurs
                                 </Button>
-
                             </Card.Content>
                         </Card>
                     ))
@@ -133,36 +134,40 @@ const styles = StyleSheet.create({
     card: {
         marginBottom: 12,
         borderRadius: 10,
-        padding: 12,
-        backgroundColor: '#FFCDD2',
+        padding: 16,
+        backgroundColor: '#FFEBEE',
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.5,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
         shadowRadius: 4,
-        elevation: 3,
+        elevation: 4,
+    },
+    iconTitleContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 8,
     },
     title: {
         fontWeight: 'bold',
-        color: '#D50000',
+        color: '#D32F2F',
         fontSize: 18,
-        textTransform: 'uppercase',
-        marginBottom: 4,
+        marginLeft: 8,
     },
     subtitle: {
         fontStyle: 'italic',
-        color: '#D50000',
+        color: '#455A64',
         marginBottom: 8,
         fontSize: 14,
     },
     disease: {
         fontWeight: 'bold',
-        color: '#D50000',
+        color: '#C62828',
         fontSize: 16,
         marginBottom: 8,
     },
     date: {
         fontStyle: 'italic',
-        color: '#D50000',
+        color: '#757575',
         marginBottom: 8,
         fontSize: 14,
     },
@@ -171,16 +176,30 @@ const styles = StyleSheet.create({
     },
     button: {
         marginTop: 12,
-        backgroundColor: '#D50000',
+        backgroundColor: '#D32F2F',
         borderRadius: 20,
     },
+    buttonText: {
+        fontSize: 14,
+        fontWeight: 'bold',
+    },
     error: {
-        color: '#000000',
+        color: '#C62828',
         textAlign: 'center',
         margin: 20,
         fontSize: 16,
+        fontWeight: 'bold',
     },
     boldText: {
         fontWeight: 'bold',
+    },
+    title: {
+        fontSize: 22,
+        fontWeight: "bold",
+        color: '#977700',
+        textAlign: 'center',
+        margin: 20,
+        marginBottom: 10,
+
     },
 });

@@ -31,6 +31,7 @@ export default function GalleryScreen({ navigation }) {
   const [selectedImageUrl, setSelectedImageUrl] = useState(null);
   const [isUploadModalVisible, setUploadModalVisible] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [isLoading, setIsLoading] = useState(true); // Add loading state
 
   useEffect(() => {
     LogBox.ignoreLogs(['Firestore (10.12.4): WebChannelConnection RPC \'Write\' stream', 'transport errored']);
@@ -38,6 +39,7 @@ export default function GalleryScreen({ navigation }) {
   }, []);
 
   const fetchMedia = async () => {
+    setIsLoading(true);
     try {
       const currentUserId = await AsyncStorage.getItem('currentUser');
       const listRef = ref(storage, `files/${currentUserId}/`);  
@@ -55,6 +57,8 @@ export default function GalleryScreen({ navigation }) {
     } catch (error) {
       console.error('Error fetching media:', error);
       Alert.alert('Erreur', 'Échec de la récupération du fichier.');
+    }finally {
+      setIsLoading(false); // End loading
     }
   };
   
@@ -195,7 +199,17 @@ export default function GalleryScreen({ navigation }) {
         contentContainerStyle={styles.mediaContainer}
         showsVerticalScrollIndicator={false}
       >
-        {filteredMedia.length > 0 ? (
+       {isLoading ? ( // Check if loading
+            <View style={styles.loader}>
+            <LottieView
+              source={require('../../assets/lottie/loading.json')}
+              autoPlay
+              loop
+              style={{ width: 50, height: 50 }}
+            />
+          </View>
+      ) :
+      filteredMedia.length > 0 ? (
           filteredMedia.map((item, index) => (
             <View key={index} style={styles.mediaItem}>
               {item.type === 'image' ? (
@@ -243,7 +257,7 @@ export default function GalleryScreen({ navigation }) {
               </TouchableOpacity>
             </View>
           ))
-        ) : (
+        )  : (
           <Text>Aucune photo/vidéo disponible.</Text>
         )}
       </ScrollView>
@@ -464,4 +478,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
+  loader: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+},
 });

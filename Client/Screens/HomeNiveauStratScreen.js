@@ -19,8 +19,8 @@ export default function HomeNiveauStratScreen({ navigation }) {
         if (selectedProduct) {
             fetchTopRegions(selectedProduct);
         } else {
-            setTopRegions([]); // Clear regions if no product is selected
-            setLoading(false); // Stop loading when no product is selected
+            setTopRegions([]);
+            setLoading(false);
 
         }
     }, [selectedProduct]);
@@ -84,16 +84,21 @@ export default function HomeNiveauStratScreen({ navigation }) {
                         <Card key={`${region._id}-${index}`} style={styles.card}>
                             <Card.Content>
                                 <Title style={styles.titleContainer}>
-                                    {region.governorate}
-                                    {index === 0 && (
-                                        <MaterialCommunityIcons
-                                            name="chart-timeline-variant-shimmer"
-                                            size={30}
-                                            color='#FEE502'
-                                            style={styles.icon}
-                                        />
-                                    )}
+                                    <View style={styles.titleWithIcon}>
+                                        <Title style={styles.titleContainer}>
+                                            {region.governorate}
+                                        </Title>
+                                        {index === 0 && (
+                                            <MaterialCommunityIcons
+                                                name="chart-timeline-variant-shimmer"
+                                                size={27}
+                                                color='#FEE502'
+                                                style={styles.icon}
+                                            />
+                                        )}
+                                    </View>
                                 </Title>
+
                                 {Object.entries(region.quantitiesByUnit).map(([unit, totalQuantity]) => (
                                     <Paragraph key={`${region._id}-${unit}`}>{`${totalQuantity} ${unit}`}</Paragraph>
                                 ))}
@@ -120,7 +125,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    
+
     pickerContainer: {
         marginTop: 15,
         flexDirection: 'row',
@@ -134,14 +139,15 @@ const styles = StyleSheet.create({
     },
     pickerSelect: {
         flex: 1,
-        backgroundColor: '#E8E8E8',
+        backgroundColor: '#FEE502',
     },
     title: {
-        fontWeight: 'bold',
-        fontSize: 16,
-        color: '#555555',
+        fontSize: 22,
+        fontWeight: "bold",
+        color: '#977700',
         textAlign: 'center',
-        marginBottom: 5,
+        margin: 20,
+
     },
     card: {
         marginBottom: 12,
@@ -154,6 +160,12 @@ const styles = StyleSheet.create({
         margin: 20,
         fontSize: 16,
     },
-    
+    titleWithIcon: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    icon: {
+        marginLeft: 10,
+    },
 
 });
