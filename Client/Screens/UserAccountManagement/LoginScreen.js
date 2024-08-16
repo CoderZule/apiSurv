@@ -32,23 +32,25 @@ export default function LoginScreen() {
       const response = await axios.post('/user/login', {
         Email: form.email,
         Password: form.password,
+        platform: 'mobile', // Indicate that this request is from the mobile app
       });
-
+  
       await AsyncStorage.multiSet([
         ['token', response.data.token],
         ['currentUser', JSON.stringify(response.data.currentUser)],
       ]);
-
+  
       // Prevent user from going back to the login screen after login
       navigation.reset({
         index: 0,
         routes: [{ name: 'DrawerNavigator' }], // Reset to the drawer navigator
       });
-
+  
     } catch (error) {
       Alert.alert('Échec de connexion', 'Identifiants invalides. Veuillez réessayer.');
     }
   };
+  
 
   const togglePasswordVisibility = () => {
     setForm({ ...form, hidePassword: !form.hidePassword });
