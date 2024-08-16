@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
         marginBottom: 5,
         fontWeight: 'bold',
         color: '#342D21',
-        textAlign: 'center', // Add textAlign center
+        textAlign: 'center', 
 
     },
     textInput: {
@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         backgroundColor: '#FBF5E0',
         borderBottomColor: '#CCCCCC',
-        width: '100%', // Ensure full width
+        width: '100%', 
     },
     picker: {
         height: 50,

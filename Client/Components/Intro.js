@@ -81,16 +81,16 @@ const Intro = () => {
     );
   }
 
-  const renderNextButton = () => null; // Hide the "Next" button text
-  const renderDoneButton = () => null; // Hide the "Done" button text
+  const renderNextButton = () => null; 
+  const renderDoneButton = () => null; 
 
   return (
     <AppIntroSlider
       activeDotStyle={{ width: 15, backgroundColor: '#977700' }}
       dotStyle={{ width: 15, backgroundColor: '#D9D9D9' }}
       renderItem={_renderItem}
-      renderNextButton={renderNextButton} // Render without text
-      renderDoneButton={renderDoneButton} // Render without text
+      renderNextButton={renderNextButton} 
+      renderDoneButton={renderDoneButton} 
       data={slides}
     />
   );

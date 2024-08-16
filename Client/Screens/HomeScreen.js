@@ -18,7 +18,7 @@ export default function HomeScreen({ navigation }) {
   const [hivesCount, setHivesCount] = useState(0);
   const [passwordModalVisible, setPasswordModalVisible] = useState(false);
   const isFocused = useIsFocused();
-  const [isLoading, setIsLoading] = useState(true); // State for loading indicator
+  const [isLoading, setIsLoading] = useState(true);  
 
   const [incompleteTasksCount, setIncompleteTasksCount] = useState(0);
 
@@ -65,7 +65,7 @@ export default function HomeScreen({ navigation }) {
         });
         const transactions = response.data.data;
 
-        // Calculate total, revenues, and expenses for the current and previous year
+       
         const currentYearTotals = {
           revenues: 0,
           expenses: 0,
@@ -96,7 +96,7 @@ export default function HomeScreen({ navigation }) {
           }
         });
 
-        // Calculate totals
+         
         const currentYearTotal = currentYearTotals.revenues - currentYearTotals.expenses;
         const previousYearTotal = previousYearTotals.revenues - previousYearTotals.expenses;
 
@@ -161,7 +161,7 @@ export default function HomeScreen({ navigation }) {
       } catch (error) {
         console.error('Error fetching hives count:', error);
       } finally {
-        setIsLoading(false); // After fetching data, set isLoading to false
+        setIsLoading(false);  
       }
     };
 
@@ -176,7 +176,7 @@ export default function HomeScreen({ navigation }) {
   const fetchTasks = async () => {
 
     if (!currentUser) {
-      // Handle case where currentUser is null
+    
       console.error('Current user is null');
       return;
     }
@@ -188,7 +188,7 @@ export default function HomeScreen({ navigation }) {
         }
       });
 
-      // Count incomplete tasks
+     
       const incompleteCount = response.data.data.filter(event => !event.completed).length;
       setIncompleteTasksCount(incompleteCount);
 
@@ -236,7 +236,7 @@ export default function HomeScreen({ navigation }) {
           const averageStrength = userHives.length ? totalStrength / userHives.length : 0;
         
 
-          // Set the average strength percentage
+         
           setStrengthPercentage(averageStrength);
         }
       } catch (error) {
@@ -320,7 +320,7 @@ export default function HomeScreen({ navigation }) {
       {isLoading ? (
         <View style={[styles.container, styles.loadingContainer]}>
           <LottieView
-            source={require('../assets/lottie/loading.json')} // Replace with your animation file path
+            source={require('../assets/lottie/loading.json')}  
             autoPlay
             loop
             style={{ width: 150, height: 150 }}

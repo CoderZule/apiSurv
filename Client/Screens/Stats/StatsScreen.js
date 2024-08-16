@@ -107,8 +107,7 @@ export default function StatsScreen({ navigation }) {
           }
         });
 
-        // Ensure the totals reflect income and expense difference
-        const currentYearTotal = currentYearTotals.revenues - currentYearTotals.expenses;
+         const currentYearTotal = currentYearTotals.revenues - currentYearTotals.expenses;
         const previousYearTotal = previousYearTotals.revenues - previousYearTotals.expenses;
 
         setChartDataFinances({
@@ -265,33 +264,33 @@ export default function StatsScreen({ navigation }) {
         const response = await axios.get('/hive/getHivesByApiary', {
           params: { apiaryId: selectedApiary },
         });
-        const hives = response.data.data; // Ensure you're accessing the right property
+        const hives = response.data.data;  
 
-        // Check if there are no hives
+     
         if (!Array.isArray(hives) || hives.length === 0) {
           setChartDataStrength({
             labels: [],
             datasets: [{ data: [] }],
           });
-          setSingleHiveMessage('Aucune ruche disponible dans ce rucher.'); // Add message for no hives
+          setSingleHiveMessage('Aucune ruche disponible dans ce rucher.'); 
           return;
         }
 
-        // Calculate colony strengths
+      
         const colonyStrengths = hives.map(hive => ({
           name: hive.Name,
-          strength: strengthMapping[hive.Colony.strength] || 0, // Map strength string to percentage
+          strength: strengthMapping[hive.Colony.strength] || 0,  
         }));
 
-        // Handle case when there is only one hive
+     
         if (colonyStrengths.length === 1) {
-          const singleHive = colonyStrengths[0]; // Get the single hive's data
+          const singleHive = colonyStrengths[0];  
           setSingleHiveMessage(`Vous n'avez qu'une seule ruche avec une force de ${singleHive.strength}%`);
         } else {
-          // Get top 3 for multiple hives
+         
           const topColonyStrengths = colonyStrengths
-            .sort((a, b) => b.strength - a.strength) // Sort descending
-            .slice(0, 3); // Get top 3
+            .sort((a, b) => b.strength - a.strength) 
+            .slice(0, 3);  
 
           setChartDataStrength({
             labels: topColonyStrengths.map(colony => colony.name),
@@ -299,7 +298,7 @@ export default function StatsScreen({ navigation }) {
               data: topColonyStrengths.map(colony => colony.strength),
             }]
           });
-          setSingleHiveMessage(''); // Clear message when there are multiple hives
+          setSingleHiveMessage('');  
         }
       } catch (error) {
         console.error('Error fetching hives:', error);
@@ -436,7 +435,7 @@ export default function StatsScreen({ navigation }) {
                     selectedValue={selectedApiary}
                     onValueChange={(itemValue) => {
                       setSelectedApiary(itemValue);
-                      setSingleHiveMessage(''); // Clear the message when a new apiary is selected
+                      setSingleHiveMessage('');  
                       setChartDataStrength({
                         labels: [],
                         datasets: [{ data: [] }],
@@ -672,15 +671,15 @@ const styles = StyleSheet.create({
   },
   pickerContainer: {
     marginTop: 15,
-    flexDirection: 'row', // Set direction to row for inline display
-    alignItems: 'center', // Center items vertically
+    flexDirection: 'row',  
+    alignItems: 'center',  
   },
   pickerTitle: {
     fontSize: 16,
     marginTop: 15,
     fontWeight: 'bold',
     marginBottom: 10,
-    marginRight: 10, // Add some space between title and picker
+    marginRight: 10,  
     textAlign: 'center',
   },
   pickerSelect: {

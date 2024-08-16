@@ -10,7 +10,6 @@ import {
   Alert, Linking
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 import axios from '../../axiosConfig'
@@ -32,7 +31,7 @@ export default function LoginScreen() {
       const response = await axios.post('/user/login', {
         Email: form.email,
         Password: form.password,
-        platform: 'mobile', // Indicate that this request is from the mobile app
+        platform: 'mobile',  
       });
   
       await AsyncStorage.multiSet([
@@ -191,8 +190,8 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     flexBasis: 0,
     backgroundColor: '#fff',
-    borderTopLeftRadius: 50,  // Top border radius for the form
-    borderTopRightRadius: 50,  // Top border radius for the form
+    borderTopLeftRadius: 50,   
+    borderTopRightRadius: 50,  
     paddingVertical: 45,
   },
 

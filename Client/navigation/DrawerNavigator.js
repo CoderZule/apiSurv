@@ -21,8 +21,8 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 const Drawer = createDrawerNavigator()
 
 export default function DrawerNavigator() {
-    const [initialRoute, setInitialRoute] = useState(''); // Default route
-    const [loading, setLoading] = useState(true); // Loading state
+    const [initialRoute, setInitialRoute] = useState('');
+    const [loading, setLoading] = useState(true); 
 
     useEffect(() => {
         const getUserRole = async () => {
@@ -32,13 +32,13 @@ export default function DrawerNavigator() {
                 setInitialRoute(user.Role === 'Niveau Stratégique' ? 'HomeNiveauStrat' : 'Home');
                 console.log(user.Role);
             }
-            setLoading(false); // Set loading to false after fetching the user role
+            setLoading(false); 
         };
 
         getUserRole();
     }, []);
 
-    // Show a loading indicator while fetching the user role
+   
     if (loading) {
         return (
             <View style={[styles.container, styles.loadingContainer]}>
@@ -53,7 +53,7 @@ export default function DrawerNavigator() {
 
     return (
         <Drawer.Navigator
-            initialRouteName={initialRoute} // This will now have the correct value
+            initialRouteName={initialRoute}  
             screenOptions={{
                 activeTintColor: 'white',
                 headerShown: false,

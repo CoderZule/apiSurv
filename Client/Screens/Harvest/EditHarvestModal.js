@@ -16,14 +16,13 @@ const EditHarvestModal = ({ visible, onSave, onCancel, formData, onInputChange, 
     const currentDate = selectedDate || date;
     setShowDatePicker(Platform.OS === 'ios'); // On iOS, showDatePicker remains true
     setDate(currentDate);
-    onInputChange('Date', currentDate); // Update form data
+    onInputChange('Date', currentDate);  
   };
 
   useEffect(() => {
-    // Update date when formData changes (in case of external changes)
-    setDate(new Date(formData.Date));
+     setDate(new Date(formData.Date));
 
-    // Filter hives based on selected apiary
+     
     if (formData.Apiary) {
       const filteredHives = hives.filter(hive => hive.Apiary.Name.toString() === formData.Apiary.toString());
       setFilteredHives(filteredHives);
@@ -34,8 +33,7 @@ const EditHarvestModal = ({ visible, onSave, onCancel, formData, onInputChange, 
 
   const handleSave = async () => {
     if (!formData.Quantity || !formData.QualityTestResults) {
-      // Show error alert for empty fields
-      return Alert.alert('Erreur', 'Veuillez remplir tous les champs');
+       return Alert.alert('Erreur', 'Veuillez remplir tous les champs');
     }
 
     try {
@@ -43,13 +41,13 @@ const EditHarvestModal = ({ visible, onSave, onCancel, formData, onInputChange, 
 
       if (response.status === 200) {
         showAlert('Modification de la récolte réussie', 'La récolte a été mise à jour avec succès');
-        onSave(); // Close the modal 
+        onSave();   
       } else {
         console.error('Failed to update harvest data. Unexpected response:', response);
       }
     } catch (error) {
       console.error('Failed to update harvest data. Error:', error.message);
-      // Handle network error or request failure
+   
     }
   };
 
@@ -204,8 +202,7 @@ const EditHarvestModal = ({ visible, onSave, onCancel, formData, onInputChange, 
                 onChangeText={(text) => onInputChange('QualityTestResults', text)}
               />
 
-
-              {/* Save and Cancel buttons */}
+ 
               <View style={styles.buttonContainer}>
                 <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={onCancel}>
                   <Text style={styles.buttonText}>Annuler</Text>
@@ -227,14 +224,14 @@ const EditHarvestModal = ({ visible, onSave, onCancel, formData, onInputChange, 
 const styles = StyleSheet.create({
   modalBackground: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent dark background
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',  
     justifyContent: 'center',
     alignItems: 'center',
 
   },
   modalContainer: {
     width: '90%',
-    maxHeight: '80%', // Adjusted to fit within modal
+    maxHeight: '80%',  
     padding: 20,
     borderRadius: 10,
     backgroundColor: '#FFFFFF',
@@ -258,7 +255,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     fontWeight: 'bold',
     color: '#342D21',
-    textAlign: 'center', // Add textAlign center
+    textAlign: 'center',  
   },
 
   input: {
@@ -295,7 +292,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     backgroundColor: '#FBF5E0',
     borderBottomColor: '#CCCCCC',
-    width: '100%', // Ensure full width
+    width: '100%',  
   },
   picker: {
     height: 50,
@@ -310,7 +307,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: '100%', // Ensure full width
+    width: '100%',  
   },
   datePickerText: {
     color: '#333333',

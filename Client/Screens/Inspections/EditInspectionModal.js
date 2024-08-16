@@ -53,7 +53,7 @@ const EditInspectionModal = ({
     handleModalInputChange,
     navigation
 }) => {
-    // Function to toggle date picker visibility
+
     const [showPickerFrom, setShowPickerFrom] = useState(false);
     const [showPickerTo, setShowPickerTo] = useState(false);
 
@@ -550,7 +550,7 @@ const EditInspectionModal = ({
                                 />
                             </View>
                         </View>
-                        {/* End of Brood Details */}
+
 
                         {/* Colony section */}
                         <View style={styles.fieldset}>
@@ -724,7 +724,7 @@ const EditInspectionModal = ({
                             </View>
                         </View>)}
 
-                        {/* End of Treatment Details */}
+
 
                         {/* Honey and Pollen stores Details */}
                         <View style={styles.fieldset}>
@@ -760,7 +760,7 @@ const EditInspectionModal = ({
                                 </Picker>
                             </View>
                         </View>
-                        {/* End of Honey and Pollen stores Details */}
+
 
 
                         {/* Actions Taken */}
@@ -792,9 +792,8 @@ const EditInspectionModal = ({
                             </View>
                         </View>
 
-                        {/* End of Actions Taken */}
 
-
+                        {/* Note Details */}
                         <Text style={styles.fieldsetTitle}>Note</Text>
                         <View style={styles.modalRow}>
                             <TextInput
@@ -814,14 +813,14 @@ const EditInspectionModal = ({
                     <View style={styles.modalFooter}>
                         <TouchableHighlight
                             style={[styles.button, styles.closeButton]}
-                            underlayColor="#D1D1D1"  // Background color when button is pressed
+                            underlayColor="#D1D1D1"   
                             onPress={() => setModalVisible(false)}
                         >
                             <Text style={styles.buttonText}>Annuler</Text>
                         </TouchableHighlight>
                         <TouchableHighlight
                             style={[styles.button, styles.saveButton]}
-                            underlayColor="#FFCC02"  // Background color when button is pressed
+                            underlayColor="#FFCC02"  
                             onPress={handleSave}
                         >
                             <Text style={styles.buttonText}>Modifier</Text>
@@ -837,7 +836,7 @@ const EditInspectionModal = ({
 const styles = StyleSheet.create({
     modalOverlay: {
         flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent dark background
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',  
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -845,7 +844,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
         padding: 20,
-        marginTop: 25, // Padding top
+        marginTop: 25,  
         marginBottom: 20,
         borderRadius: 20
 
@@ -970,8 +969,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
         marginBottom: 10,
-        justifyContent: 'flex-start', // Align items horizontally starting from the left
-        alignItems: 'flex-start', // Align items vertically starting from the top
+        justifyContent: 'flex-start',  
+        alignItems: 'flex-start',  
     },
 
     option: {

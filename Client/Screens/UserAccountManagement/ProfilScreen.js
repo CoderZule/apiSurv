@@ -160,7 +160,7 @@ export default function ProfilScreen({ navigation }) {
       {isLoading ? (
         <View style={[styles.container, styles.loadingContainer]}>
           <LottieView
-            source={require('../../assets/lottie/loading.json')} // Replace with your animation file path
+            source={require('../../assets/lottie/loading.json')}  
             autoPlay
             loop
             style={{ width: 100, height: 100 }}

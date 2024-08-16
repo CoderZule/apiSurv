@@ -30,7 +30,7 @@ export default function ChangePasswordOnFirstLogin({ visible, onClose, userId })
             });
 
             if (response.data.success) {
-                // Update FirstTimeLogin to false
+               
                 const currentUserString = await AsyncStorage.getItem('currentUser');
                 if (currentUserString) {
                     const user = JSON.parse(currentUserString);

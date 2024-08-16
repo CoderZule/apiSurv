@@ -133,7 +133,7 @@ const AddHarvestModal = ({
                                     <Picker.Item label="Sélectionner..." value="" enabled={false} />
         {units
             .filter((unit) => {
-                // Replace with actual logic based on not associated units
+                
                 if (selectedProduct === 'Miel') {
                     return !['Millilitre (ml)'].includes(unit);
                 } else if (selectedProduct === 'Pollen') {
@@ -149,7 +149,7 @@ const AddHarvestModal = ({
                 } else if (selectedProduct === 'Venin d\'abeille') {
                     return !['Kilogramme (kg)', 'Litre (L)'].includes(unit);
                 } else {
-                    return true; // Allow all units by default
+                    return true;  
                 }
             })
             .map((unit) => (
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     },
     card: {
         width: '90%',
-        maxHeight: '80%', // Adjusted to fit within modal
+        maxHeight: '80%',  
         padding: 20,
         borderRadius: 10,
         backgroundColor: '#FFFFFF',
@@ -240,8 +240,8 @@ const styles = StyleSheet.create({
     },
     scrollViewContent: {
         flexGrow: 1,
-        justifyContent: 'flex-start', // Align items at the top
-        alignItems: 'center', // Center horizontally if needed
+        justifyContent: 'flex-start',  
+        alignItems: 'center',  
     },
     label: {
         fontSize: 16,
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         backgroundColor: '#FBF5E0',
         borderBottomColor: '#CCCCCC',
-        width: '100%', // Ensure full width
+        width: '100%',  
     },
     picker: {
         height: 50,
@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
     },
     buttonText: {
 
-        fontSize: 14, // Adjusted font size
+        fontSize: 14,  
         fontWeight: 'bold',
         color: '#373737',
     },

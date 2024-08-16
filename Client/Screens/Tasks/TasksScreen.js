@@ -48,15 +48,15 @@ const TaskScreen = ({ navigation }) => {
   const getPriorityColor = (itemValue) => {
     switch (itemValue) {
       case 'Faible':
-        return '#007bff'; // Blue color for 'Faible'
+        return '#007bff'; 
       case 'Élevée':
-        return '#dc3545'; // Red color for 'Élevée'
+        return '#dc3545';  
       case 'Normale':
-        return '#28a745'; // Green color for 'Normale'
+        return '#28a745';  
       case 'Critique':
         return '#ffc107';
       default:
-        return '#000000'; // Default color
+        return '#000000';  
     }
   };
 
@@ -81,7 +81,7 @@ const TaskScreen = ({ navigation }) => {
       setDescription(event.description);
       setStart(new Date(event.start));
       setEnd(new Date(event.end));
-      setCompleted(event.completed || false); // Add this line
+      setCompleted(event.completed || false);  
 
     } else {
       setSelectedEvent(null);
@@ -90,7 +90,7 @@ const TaskScreen = ({ navigation }) => {
       setDescription('');
       setStart(new Date());
       setEnd(new Date());
-      setCompleted(false); // Add this line
+      setCompleted(false);  
 
 
     }
@@ -124,7 +124,7 @@ const TaskScreen = ({ navigation }) => {
   const fetchTasks = async () => {
 
     if (!currentUser) {
-      // Handle case where currentUser is null
+     
       console.error('Current user is null');
       return;
     }
@@ -137,13 +137,13 @@ const TaskScreen = ({ navigation }) => {
       });
       const fetchedEvents = response.data.data.map(event => ({
         ...event,
-        start: event.start ? new Date(event.start) : new Date(), // Default to current date if start is undefined
-        end: event.end ? new Date(event.end) : new Date(),     // Default to current date if end is undefined
+        start: event.start ? new Date(event.start) : new Date(),  
+        end: event.end ? new Date(event.end) : new Date(),      
       }));
       setEvents(fetchedEvents);
     } catch (error) {
       console.error('Error fetching tasks:', error);
-      // Handle error
+    
     }
   };
 
@@ -160,7 +160,7 @@ const TaskScreen = ({ navigation }) => {
       if (!title || !priority || !description || !start || !end) {
         return Alert.alert('Erreur', 'Veuillez remplir tous les champs');
       } else {
-        // Ensure start and end are Date objects
+       
         const startDate = new Date(start);
         const endDate = new Date(end);
 
@@ -169,8 +169,8 @@ const TaskScreen = ({ navigation }) => {
           title,
           priority,
           description,
-          start: startDate.toISOString(), // Convert to ISO string
-          end: endDate.toISOString(), // Convert to ISO string
+          start: startDate.toISOString(),  
+          end: endDate.toISOString(),  
           user: currentUser._id
         });
 
@@ -193,7 +193,7 @@ const TaskScreen = ({ navigation }) => {
 
     } catch (error) {
       console.error('Erreur lors de la création de la tâche :', error);
-      // Handle error
+     
     }
   };
 
@@ -231,7 +231,7 @@ const TaskScreen = ({ navigation }) => {
           Alert.alert('Succès', 'Tâche a été mise à jour avec succès');
         } else {
           console.error('Failed to update task. Server responded with:', response.status);
-          // Handle error condition (show alert, log, etc.)
+          
         }
 
       }
@@ -239,7 +239,7 @@ const TaskScreen = ({ navigation }) => {
 
     } catch (error) {
       console.error('Error updating task:', error);
-      // Handle error
+   
     }
   };
 
@@ -269,12 +269,12 @@ const TaskScreen = ({ navigation }) => {
           closeModal();
         } else {
           console.error('Failed to delete task. Server responded with:', response.status);
-          // Handle error condition (show alert, log, etc.)
+        
         }
       }
     } catch (error) {
       console.error('Error deleting task:', error);
-      // Handle error (display message to user, log, etc.)
+    
     }
   };
 
@@ -522,7 +522,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     backgroundColor: '#FBF5E0',
     borderBottomColor: '#CCCCCC',
-    width: '100%', // Ensure full width
+    width: '100%',  
   },
   picker: {
     height: 50,

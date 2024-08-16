@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginBottom: 10,
-        flexWrap: 'wrap', // Allow text to wrap within the row
+        flexWrap: 'wrap',  
 
     },
 
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
     },
     value: {
         fontSize: 15,
-        maxWidth: '100%', // Adjust maximum width as needed
+        maxWidth: '100%', 
     },
 
     section: {
@@ -253,17 +253,17 @@ const styles = StyleSheet.create({
 
     buttonContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-between', // Adjust as needed for spacing
-        marginBottom: 20, // Optional: Add margin if desired
+        justifyContent: 'space-between', 
+        marginBottom: 20, 
     },
 
     badgeContainer: {
-        position: 'relative', // Ensure absolute positioning of badge is relative to this container
+        position: 'relative', 
     },
     iconsContainer: {
         flexDirection: 'row',
-        alignItems: 'center', // Align items horizontally
-        marginLeft: 'auto',   // Push icons to the right
+        alignItems: 'center', 
+        marginLeft: 'auto',   
     },
 
     badge: {

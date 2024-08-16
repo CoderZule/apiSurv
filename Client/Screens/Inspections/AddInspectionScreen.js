@@ -74,7 +74,7 @@ const AddInspectionScreen = ({ route }) => {
 
 
   const [inspector, setInspector] = useState('');
-  const [isLoading, setIsLoading] = useState(true); // State for loading indicator
+  const [isLoading, setIsLoading] = useState(true);  
 
 
 
@@ -201,15 +201,15 @@ const AddInspectionScreen = ({ route }) => {
     const quantity = selectedItem ? selectedItem.quantity : 0;
 
     const onPressHandler = () => {
-      handleChange(option.name, quantity); // Ensure quantity is passed
+      handleChange(option.name, quantity);  
     };
 
     const onQuantityChange = (text) => {
       const quantity = parseInt(text);
       if (isNaN(quantity) || quantity < 0) {
-        handleChange(option.name, 0); // Deselect if quantity is not a positive number
+        handleChange(option.name, 0);  
       } else {
-        handleChange(option.name, quantity); // Update quantity
+        handleChange(option.name, quantity);  
       }
     };
 
@@ -229,13 +229,13 @@ const AddInspectionScreen = ({ route }) => {
     setSelectedAjouts(prevState => {
       const index = prevState.findIndex(item => item.name === itemName);
       if (index !== -1) {
-        // Update existing item
+        
         const updatedState = prevState.map(item =>
           item.name === itemName ? { ...item, quantity } : item
         );
-        return updatedState.filter(item => item.quantity > 0); // Remove if quantity is 0
+        return updatedState.filter(item => item.quantity > 0);  
       } else {
-        // Add new item
+        
         return [...prevState, { name: itemName, quantity }];
       }
     });
@@ -245,13 +245,13 @@ const AddInspectionScreen = ({ route }) => {
     setSelectedEnlevements(prevState => {
       const index = prevState.findIndex(item => item.name === itemName);
       if (index !== -1) {
-        // Update existing item
+      
         const updatedState = prevState.map(item =>
           item.name === itemName ? { ...item, quantity } : item
         );
-        return updatedState.filter(item => item.quantity > 0); // Remove if quantity is 0
+        return updatedState.filter(item => item.quantity > 0); 
       } else {
-        // Add new item
+      
         return [...prevState, { name: itemName, quantity }];
       }
     });
@@ -281,7 +281,7 @@ const AddInspectionScreen = ({ route }) => {
     if (showWeatherDetails) {
       getLocationAndFetchWeather();
     } else {
-      // Clear weather fields when showWeatherDetails is toggled off
+       
       setFormData(prevState => ({
         ...prevState,
         temperature: '',
@@ -300,7 +300,7 @@ const AddInspectionScreen = ({ route }) => {
       const { status } = await Location.requestForegroundPermissionsAsync();
 
       if (status !== 'granted') {
-        // Handle permission not granted
+      
         return;
       }
 
@@ -323,7 +323,7 @@ const AddInspectionScreen = ({ route }) => {
         humidity: data.main.humidity.toString(),
         pressure: data.main.pressure.toString(),
         windSpeed: data.wind.speed.toString(),
-        windDirection: data.wind.deg.toString(), // You may want to convert degrees to cardinal direction
+        windDirection: data.wind.deg.toString(),  
         condition: data.weather[0].main
       }));
     } catch (error) {
@@ -336,7 +336,7 @@ const AddInspectionScreen = ({ route }) => {
   const handleAddInspection = async () => {
     try {
 
-      // Filter out activities with a quantity of 0
+      
       const filteredAjouts = selectedAjouts.filter(activity => activity.quantity > 0);
       const filteredEnlevements = selectedEnlevements.filter(activity => activity.quantity > 0);
 
@@ -349,9 +349,9 @@ const AddInspectionScreen = ({ route }) => {
           lastName: inspector.Lastname,
           cin: inspector.Cin,
           phone: inspector.Phone
-        }, // the current logged in user(inspector)
+        },  
 
-        InspectionDateTime: date, //Now time
+        InspectionDateTime: date,  
 
         ApiaryAndHive: {
           apiaryName: hiveData.Apiary.Name,
@@ -464,7 +464,6 @@ const AddInspectionScreen = ({ route }) => {
         return Alert.alert('Erreur', 'Les informations concernant les équipements sont requises');
       }
 
-      // Check if one of Supplies fields is filled if yes the user have to fill them all
       const suppliesFieldsFilled = [formattedData.Supplies.product, formattedData.Supplies.ingredients.name, formattedData.Supplies.ingredients.quantity, formattedData.Supplies.ingredients.unit].some(field => field);
       const suppliesFieldsIncomplete = [formattedData.Supplies.product, formattedData.Supplies.ingredients.name, formattedData.Supplies.ingredients.quantity, formattedData.Supplies.ingredients.unit].some(field => !field);
 
@@ -481,7 +480,7 @@ const AddInspectionScreen = ({ route }) => {
         return Alert.alert('Erreur', 'Les informations de la colonie sont requises');
       }
 
-      // Check BeeHealth fields
+      
       const beeHealthFieldsFilled = [formattedData.BeeHealth.disease, formattedData.BeeHealth.treatment, formattedData.BeeHealth.duration.from, formattedData.BeeHealth.duration.to, formattedData.BeeHealth.quantity, formattedData.BeeHealth.doses].some(field => field);
       const beeHealthFieldsIncomplete = [formattedData.BeeHealth.disease, formattedData.BeeHealth.treatment, formattedData.BeeHealth.duration.from, formattedData.BeeHealth.duration.to, formattedData.BeeHealth.quantity, formattedData.BeeHealth.doses].some(field => !field);
 
@@ -548,7 +547,7 @@ const AddInspectionScreen = ({ route }) => {
       {isLoading ? (
         <View style={[styles.container, styles.loadingContainer]}>
           <LottieView
-            source={require('../../assets/lottie/loading.json')} // Replace with your animation file path
+            source={require('../../assets/lottie/loading.json')}  
             autoPlay
             loop
             style={{ width: 100, height: 100 }}
@@ -591,7 +590,7 @@ const AddInspectionScreen = ({ route }) => {
               </View>
 
             </View>
-            {/* End of Inspector Details*/}
+           
 
 
             {/* Hive and Apiary Details */}
@@ -615,7 +614,7 @@ const AddInspectionScreen = ({ route }) => {
                 />
               </View>
             </View>
-            {/* End of Hive and Apiary Details */}
+          
 
 
             {/* Data and Time Details */}
@@ -639,7 +638,7 @@ const AddInspectionScreen = ({ route }) => {
                 />
               </View>
             </View>
-            {/* End of Date and Time Details */}
+        
 
 
             {/* Queen Details*/}
@@ -757,8 +756,7 @@ const AddInspectionScreen = ({ route }) => {
                 </View>
               </View>)}
 
-            {/* End of Queen Details*/}
-
+           
 
             {/* Equipments Details  */}
             <View style={styles.fieldset}>
@@ -796,10 +794,7 @@ const AddInspectionScreen = ({ route }) => {
 
 
             </View>
-            {/* End of Equipments  Details*/}
-
-
-
+            
 
             {/* Supplies Details  */}
             <View style={styles.fieldset}>
@@ -868,7 +863,7 @@ const AddInspectionScreen = ({ route }) => {
                 />
               </View>
             </View>
-            {/* End of Supplies Details*/}
+          
 
 
             {/* Brood Details*/}
@@ -932,9 +927,7 @@ const AddInspectionScreen = ({ route }) => {
               </View>
 
             </View>
-            {/* End of Brood Details*/}
-
-
+          
 
             {/* Colony Details*/}
             <View style={styles.fieldset}>
@@ -997,9 +990,7 @@ const AddInspectionScreen = ({ route }) => {
               </View>
 
             </View>
-            {/* End of Colony Details*/}
-
-
+ 
 
             {/* Treatment Details  */}
             <View style={styles.fieldset}>
@@ -1123,9 +1114,7 @@ const AddInspectionScreen = ({ route }) => {
                 />
               </View>
             </View>
-            {/* End of Treatment Details*/}
-
-
+           
 
             {/* Honey and Pollen stores Details  */}
             <View style={styles.fieldset}>
@@ -1167,8 +1156,7 @@ const AddInspectionScreen = ({ route }) => {
 
             </View>
 
-            {/* End of Honey and Pollen stores Details */}
-
+          
 
             {/* Actions Taken */}
             <ScrollView>
@@ -1190,7 +1178,7 @@ const AddInspectionScreen = ({ route }) => {
                 </View>
               </View>
             </ScrollView>
-            {/* End of Actions Taken  */}
+           
 
             {/* Weather Details  */}
             <View>
@@ -1269,15 +1257,10 @@ const AddInspectionScreen = ({ route }) => {
                 </View>
               )}
             </View>
-            {/* End of Weather Details  */}
-
-
+         
 
             {/* Note Details  */}
             <Text style={styles.fieldsetTitle}>Note</Text>
-
-
-
             <View style={[styles.detailItem, styles.inline]}>
               <TextInput
                 style={[styles.textInput, styles.inlineInput, styles.textArea]}
@@ -1287,7 +1270,7 @@ const AddInspectionScreen = ({ route }) => {
                 value={formData.InspectionNote}
               />
             </View>
-            {/* End of Note*/}
+        
 
             <TouchableOpacity style={styles.addButton} onPress={handleAddInspection}>
               <Text style={styles.addButtonText}>Ajouter</Text>
@@ -1385,7 +1368,7 @@ const styles = StyleSheet.create({
     marginLeft: 15,
   },
   disabledTextInput: {
-    backgroundColor: '#f0f0f0', // Set the background color for disabled inputs
+    backgroundColor: '#f0f0f0',  
     fontSize: 16,
     fontWeight: '400',
     width: 150,
@@ -1398,9 +1381,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   textArea: {
-    // Add styles for textArea
-    height: 100, // Adjust the height according to your design
-    textAlignVertical: 'top', // Align text to the top
+ 
+    height: 100,  
+    textAlignVertical: 'top',  
   },
 
   picker: {
@@ -1410,8 +1393,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     marginBottom: 10,
-    justifyContent: 'flex-start', // Align items horizontally starting from the left
-    alignItems: 'flex-start', // Align items vertically starting from the top
+    justifyContent: 'flex-start',  
+    alignItems: 'flex-start',  
   },
   optionsContainer: {
     flexDirection: 'row',

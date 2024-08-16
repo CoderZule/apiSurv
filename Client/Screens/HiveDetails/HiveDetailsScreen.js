@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, ScrollView, View, Text, TouchableOpacity, Modal, ImageBackground, TouchableWithoutFeedback } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import _ from 'lodash'; // Import lodash for debounce
+import _ from 'lodash';  
 import { FontAwesome5 } from '@expo/vector-icons';
 
 const HiveDetailsScreen = ({ route, navigation }) => {
@@ -24,7 +24,7 @@ const HiveDetailsScreen = ({ route, navigation }) => {
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            <Text style={styles.title}>Ruche {hiveData.Name}{'\n'}Détails</Text>
+            <Text style={styles.title}>Détails{'\n'}Ruche {hiveData.Name}</Text>
             <ImageBackground imageStyle={{ borderRadius: 20 }}
                 source={require('../../assets/bg-hive.jpeg')} style={styles.detailsContainer}>
                 <View style={styles.buttonsRow}>

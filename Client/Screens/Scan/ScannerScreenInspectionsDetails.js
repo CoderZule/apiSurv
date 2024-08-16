@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { CameraView } from 'expo-camera';
 import axios from '../../axiosConfig';
@@ -15,26 +15,24 @@ export default function ScannerScreenInspectionsDetails({ navigation }) {
                 const response2 = await axios.get(`/inspection/getInspectionByHiveId/${data}`);
                 const InspectionsHistoryData = response2.data;
 
-                // Check if InspectionsHistoryData is an array and not empty
-                if (Array.isArray(InspectionsHistoryData) && InspectionsHistoryData.length > 0) {
+                 if (Array.isArray(InspectionsHistoryData) && InspectionsHistoryData.length > 0) {
                     navigation.navigate('HiveDetailsScreen', { hiveData, InspectionsHistoryData });
                 } else {
-                    // Handle case where no inspections are found
+ 
                     navigation.navigate('HiveDetailsScreen', { hiveData, InspectionsHistoryData: [] });
                 }
             } catch (error) {
                 if (error.response && error.response.status === 404) {
                       navigation.navigate('HiveDetailsScreen', { hiveData, InspectionsHistoryData: [] });
                 } else {
-                    // Handle other errors
+                   
                     console.error('Error fetching inspections:', error);
                 }
             }
         } catch (error) {
             if (error.response && error.response.status === 404) {
-                // Handle 404 error for hive
                 console.log('Hive not found');
-                // Optionally, navigate to an error screen or show a message
+               
             } else {
                 console.error('Error fetching hive data:', error);
             }

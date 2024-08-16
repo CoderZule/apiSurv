@@ -26,12 +26,12 @@ export default function GalleryScreen({ navigation }) {
   const [media, setMedia] = useState([]);
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedVideoUrl, setSelectedVideoUrl] = useState(null);
-  const [isVideoLoading, setVideoLoading] = useState(false); // Loading state for video
+  const [isVideoLoading, setVideoLoading] = useState(false);  
   const [isImageZoomVisible, setImageZoomVisible] = useState(false);
   const [selectedImageUrl, setSelectedImageUrl] = useState(null);
   const [isUploadModalVisible, setUploadModalVisible] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [isLoading, setIsLoading] = useState(true); // Add loading state
+  const [isLoading, setIsLoading] = useState(true);  
 
   useEffect(() => {
     LogBox.ignoreLogs(['Firestore (10.12.4): WebChannelConnection RPC \'Write\' stream', 'transport errored']);
@@ -58,12 +58,12 @@ export default function GalleryScreen({ navigation }) {
       console.error('Error fetching media:', error);
       Alert.alert('Erreur', 'Échec de la récupération du fichier.');
     }finally {
-      setIsLoading(false); // End loading
+      setIsLoading(false);  
     }
   };
   
   const uploadFile = async (file, type) => {
-    const currentUserId = await AsyncStorage.getItem('currentUser'); // Assuming you store the user ID
+    const currentUserId = await AsyncStorage.getItem('currentUser');  
     const fileRef = ref(storage, `files/${currentUserId}/${Date.now()}_${file.fileName || file.uri.split('/').pop()}`);
   
  
@@ -199,7 +199,7 @@ export default function GalleryScreen({ navigation }) {
         contentContainerStyle={styles.mediaContainer}
         showsVerticalScrollIndicator={false}
       >
-       {isLoading ? ( // Check if loading
+       {isLoading ? (  
             <View style={styles.loader}>
             <LottieView
               source={require('../../assets/lottie/loading.json')}
@@ -230,10 +230,10 @@ export default function GalleryScreen({ navigation }) {
                     useNativeControls
                     resizeMode="contain"
                     isLooping
-                    onLoadStart={() => setVideoLoading(true)} // Set loading state
-                    onLoad={() => setVideoLoading(false)} // Clear loading state when loaded
+                    onLoadStart={() => setVideoLoading(true)}  
+                    onLoad={() => setVideoLoading(false)}  
                     onError={() => {
-                      setVideoLoading(false); // Clear loading state on error
+                      setVideoLoading(false);  
                       Alert.alert('Erreur', 'Échec de la lecture de la vidéo.');
                     }}
                   />
@@ -372,14 +372,14 @@ export default function GalleryScreen({ navigation }) {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FBF5E0', // Main screen background
+    backgroundColor: '#FBF5E0',  
   },
   tabContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     margin: 10,
     borderRadius: 16,
-    backgroundColor: 'white', // Top tab background
+    backgroundColor: 'white',  
     paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
@@ -417,7 +417,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     paddingVertical: 10,
-    backgroundColor: 'white', // Bottom tab background
+    backgroundColor: 'white', 
     borderTopWidth: 1,
     borderTopColor: '#ccc',
   },
@@ -449,10 +449,10 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     position: 'absolute',
-    top: 20, // Position it near the top of the image
-    right: 20, // Position it on the right side of the image
+    top: 20,  
+    right: 20,  
     padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.7)', // Slightly transparent white
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',  
     borderRadius: 10,
   },
 

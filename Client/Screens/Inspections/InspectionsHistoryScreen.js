@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
     },
     inspectionContent: {
-        backgroundColor: 'rgba(255, 255, 255, 0.5)', // Semi-transparent white background
+        backgroundColor: 'rgba(255, 255, 255, 0.5)',  
         padding: 10,
         borderRadius: 5,
     },

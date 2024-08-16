@@ -15,7 +15,7 @@ export default function HomeNiveauStratScreen({ navigation }) {
     const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
-        // Only fetch top regions if a valid product is selected
+    
         if (selectedProduct) {
             fetchTopRegions(selectedProduct);
         } else {

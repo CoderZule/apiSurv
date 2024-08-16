@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     },
     card: {
         width: '90%',
-        maxHeight: '80%', // Adjusted to fit within modal
+        maxHeight: '80%', 
         padding: 20,
         borderRadius: 10,
         backgroundColor: '#FFFFFF',
@@ -178,8 +178,8 @@ const styles = StyleSheet.create({
     },
     scrollViewContent: {
         flexGrow: 1,
-        justifyContent: 'flex-start', // Align items at the top
-        alignItems: 'center', // Center horizontally if needed
+        justifyContent: 'flex-start', 
+        alignItems: 'center', 
     },
     tabContainer: {
         flexDirection: 'row',
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     activeTab: {
-        borderBottomColor: '#FEE502', // Highlight color for active tab
+        borderBottomColor: '#FEE502', 
     },
     tabText: {
         fontSize: 16,
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         backgroundColor: '#FBF5E0',
         borderBottomColor: '#CCCCCC',
-        width: '100%', // Ensure full width
+        width: '100%', 
     },
     picker: {
         height: 50,

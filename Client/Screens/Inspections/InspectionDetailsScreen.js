@@ -13,30 +13,30 @@ const InspectionDetailsScreen = ({ route, navigation }) => {
  
 
   const handleModalInputChange = (section, fieldOrValue, value) => {
-    // Create a copy of the current state to avoid mutation
+    
     const updatedFormData = { ...formData };
 
-    // Handle straightforward fields like Note, HoneyStores, etc.
+     
     if (section === 'Note' || section === 'HoneyStores' || section === 'PollenStores' || section === 'DronesSeen') {
       updatedFormData[section] = fieldOrValue;;
     } else if (section === 'Supplies' && fieldOrValue === 'ingredients') {
-      // Handle nested objects within Supplies.ingredients
+    
       updatedFormData.Supplies = {
         ...updatedFormData.Supplies,
         ingredients: {
           ...updatedFormData.Supplies.ingredients,
-          ...value // Assuming value is an object containing name, quantity, and unit
+          ...value  
         }
       };
     } else {
-      // Handle other sections or fields, including Adding and Removing
+ 
       updatedFormData[section] = {
         ...updatedFormData[section],
         [fieldOrValue]: value
       };
     }
 
-    // Update the state with the new formData
+     
     setFormData(updatedFormData);
   };
 
@@ -143,8 +143,7 @@ const InspectionDetailsScreen = ({ route, navigation }) => {
 
       if (response.status === 200) {
         console.log('Inspection supprimée avec succès');
-        // Show success alert
-        showAlertAndNavigate('Inspection supprimée avec succès');
+         showAlertAndNavigate('Inspection supprimée avec succès');
       } else {
         console.error('Failed to delete inspection:', response.data.message);
         showAlert('Échec de la suppression de l\'inspection');
@@ -162,7 +161,7 @@ const InspectionDetailsScreen = ({ route, navigation }) => {
       [
         {
           text: 'OK',
-          onPress: () => navigation.navigate('Home'), // Navigate to 'Home' screen
+          onPress: () => navigation.navigate('Home'),  
         },
       ],
       { cancelable: false }
@@ -547,17 +546,17 @@ const styles = StyleSheet.create({
 
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between', // Adjust as needed for spacing
-    marginBottom: 20, // Optional: Add margin if desired
+    justifyContent: 'space-between', 
+    marginBottom: 20,  
   },
 
   badgeContainer: {
-    position: 'relative', // Ensure absolute positioning of badge is relative to this container
+    position: 'relative',  
   },
   iconsContainer: {
     flexDirection: 'row',
-    alignItems: 'center', // Align items horizontally
-    marginLeft: 'auto',   // Push icons to the right
+    alignItems: 'center',  
+    marginLeft: 'auto',  
   },
 
   badge: {
