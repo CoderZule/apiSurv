@@ -251,7 +251,7 @@ const HiveDetailsScreen = ({ route, navigation }) => {
 
                                         <View style={styles.divider} />
                                         <View style={styles.section}>
-                                            <Text style={styles.header}>Reine (n'existe pas)</Text>
+                                            <Text style={styles.header}>الملكة (غير موجودة)</Text>
 
 
 
