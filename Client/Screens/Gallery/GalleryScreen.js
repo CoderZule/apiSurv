@@ -26,12 +26,12 @@ export default function GalleryScreen({ navigation }) {
   const [media, setMedia] = useState([]);
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedVideoUrl, setSelectedVideoUrl] = useState(null);
-  const [isVideoLoading, setVideoLoading] = useState(false);  
+  const [isVideoLoading, setVideoLoading] = useState(false);
   const [isImageZoomVisible, setImageZoomVisible] = useState(false);
   const [selectedImageUrl, setSelectedImageUrl] = useState(null);
   const [isUploadModalVisible, setUploadModalVisible] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);  
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     LogBox.ignoreLogs(['Firestore (10.12.4): WebChannelConnection RPC \'Write\' stream', 'transport errored']);
@@ -42,9 +42,9 @@ export default function GalleryScreen({ navigation }) {
     setIsLoading(true);
     try {
       const currentUserId = await AsyncStorage.getItem('currentUser');
-      const listRef = ref(storage, `files/${currentUserId}/`);  
+      const listRef = ref(storage, `files/${currentUserId}/`);
       const response = await listAll(listRef);
-  
+
       const fetchedMedia = await Promise.all(
         response.items.map(async (itemRef) => {
           const url = await getDownloadURL(itemRef);
@@ -52,21 +52,22 @@ export default function GalleryScreen({ navigation }) {
           return { url, type, ref: itemRef };
         })
       );
-  
+
       setMedia(fetchedMedia);
     } catch (error) {
       console.error('Error fetching media:', error);
-      Alert.alert('Erreur', 'Échec de la récupération du fichier.');
-    }finally {
-      setIsLoading(false);  
+      Alert.alert('خطأ', 'فشل في جلب الملف.');
+
+    } finally {
+      setIsLoading(false);
     }
   };
-  
+
   const uploadFile = async (file, type) => {
-    const currentUserId = await AsyncStorage.getItem('currentUser');  
+    const currentUserId = await AsyncStorage.getItem('currentUser');
     const fileRef = ref(storage, `files/${currentUserId}/${Date.now()}_${file.fileName || file.uri.split('/').pop()}`);
-  
- 
+
+
     try {
       const response = await fetch(file.uri);
       const blob = await response.blob();
@@ -82,21 +83,21 @@ export default function GalleryScreen({ navigation }) {
         },
         (error) => {
           console.error('Upload error:', error);
-          Alert.alert('Erreur', 'Échec du téléchargement du fichier.');
+          Alert.alert('خطأ', 'فشل في تحميل الملف.');
           setUploadModalVisible(false);
         },
         async () => {
           const url = await getDownloadURL(uploadTask.snapshot.ref);
           console.log('Download URL obtained:', url);
 
-          Alert.alert('Succès', 'Fichier téléchargé avec succès.');
+          Alert.alert('نجاح', 'تم تحميل الملف بنجاح.');
           fetchMedia();
           setUploadModalVisible(false);
         }
       );
     } catch (error) {
       console.error('Upload error:', error);
-      Alert.alert('Erreur', 'Échec du téléchargement du fichier.');
+      Alert.alert('خطأ', 'فشل في تحميل الملف.');
       setUploadModalVisible(false);
     }
   };
@@ -104,7 +105,7 @@ export default function GalleryScreen({ navigation }) {
   const handleImagePicker = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (permissionResult.granted === false) {
-      Alert.alert("Une autorisation d'accès à la caméra est requise!");
+      Alert.alert("تحتاج إلى إذن للوصول إلى المعرض!");
       return;
     }
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -112,9 +113,10 @@ export default function GalleryScreen({ navigation }) {
       allowsEditing: false,
       quality: 1,
     });
-     if (!result.canceled && result.assets) {
+    if (!result.canceled && result.assets) {
       if (selectedBottomTab !== 'pictures') {
-        Alert.alert('Erreur', 'Vous ne pouvez ajouter que des vidéos dans cette section.');
+        Alert.alert('خطأ', 'يمكنك إضافة الفيديوهات فقط في هذا القسم.');
+
         return;
       }
       uploadFile(result.assets[0], 'image');
@@ -124,11 +126,11 @@ export default function GalleryScreen({ navigation }) {
   const handleVideoPicker = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (permissionResult.granted === false) {
-      Alert.alert('Permission to access camera roll is required!');
+      Alert.alert('تحتاج إلى إذن للوصول إلى مكتبة الفيديوهات!');
       return;
     }
 
-     const result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Videos,
       allowsEditing: false,
       quality: 1,
@@ -136,7 +138,7 @@ export default function GalleryScreen({ navigation }) {
 
     if (!result.canceled && result.assets) {
       if (selectedBottomTab !== 'videos') {
-        Alert.alert('Erreur', 'Vous ne pouvez ajouter que des photos dans cette section.');
+        Alert.alert('خطأ', 'يمكنك إضافة الصور فقط في هذا القسم.');
         return;
       }
       uploadFile(result.assets[0], 'video');
@@ -146,26 +148,26 @@ export default function GalleryScreen({ navigation }) {
   const deleteMedia = async (mediaRef) => {
     try {
       await deleteObject(mediaRef);
-      Alert.alert('Succès', 'Fichier supprimé avec succès.');
+      Alert.alert('نجاح', 'تم حذف الملف بنجاح.');
       fetchMedia();
     } catch (error) {
       console.error('Delete error:', error);
-      Alert.alert('Erreur', 'Échec de la suppression du fichier.');
+      Alert.alert('خطأ', 'فشل في حذف الملف.');
     }
   };
 
   const confirmDelete = (mediaRef) => {
     Alert.alert(
-      'Confirmation de suppression',
-      'Etes-vous sûr de vouloir supprimer ce fichier?',
+      'تأكيد الحذف',
+      'هل أنت متأكد أنك تريد حذف هذا الملف؟',
       [
-        { text: 'Annuler', style: 'cancel' },
-        { text: 'Supprimer', onPress: () => deleteMedia(mediaRef) },
+        { text: 'إلغاء', style: 'cancel' },
+        { text: 'حذف', onPress: () => deleteMedia(mediaRef) },
       ],
       { cancelable: true }
     );
   };
-  
+
 
   const renderTopTabs = () => {
     return (
@@ -175,14 +177,14 @@ export default function GalleryScreen({ navigation }) {
           onPress={() => setSelectedBottomTab('pictures')}
         >
           <FontAwesome5 name="images" size={24} color={selectedBottomTab === 'pictures' ? '#FEE502' : 'black'} />
-          <Text style={{ color: selectedBottomTab === 'pictures' ? '#FEE502' : 'black' }}>Photos</Text>
+          <Text style={{ color: selectedBottomTab === 'pictures' ? '#FEE502' : 'black' }}>الصور</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.tab}
           onPress={() => setSelectedBottomTab('videos')}
         >
           <FontAwesome5 name="film" size={24} color={selectedBottomTab === 'videos' ? '#FEE502' : 'black'} />
-          <Text style={{ color: selectedBottomTab === 'videos' ? '#FEE502' : 'black' }}>Vidéos</Text>
+          <Text style={{ color: selectedBottomTab === 'videos' ? '#FEE502' : 'black' }}>الفيديوهات</Text>
         </TouchableOpacity>
       </View>
     );
@@ -199,8 +201,8 @@ export default function GalleryScreen({ navigation }) {
         contentContainerStyle={styles.mediaContainer}
         showsVerticalScrollIndicator={false}
       >
-       {isLoading ? (  
-            <View style={styles.loader}>
+        {isLoading ? (
+          <View style={styles.loader}>
             <LottieView
               source={require('../../assets/lottie/loading.json')}
               autoPlay
@@ -208,76 +210,76 @@ export default function GalleryScreen({ navigation }) {
               style={{ width: 50, height: 50 }}
             />
           </View>
-      ) :
-      filteredMedia.length > 0 ? (
-          filteredMedia.map((item, index) => (
-            <View key={index} style={styles.mediaItem}>
-              {item.type === 'image' ? (
-                <TouchableOpacity onPress={() => {
-                  setSelectedImageUrl(item.url);
-                  setImageZoomVisible(true);
-                }}>
-                  <Image source={{ uri: item.url }} style={styles.image} />
+        ) :
+          filteredMedia.length > 0 ? (
+            filteredMedia.map((item, index) => (
+              <View key={index} style={styles.mediaItem}>
+                {item.type === 'image' ? (
+                  <TouchableOpacity onPress={() => {
+                    setSelectedImageUrl(item.url);
+                    setImageZoomVisible(true);
+                  }}>
+                    <Image source={{ uri: item.url }} style={styles.image} />
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity onPress={() => {
+                    setSelectedVideoUrl(item.url);
+
+                  }}>
+                    <Video
+                      source={{ uri: item.url }}
+                      style={styles.video}
+                      useNativeControls
+                      resizeMode="contain"
+                      isLooping
+                      onLoadStart={() => setVideoLoading(true)}
+                      onLoad={() => setVideoLoading(false)}
+                      onError={() => {
+                        setVideoLoading(false);
+                        Alert.alert('خطأ', 'فشل في تشغيل الفيديو.');
+                      }}
+                    />
+                    {isVideoLoading && (
+                      <View style={styles.loadingOverlay}>
+                        <LottieView
+                          source={require('../../assets/lottie/loading.json')}
+                          autoPlay
+                          loop
+                          style={{ width: 50, height: 50 }}
+                        />
+                      </View>
+                    )}
+                  </TouchableOpacity>
+                )}
+                <TouchableOpacity
+                  style={styles.deleteIcon}
+                  onPress={() => confirmDelete(item.ref)}
+                >
+                  <FontAwesome5 name="trash" size={20} color="red" />
                 </TouchableOpacity>
-              ) : (
-                <TouchableOpacity onPress={() => {
-                  setSelectedVideoUrl(item.url);
-             
-                }}>
-                  <Video
-                    source={{ uri: item.url }}
-                    style={styles.video}
-                    useNativeControls
-                    resizeMode="contain"
-                    isLooping
-                    onLoadStart={() => setVideoLoading(true)}  
-                    onLoad={() => setVideoLoading(false)}  
-                    onError={() => {
-                      setVideoLoading(false);  
-                      Alert.alert('Erreur', 'Échec de la lecture de la vidéo.');
-                    }}
-                  />
-                  {isVideoLoading && (
-                    <View style={styles.loadingOverlay}>
-                      <LottieView
-                        source={require('../../assets/lottie/loading.json')}
-                        autoPlay
-                        loop
-                        style={{ width: 50, height: 50 }}
-                      />
-                    </View>
-                  )}
-                </TouchableOpacity>
-              )}
-              <TouchableOpacity
-                style={styles.deleteIcon}
-                onPress={() => confirmDelete(item.ref)}
-              >
-                <FontAwesome5 name="trash" size={20} color="red" />
-              </TouchableOpacity>
-            </View>
-          ))
-        )  : (
-          <Text>Aucune photo/vidéo disponible.</Text>
-        )}
+              </View>
+            ))
+          ) : (
+            <Text>لا توجد ملفات في هذا القسم.</Text>
+          )}
       </ScrollView>
     );
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <HomeHeader navigation={navigation} title={'Galerie'} />
+      <HomeHeader navigation={navigation} title={'معرض الصور'} />
       {renderTopTabs()}
       {selectedBottomTab === 'pictures' || selectedBottomTab === 'videos' ? renderMedia() : null}
 
       <View style={styles.bottomTabContainer}>
         <TouchableOpacity style={styles.bottomTab} onPress={() => handleImagePicker()}>
           <FontAwesome5 name="camera" size={24} color="black" />
-          <Text>Ajouter Photo</Text>
+          <Text>تحميل صورة</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.bottomTab} onPress={() => handleVideoPicker()}>
           <FontAwesome5 name="video" size={24} color="black" />
-          <Text>Ajouter Vidéo</Text>
+          <Text>تحميل فيديو</Text>
         </TouchableOpacity>
       </View>
 
@@ -292,19 +294,19 @@ export default function GalleryScreen({ navigation }) {
         }}
       >
         <View style={styles.modalContainer}>
-         
+
           <View style={styles.modalContent}>
-            
+
             <Video
               source={{ uri: selectedVideoUrl }}
-               useNativeControls
+              useNativeControls
               resizeMode="contain"
               isLooping
               onLoadStart={() => setVideoLoading(true)}
               onLoad={() => setVideoLoading(false)}
               onError={() => {
                 setVideoLoading(false);
-                Alert.alert('Erreur', 'Échec de la lecture de la vidéo.');
+                Alert.alert('خطأ', 'فشل في تشغيل الفيديو.');
               }}
             />
             {isVideoLoading && (
@@ -321,9 +323,10 @@ export default function GalleryScreen({ navigation }) {
         </View>
       </Modal>
 
-           {/* Image Zoom Modal */}
-          <Modal
+      {/* Image Zoom Modal */}
+      <Modal
         animationType="slide"
+        statusBarTranslucent={true}
         transparent={true}
         visible={isImageZoomVisible}
         onRequestClose={() => {
@@ -349,6 +352,7 @@ export default function GalleryScreen({ navigation }) {
 
       <Modal
         animationType="slide"
+        statusBarTranslucent={true}
         transparent={true}
         visible={isUploadModalVisible}
         onRequestClose={() => setUploadModalVisible(false)}
@@ -361,7 +365,7 @@ export default function GalleryScreen({ navigation }) {
               loop
               style={{ width: 150, height: 150 }}
             />
-            <Text>Téléchargement: {Math.round(uploadProgress)}%</Text>
+            <Text style={styles.uploadProgressText}>{`تحميل: ${Math.round(uploadProgress)}%`}</Text>
           </View>
         </View>
       </Modal>
@@ -372,14 +376,14 @@ export default function GalleryScreen({ navigation }) {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FBF5E0',  
+    backgroundColor: '#FBF5E0',
   },
   tabContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     margin: 10,
     borderRadius: 16,
-    backgroundColor: 'white',  
+    backgroundColor: 'white',
     paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
@@ -417,7 +421,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     paddingVertical: 10,
-    backgroundColor: 'white', 
+    backgroundColor: 'white',
     borderTopWidth: 1,
     borderTopColor: '#ccc',
   },
@@ -449,10 +453,10 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     position: 'absolute',
-    top: 20,  
-    right: 20,  
+    top: 20,
+    right: 20,
     padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',  
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
     borderRadius: 10,
   },
 
@@ -482,5 +486,5 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-},
+  },
 });

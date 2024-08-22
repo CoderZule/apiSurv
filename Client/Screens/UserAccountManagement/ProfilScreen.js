@@ -9,7 +9,7 @@ import {
   Alert,
   Modal,
   Pressable,
- 
+
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -49,11 +49,11 @@ export default function ProfilScreen({ navigation }) {
           setPhone(user.Phone);
           setEmail(user.Email);
         } else {
-          Alert.alert('Error', 'User data not found in AsyncStorage');
+          Alert.alert('خطأ', 'لم يتم العثور على بيانات المستخدم في AsyncStorage');
         }
       } catch (error) {
         console.error('Error fetching user data:', error);
-        Alert.alert('Error', 'Failed to fetch user data');
+        Alert.alert('خطأ', 'فشل في جلب بيانات المستخدم');
       } finally {
         setIsLoading(false);
       }
@@ -80,10 +80,10 @@ export default function ProfilScreen({ navigation }) {
 
       await AsyncStorage.setItem('currentUser', JSON.stringify(updatedUserData));
       setCurrentUser(updatedUserData);
-      Alert.alert('Succès', 'Les informations ont été mises à jour avec succès');
+      Alert.alert('نجاح', 'تم تحديث المعلومات بنجاح');
     } catch (error) {
       console.error('Erreur lors de la mise à jour des informations:', error);
-      Alert.alert('Error', 'Échec de la mise à jour des informations');
+      Alert.alert('خطأ', 'فشل في تحديث المعلومات');
     }
   };
 
@@ -98,17 +98,17 @@ export default function ProfilScreen({ navigation }) {
   const handlePasswordChange = async () => {
     try {
       if (!currentPasswordInput) {
-        setError('Veuillez saisir le mot de passe actuel.');
+        setError('يرجى إدخال كلمة المرور الحالية.');
         return;
       }
 
       if (!newPassword || !confirmPassword) {
-        setError('Veuillez saisir un nouveau mot de passe.');
+        setError('يرجى إدخال كلمة مرور جديدة.');
         return;
       }
 
       if (newPassword !== confirmPassword) {
-        setError('Les mots de passe ne correspondent pas.');
+        setError('كلمات المرور غير متطابقة.');
         return;
       }
 
@@ -124,18 +124,18 @@ export default function ProfilScreen({ navigation }) {
       );
 
       if (response.data.success) {
-        Alert.alert('Succès', 'Le mot de passe a été changé avec succès.');
+        Alert.alert('نجاح', 'تم تغيير كلمة المرور بنجاح.');
         setError('');
         setCurrentPasswordInput('');
         setConfirmPassword('');
         setNewPassword('');
         setModalVisible(false);
       } else {
-        setError(response.data.message || 'Failed to change password');
+        setError(response.data.message || 'فشل في تغيير كلمة المرور');
       }
     } catch (error) {
       if (error.response && error.response.status === 400) {
-        setError('Le mot de passe actuel est incorrect.');
+        setError('كلمة المرور الحالية غير صحيحة.');
       } else {
         console.error('Error changing password:', error);
       }
@@ -156,11 +156,11 @@ export default function ProfilScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <HomeHeader navigation={navigation} title={'Profil'} />
+      <HomeHeader navigation={navigation} title={'الملف الشخصي'} />
       {isLoading ? (
         <View style={[styles.container, styles.loadingContainer]}>
           <LottieView
-            source={require('../../assets/lottie/loading.json')}  
+            source={require('../../assets/lottie/loading.json')}
             autoPlay
             loop
             style={{ width: 100, height: 100 }}
@@ -170,48 +170,48 @@ export default function ProfilScreen({ navigation }) {
         <View style={styles.container}>
           <KeyboardAwareScrollView contentContainerStyle={styles.scrollContainer}>
             <Card style={styles.card}>
-              <Card.Title title="Informations de l'apiculteur" />
+
               <Card.Content>
+                <Text style={styles.cardTitle}>معلومات النحال</Text>
+
                 <View style={styles.input}>
-                  <Text style={styles.inputLabel}>Prénom</Text>
+                  <Text style={styles.inputLabel}>الاسم الأول</Text>
                   <View style={styles.inputContainer}>
-                    <FontAwesome5
-                      name="user"
-                      size={15}
-                      color="#977700"
-                      style={styles.inputIcon}
-                    />
+
                     <TextInput
                       style={styles.inputControl}
                       value={Firstname}
                       onChangeText={setFirstName}
-                      placeholder="Entrez votre prénom"
-                      placeholderTextColor="#6b7280"
                     />
-                  </View>
-                </View>
-
-                <View style={styles.input}>
-                  <Text style={styles.inputLabel}>Nom</Text>
-                  <View style={styles.inputContainer}>
                     <FontAwesome5
                       name="user"
                       size={15}
                       color="#977700"
                       style={styles.inputIcon}
                     />
+                  </View>
+                </View>
+
+                <View style={styles.input}>
+                  <Text style={styles.inputLabel}>الاسم الأخير</Text>
+                  <View style={styles.inputContainer}>
+
                     <TextInput
                       style={styles.inputControl}
                       value={Lastname}
                       onChangeText={setLastName}
-                      placeholder="Entrez votre nom"
-                      placeholderTextColor="#6b7280"
+                    />
+                    <FontAwesome5
+                      name="user"
+                      size={15}
+                      color="#977700"
+                      style={styles.inputIcon}
                     />
                   </View>
                 </View>
 
                 <View style={styles.input}>
-                  <Text style={styles.inputLabel}>Téléphone</Text>
+                  <Text style={styles.inputLabel}>الهاتف</Text>
                   <View style={styles.inputContainer}>
                     <FontAwesome5
                       name="phone"
@@ -220,23 +220,23 @@ export default function ProfilScreen({ navigation }) {
                       style={styles.inputIcon}
                     />
                     <TextInput
-                      style={styles.inputControl}
+                      style={styles.inputControlPhoneEM}
                       value={Phone}
                       onChangeText={setPhone}
-                      placeholder="Entrez votre numéro de téléphone"
-                      placeholderTextColor="#6b7280"
                       keyboardType="phone-pad"
                     />
+
                   </View>
                 </View>
               </Card.Content>
             </Card>
 
             <Card style={styles.card}>
-              <Card.Title title="Paramètres du compte" />
               <Card.Content>
+                <Text style={styles.cardTitle}>إعدادات الحساب</Text>
+
                 <View style={styles.input}>
-                  <Text style={styles.inputLabel}>Email</Text>
+                  <Text style={styles.inputLabel}>البريد الإلكتروني</Text>
                   <View style={styles.inputContainer}>
                     <FontAwesome5
                       name="envelope"
@@ -245,20 +245,20 @@ export default function ProfilScreen({ navigation }) {
                       style={styles.inputIcon}
                     />
                     <TextInput
-                      style={styles.inputControl}
+                      style={styles.inputControlPhoneEM}
                       value={Email}
                       onChangeText={setEmail}
-                      placeholder="Entrez votre Email"
-                      placeholderTextColor="#6b7280"
                       keyboardType="email-address"
                     />
+
+
                   </View>
                 </View>
 
                 <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.penIconContainer}>
                   <View style={styles.input}>
                     <Text style={styles.inputLabel}>
-                      Mot de passe{' '}
+                      كلمة المرور{' '}
                       <FontAwesome5
                         name="pen"
                         size={15}
@@ -274,7 +274,7 @@ export default function ProfilScreen({ navigation }) {
             <View style={styles.formAction}>
               <TouchableOpacity onPress={handleUpdateProfile}>
                 <View style={styles.btn}>
-                  <Text style={styles.btnText}>Mettre à jour</Text>
+                  <Text style={styles.btnText}>تحديث</Text>
                 </View>
               </TouchableOpacity>
             </View>
@@ -290,87 +290,99 @@ export default function ProfilScreen({ navigation }) {
         onRequestClose={handleModalClose}
       >
         <View style={styles.modalBackground}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalTitle}>Changer le mot de passe</Text>
-            {error ? <Text style={styles.errorText}>{error}</Text> : null}
+ 
+            <View style={styles.modalView}>
+              <Text style={styles.modalTitle}>تغيير كلمة المرور</Text>
+              {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
-            <View style={styles.modalInput}>
-              <TextInput
-                style={styles.inputControl}
-                onChangeText={setCurrentPasswordInput}
-                placeholder="Mot de passe actuel"
-                secureTextEntry={hideCurrentPassword}
-                placeholderTextColor="#6b7280"
-              />
-              <TouchableOpacity
-                style={styles.visibilityIcon}
-                onPress={toggleCurrentPasswordVisibility}
-              >
-                <FontAwesome5
-                  name={hideCurrentPassword ? 'eye-slash' : 'eye'}
-                  size={20}
-                  color="#6b7280"
+              <View style={styles.modalInput}>
+                <TouchableOpacity
+                  style={styles.visibilityIcon}
+                  onPress={toggleCurrentPasswordVisibility}
+                >
+                  <FontAwesome5
+                    name={hideCurrentPassword ? 'eye-slash' : 'eye'}
+                    size={20}
+                    color="#6b7280"
+                  />
+                </TouchableOpacity>
+                <TextInput
+                  style={styles.inputControl}
+                  onChangeText={setCurrentPasswordInput}
+                  placeholder="كلمة المرور الحالية"
+                  secureTextEntry={hideCurrentPassword}
+                  placeholderTextColor="#6b7280"
                 />
-              </TouchableOpacity>
-            </View>
+                <FontAwesome5 name="lock" size={22} color="#977700" style={styles.inputIcon} />
 
-            <View style={styles.modalInput}>
-              <TextInput
-                style={styles.inputControl}
-                value={newPassword}
-                onChangeText={setNewPassword}
-                placeholder="Nouveau mot de passe"
-                secureTextEntry={hideNewPassword}
-                placeholderTextColor="#6b7280"
-              />
-              <TouchableOpacity
-                style={styles.visibilityIcon}
-                onPress={toggleNewPasswordVisibility}
-              >
-                <FontAwesome5
-                  name={hideNewPassword ? 'eye-slash' : 'eye'}
-                  size={20}
-                  color="#6b7280"
+
+              </View>
+
+              <View style={styles.modalInput}>
+                <TouchableOpacity
+                  style={styles.visibilityIcon}
+                  onPress={toggleNewPasswordVisibility}
+                >
+                  <FontAwesome5
+                    name={hideNewPassword ? 'eye-slash' : 'eye'}
+                    size={20}
+                    color="#6b7280"
+                  />
+                </TouchableOpacity>
+
+                <TextInput
+                  style={styles.inputControl}
+                  value={newPassword}
+                  onChangeText={setNewPassword}
+                  placeholder="كلمة المرور الجديدة"
+                  secureTextEntry={hideNewPassword}
+                  placeholderTextColor="#6b7280"
                 />
-              </TouchableOpacity>
-            </View>
+                <FontAwesome5 name="lock" size={22} color="#977700" style={styles.inputIcon} />
 
-            <View style={styles.modalInput}>
-              <TextInput
-                style={styles.inputControl}
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
-                placeholder="Confirmer le mot de passe"
-                secureTextEntry={hideConfirmPassword}
-                placeholderTextColor="#6b7280"
-              />
-              <TouchableOpacity
-                style={styles.visibilityIcon}
-                onPress={toggleConfirmPasswordVisibility}
-              >
-                <FontAwesome5
-                  name={hideConfirmPassword ? 'eye-slash' : 'eye'}
-                  size={20}
-                  color="#6b7280"
+              </View>
+
+              <View style={styles.modalInput}>
+                <TouchableOpacity
+                  style={styles.visibilityIcon}
+                  onPress={toggleConfirmPasswordVisibility}
+                >
+                  <FontAwesome5
+                    name={hideConfirmPassword ? 'eye-slash' : 'eye'}
+                    size={20}
+                    color="#6b7280"
+                  />
+                </TouchableOpacity>
+
+                <TextInput
+                  style={styles.inputControl}
+                  value={confirmPassword}
+                  onChangeText={setConfirmPassword}
+                  placeholder="تأكيد كلمة المرور"
+                  secureTextEntry={hideConfirmPassword}
+                  placeholderTextColor="#6b7280"
                 />
-              </TouchableOpacity>
-            </View>
+                <FontAwesome5 name="lock" size={22} color="#977700" style={styles.inputIcon} />
 
-            <View style={styles.modalButtons}>
-              <Pressable
-                style={[styles.modalButton, styles.buttonClose]}
-                onPress={handleModalClose}
-              >
-                <Text style={styles.textStyle}>Annuler</Text>
-              </Pressable>
-              <Pressable
-                style={[styles.modalButton, styles.buttonSave]}
-                onPress={handlePasswordChange}
-              >
-                <Text style={styles.textStyle}>Sauvegarder</Text>
-              </Pressable>
+
+              </View>
+
+              <View style={styles.modalButtons}>
+                <Pressable
+                  style={[styles.modalButton, styles.buttonClose]}
+                  onPress={handleModalClose}
+                >
+                  <Text style={styles.textStyle}>إلغاء</Text>
+                </Pressable>
+                <Pressable
+                  style={[styles.modalButton, styles.buttonSave]}
+                  onPress={handlePasswordChange}
+                >
+                  <Text style={styles.textStyle}>تغيير كلمة المرور</Text>
+                </Pressable>
+              </View>
             </View>
-          </View>
+          
         </View>
       </Modal>
     </SafeAreaView>
@@ -385,6 +397,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    direction: 'rtl'
   },
   loadingContainer: {
     justifyContent: 'center',
@@ -398,18 +411,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   cardTitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 8,
-    color: '#FBF5E0',
-
+    marginBottom: 15,
+    color: '#977700',
+    textAlign: 'right',
   },
   input: {
     marginBottom: 16,
 
   },
   inputLabel: {
-    fontSize: 12,
+    fontSize: 14,
     color: '#333',
     marginBottom: 4,
   },
@@ -425,12 +438,22 @@ const styles = StyleSheet.create({
 
   },
   inputIcon: {
-    marginRight: 8,
+    marginLeft: 8,
   },
   inputControl: {
     flex: 1,
     fontSize: 16,
     color: '#333',
+    textAlign: 'right',
+  },
+
+
+  inputControlPhoneEM: {
+    flex: 1,
+    fontSize: 16,
+    color: '#333',
+    textAlign: 'left',
+    marginLeft: 8,
   },
   formAction: {
     marginTop: 24,
@@ -484,9 +507,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9f9f9',
     marginBottom: 16,
     width: '100%',
+    direction: 'rtl'
   },
   visibilityIcon: {
     marginLeft: 8,
+
   },
   modalButtons: {
     flexDirection: 'row',

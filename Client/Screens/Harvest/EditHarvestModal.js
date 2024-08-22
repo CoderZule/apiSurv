@@ -33,14 +33,14 @@ const EditHarvestModal = ({ visible, onSave, onCancel, formData, onInputChange, 
 
   const handleSave = async () => {
     if (!formData.Quantity || !formData.QualityTestResults) {
-       return Alert.alert('Erreur', 'Veuillez remplir tous les champs');
+      return Alert.alert('خطأ', 'يرجى ملء جميع الحقول');
     }
 
     try {
       const response = await axios.post('/harvest/editHarvest', formData);
 
       if (response.status === 200) {
-        showAlert('Modification de la récolte réussie', 'La récolte a été mise à jour avec succès');
+        showAlert('تعديل الحصاد ناجح', 'تم تحديث الحصاد بنجاح');
         onSave();   
       } else {
         console.error('Failed to update harvest data. Unexpected response:', response);
@@ -53,12 +53,13 @@ const EditHarvestModal = ({ visible, onSave, onCancel, formData, onInputChange, 
 
   const showAlert = (title, message) => {
     Alert.alert(
-      'Succès',
+      'نجاح',
       message,
-      [{ text: 'OK' }],
+      [{ text: 'موافق' }],
       { cancelable: false }
     );
   };
+
 
   return (
     <Modal
@@ -77,10 +78,10 @@ const EditHarvestModal = ({ visible, onSave, onCancel, formData, onInputChange, 
           <View style={styles.modalContainer}>
             <ScrollView>
 
-              <Text style={styles.modalTitle}>Modifier la récolte</Text>
+              <Text style={styles.modalTitle}>تعديل الحصاد</Text>
 
               {/* Apiary*/}
-              <Text style={styles.label}>Rucher</Text>
+              <Text style={styles.label}>المنحل</Text>
               <View style={styles.inputContainer}>
                 <Picker
                   selectedValue={formData.Apiary}
@@ -94,14 +95,14 @@ const EditHarvestModal = ({ visible, onSave, onCancel, formData, onInputChange, 
               </View>
 
               {/* Hive */}
-              <Text style={styles.label}>Ruche</Text>
+              <Text style={styles.label}>الخلية</Text>
               <View style={styles.inputContainer}>
                 <Picker
                   selectedValue={formData.Hive}
                   onValueChange={(itemValue) => onInputChange('Hive', itemValue)}
                   style={styles.picker}
                 >
-                  <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                  <Picker.Item label="اختر..." value="" enabled={false} />
 
                   {filteredHives.map((hive) => (
                     <Picker.Item label={hive.Name} value={hive.Name} key={hive._id} />
@@ -111,7 +112,7 @@ const EditHarvestModal = ({ visible, onSave, onCancel, formData, onInputChange, 
               </View>
 
               {/* Product */}
-              <Text style={styles.label}>Produit</Text>
+              <Text style={styles.label}>المنتج</Text>
               <View style={styles.inputContainer}>
                 <Picker
                   selectedValue={formData.Product}
@@ -125,7 +126,7 @@ const EditHarvestModal = ({ visible, onSave, onCancel, formData, onInputChange, 
               </View>
 
               {/* Date */}
-              <Text style={styles.label}>Date</Text>
+              <Text style={styles.label}>التاريخ</Text>
               <View style={styles.datePickerContainer}>
                 <TouchableOpacity onPress={() => setShowDatePicker(true)}>
                   <Text style={styles.datePickerText}>{date.toLocaleDateString()}</Text>
@@ -137,12 +138,13 @@ const EditHarvestModal = ({ visible, onSave, onCancel, formData, onInputChange, 
                     display="default"
                     onChange={handleDateChange}
                     maximumDate={new Date()}
+                     
                   />
                 )}
               </View>
 
               {/* Quantity */}
-              <Text style={styles.label}>Quantité</Text>
+              <Text style={styles.label}>الكمية</Text>
               <TextInput
                 style={styles.input}
                 value={formData.Quantity.toString()}
@@ -151,7 +153,7 @@ const EditHarvestModal = ({ visible, onSave, onCancel, formData, onInputChange, 
               />
 
               {/* Unit */}
-              <Text style={styles.label}>Unité</Text>
+              <Text style={styles.label}>الوحدة</Text>
               <View style={styles.inputContainer}>
 
                 <Picker
@@ -166,7 +168,7 @@ const EditHarvestModal = ({ visible, onSave, onCancel, formData, onInputChange, 
               </View>
 
               {/* Season */}
-              <Text style={styles.label}>Saison</Text>
+              <Text style={styles.label}>الموسم</Text>
               <View style={styles.inputContainer}>
 
                 <Picker
@@ -181,7 +183,7 @@ const EditHarvestModal = ({ visible, onSave, onCancel, formData, onInputChange, 
               </View>
 
               {/* Harvest Methods */}
-              <Text style={styles.label}>Méthode de récolte</Text>
+              <Text style={styles.label}>طريقة الحصاد</Text>
               <View style={styles.inputContainer}>
                 <Picker
                   selectedValue={formData.HarvestMethods}
@@ -195,7 +197,7 @@ const EditHarvestModal = ({ visible, onSave, onCancel, formData, onInputChange, 
               </View>
 
               {/* Quality Test Results */}
-              <Text style={styles.label}>Résultats des tests de qualité</Text>
+              <Text style={styles.label}>نتائج اختبار الجودة</Text>
               <TextInput
                 style={styles.input}
                 value={formData.QualityTestResults}
@@ -205,10 +207,10 @@ const EditHarvestModal = ({ visible, onSave, onCancel, formData, onInputChange, 
  
               <View style={styles.buttonContainer}>
                 <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={onCancel}>
-                  <Text style={styles.buttonText}>Annuler</Text>
+                  <Text style={styles.buttonText}>إلغاء</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.button, styles.saveButton]} onPress={handleSave}>
-                  <Text style={styles.buttonText}>Modifier</Text>
+                  <Text style={styles.buttonText}>تعديل</Text>
                 </TouchableOpacity>
 
               </View>
@@ -265,6 +267,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginBottom: 10,
+    textAlign:'right'
   },
   buttonContainer: {
     flexDirection: 'row',

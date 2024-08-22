@@ -9,26 +9,27 @@ import axios from '../../axiosConfig';
 const EditTransactionModal = ({ visible, onSave, onCancel, formData, onInputChange }) => {
     const [date, setDate] = useState(new Date());
     const [showDatePicker, setShowDatePicker] = useState(false);
-    const [transactionType, setTransactionType] = useState(formData.OperationType || 'Revenus');
+    const [transactionType, setTransactionType] = useState(formData.OperationType || 'الدخل');
 
 
     const handleDateChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
         setShowDatePicker(Platform.OS === 'ios');
         setDate(currentDate);
-        onInputChange('Date', currentDate);
+         onInputChange('TransactionDate', currentDate);
+
     };
 
     const handleSave = async () => {
         if (!formData.Description || !formData.Amount || !formData.Category || !formData.TransactionDate) {
-            return Alert.alert('Erreur', 'Veuillez remplir tous les champs');
+            return Alert.alert('خطأ', 'يرجى ملء جميع الحقول');
         }
 
         try {
             const response = await axios.post('/transaction/editTransaction', formData);
 
             if (response.status === 200) {
-                showAlert('Modification de la transaction réussie', 'La transaction a été mise à jour avec succès');
+                showAlert('تعديل المعاملة ناجح', 'تم تعديل المعاملة بنجاح');
                 onSave();
             } else {
                 console.error('Failed to update transaction data. Unexpected response:', response);
@@ -40,14 +41,14 @@ const EditTransactionModal = ({ visible, onSave, onCancel, formData, onInputChan
 
     const showAlert = (title, message) => {
         Alert.alert(
-            'Succès',
+            'نجاح',
             message,
-            [{ text: 'OK' }],
+            [{ text: 'موافق' }],
             { cancelable: false }
         );
     };
 
-    const categories = transactionType === 'Revenus' ? IncomeCategory : ExpenseCategory;
+    const categories = transactionType === 'الدخل' ? IncomeCategory : ExpenseCategory;
 
     return (
         <Modal
@@ -64,40 +65,40 @@ const EditTransactionModal = ({ visible, onSave, onCancel, formData, onInputChan
                 <View style={styles.modalBackground}>
                     <View style={styles.modalContainer}>
                         <ScrollView contentContainerStyle={styles.scrollViewContent}>
-                            <Text style={styles.modalTitle}>Modifier la transaction</Text>
+                            <Text style={styles.modalTitle}>تعديل المعاملة</Text>
 
 
-                            <Text style={styles.label}>Type d'opération</Text>
+                            <Text style={styles.label}>نوع العملية</Text>
 
                             <View style={styles.tabContainer}>
                                 <TouchableOpacity
-                                    style={[styles.tabButton, transactionType === 'Revenus' && styles.activeTab]}
+                                    style={[styles.tabButton, transactionType === 'الدخل' && styles.activeTab]}
                                     onPress={() => {
-                                        setTransactionType('Revenus');
-                                        onInputChange('OperationType', 'Revenus');
+                                        setTransactionType('الدخل');
+                                        onInputChange('OperationType', 'الدخل');
                                     }}
                                 >
-                                    <Text style={styles.tabText}>Revenus</Text>
+                                    <Text style={styles.tabText}>الدخل</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity
-                                    style={[styles.tabButton, transactionType === 'Dépenses' && styles.activeTab]}
+                                    style={[styles.tabButton, transactionType === 'النفقات' && styles.activeTab]}
                                     onPress={() => {
-                                        setTransactionType('Dépenses');
-                                        onInputChange('OperationType', 'Dépenses');
+                                        setTransactionType('النفقات');
+                                        onInputChange('OperationType', 'النفقات');
                                     }}
                                 >
-                                    <Text style={styles.tabText}>Dépenses</Text>
+                                    <Text style={styles.tabText}>النفقات</Text>
                                 </TouchableOpacity>
                             </View>
 
-                            <Text style={styles.label}>Description</Text>
+                            <Text style={styles.label}>الوصف</Text>
                             <TextInput
                                 style={styles.textInput}
                                 value={formData.Description}
                                 onChangeText={(text) => onInputChange('Description', text)}
                             />
 
-                            <Text style={styles.label}>Date</Text>
+                            <Text style={styles.label}>التاريخ</Text>
                             <View style={styles.datePickerContainer}>
                                 <TouchableOpacity onPress={() => setShowDatePicker(true)}>
                                     <Text style={styles.datePickerText}>{date.toLocaleDateString()}</Text>
@@ -113,7 +114,7 @@ const EditTransactionModal = ({ visible, onSave, onCancel, formData, onInputChan
                                 )}
                             </View>
 
-                            <Text style={styles.label}>Montant</Text>
+                            <Text style={styles.label}>المبلغ</Text>
                             <TextInput
                                 style={styles.textInput}
                                 value={formData.Amount.toString()}
@@ -121,7 +122,7 @@ const EditTransactionModal = ({ visible, onSave, onCancel, formData, onInputChan
                                 keyboardType="numeric"
                             />
 
-                            <Text style={styles.label}>Catégorie</Text>
+                            <Text style={styles.label}>الفئة</Text>
                             <View style={styles.inputContainer}>
 
                                 <Picker
@@ -129,7 +130,7 @@ const EditTransactionModal = ({ visible, onSave, onCancel, formData, onInputChan
                                     onValueChange={(itemValue) => onInputChange('Category', itemValue)}
                                     style={styles.picker}
                                 >
-                                    <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                                    <Picker.Item label="اختر..." value="" enabled={false} />
                                     {categories.map((category) => (
                                         <Picker.Item label={category} value={category} key={category} />
                                     ))}
@@ -138,7 +139,7 @@ const EditTransactionModal = ({ visible, onSave, onCancel, formData, onInputChan
 
                             {formData.Note && (
                                 <>
-                                    <Text style={styles.label}>Note</Text>
+                                    <Text style={styles.label}>ملاحظة</Text>
                                     <TextInput
                                         style={styles.textInput}
                                         multiline={true}
@@ -207,6 +208,7 @@ const styles = StyleSheet.create({
         padding: 10,
         marginBottom: 10,
         width: '100%',
+        textAlign:'right'
     },
     datePickerContainer: {
         marginTop: 2,

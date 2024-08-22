@@ -24,28 +24,28 @@ const HiveDetailsScreen = ({ route, navigation }) => {
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            <Text style={styles.title}>Détails{'\n'}Ruche {hiveData.Name}</Text>
+            <Text style={styles.title}>تفاصيل{'\n'}الخلية {hiveData.Name}</Text>
             <ImageBackground imageStyle={{ borderRadius: 20 }}
                 source={require('../../assets/bg-hive.jpeg')} style={styles.detailsContainer}>
                 <View style={styles.buttonsRow}>
                     <TouchableOpacity onPress={() => setShowOwnerModal(true)} style={styles.button}>
                         <Ionicons name='person-outline' size={30} color="#fff" />
-                        <Text style={[styles.buttonText, { marginTop: 5 }]}> Propriétaire</Text>
+                        <Text style={[styles.buttonText, { marginTop: 5 }]}>المالك</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => setShowApiaryModal(true)} style={styles.button}>
                         <Ionicons name='trail-sign-outline' size={30} color="#fff" />
-                        <Text style={[styles.buttonText, { marginTop: 5 }]}>Rucher</Text>
+                        <Text style={[styles.buttonText, { marginTop: 5 }]}>المنحل</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.buttonsRow}>
                     <TouchableOpacity onPress={() => setShowHiveModal(true)} style={[styles.button]}>
                         <FontAwesome5 name="archive" size={30} color="#fff" />
-                        <Text style={[styles.buttonText, { marginTop: 5 }]}>Ruche</Text>
+                        <Text style={[styles.buttonText, { marginTop: 5 }]}>الخلية</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity onPress={navigateToInspectionsHistory} style={[styles.button]}>
                         <Ionicons name='create-outline' size={30} color="#fff" />
-                        <Text style={[styles.buttonText, { marginTop: 5 }]}>Inspections</Text>
+                        <Text style={[styles.buttonText, { marginTop: 5 }]}>المتابعات الدورية</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -58,17 +58,17 @@ const HiveDetailsScreen = ({ route, navigation }) => {
                     <View style={styles.modalContainer}>
                         <TouchableWithoutFeedback>
                             <View style={styles.modalContent}>
-                                <Text style={styles.groupTitle}>Détails du propriétaire</Text>
+                                <Text style={styles.groupTitle}>تفاصيل المالك</Text>
                                 <View style={styles.detailItem}>
-                                    <Text style={styles.labelGeneralInfo}>Nom et prénom</Text>
+                                    <Text style={styles.labelGeneralInfo}>الاسم واللقب</Text>
                                     <Text style={styles.textGeneralInfo}>{hiveData.Apiary.Owner.Firstname} {hiveData.Apiary.Owner.Lastname}</Text>
                                 </View>
                                 <View style={styles.detailItem}>
-                                    <Text style={styles.labelGeneralInfo}>Cin</Text>
+                                    <Text style={styles.labelGeneralInfo}>رقم .ب.ت.و</Text>
                                     <Text style={styles.textGeneralInfo}>{hiveData.Apiary.Owner.Cin}</Text>
                                 </View>
                                 <View style={styles.detailItem}>
-                                    <Text style={styles.labelGeneralInfo}>Tel</Text>
+                                    <Text style={styles.labelGeneralInfo}>الهاتف</Text>
                                     <Text style={styles.textGeneralInfo}>{hiveData.Apiary.Owner.Phone}</Text>
                                 </View>
                             </View>
@@ -84,21 +84,21 @@ const HiveDetailsScreen = ({ route, navigation }) => {
                         <TouchableWithoutFeedback>
 
                             <View style={styles.modalContent}>
-                                <Text style={styles.groupTitle}>Détails du rucher</Text>
+                                <Text style={styles.groupTitle}>تفاصيل المنحل</Text>
                                 <View style={styles.detailItem}>
-                                    <Text style={styles.labelGeneralInfo}>Nom</Text>
+                                    <Text style={styles.labelGeneralInfo}>الاسم</Text>
                                     <Text style={styles.textGeneralInfo}>{hiveData.Apiary.Name}</Text>
                                 </View>
                                 <View style={styles.detailItem}>
-                                    <Text style={styles.labelGeneralInfo}>Type</Text>
+                                    <Text style={styles.labelGeneralInfo}>النوع</Text>
                                     <Text style={styles.textGeneralInfo}>{hiveData.Apiary.Type}</Text>
                                 </View>
                                 <View style={styles.detailItem}>
-                                    <Text style={styles.labelGeneralInfo}>Gouvernorat</Text>
+                                    <Text style={styles.labelGeneralInfo}>الولاية</Text>
                                     <Text style={styles.textGeneralInfo}>{hiveData.Apiary.Location.governorate}</Text>
                                 </View>
                                 <View style={styles.detailItem}>
-                                    <Text style={styles.labelGeneralInfo}>Délégation</Text>
+                                    <Text style={styles.labelGeneralInfo}>المعتمدية</Text>
                                     <Text style={styles.textGeneralInfo}>{hiveData.Apiary.Location.city}</Text>
                                 </View>
                             </View>
@@ -115,32 +115,32 @@ const HiveDetailsScreen = ({ route, navigation }) => {
                         <TouchableWithoutFeedback>
 
                             <View style={styles.modalContent}>
-                                <Text style={styles.groupTitle}>Détails de la ruche</Text>
+                                <Text style={styles.groupTitle}>تفاصيل الخلية</Text>
                                 <ScrollView style={styles.scrollContainer}>
 
                                     <View style={styles.section}>
                                         <View style={styles.detailItem}>
-                                            <Text style={styles.labelGeneralInfo}>Nom</Text>
+                                            <Text style={styles.labelGeneralInfo}>الاسم</Text>
                                             <Text style={styles.textGeneralInfo}>{hiveData.Name}</Text>
                                         </View>
                                         <View style={styles.detailItem}>
-                                            <Text style={styles.labelGeneralInfo}>Couleur</Text>
+                                            <Text style={styles.labelGeneralInfo}>اللون</Text>
                                             <Text style={styles.textGeneralInfo}>{hiveData.Color}</Text>
                                         </View>
                                         <View style={styles.detailItem}>
-                                            <Text style={styles.labelGeneralInfo}>Type</Text>
+                                            <Text style={styles.labelGeneralInfo}>النوع</Text>
                                             <Text style={styles.textGeneralInfo}>{hiveData.Type}</Text>
                                         </View>
                                         <View style={styles.detailItem}>
-                                            <Text style={styles.labelGeneralInfo}>Source</Text>
+                                            <Text style={styles.labelGeneralInfo}>المصدر</Text>
                                             <Text style={styles.textGeneralInfo}>{hiveData.Source}</Text>
                                         </View>
                                         <View style={styles.detailItem}>
-                                            <Text style={styles.labelGeneralInfo}>But</Text>
+                                            <Text style={styles.labelGeneralInfo}>الغاية</Text>
                                             <Text style={styles.textGeneralInfo}>{hiveData.Purpose}</Text>
                                         </View>
                                         <View style={styles.detailItem}>
-                                            <Text style={styles.labelGeneralInfo}>Date d'ajout</Text>
+                                            <Text style={styles.labelGeneralInfo}>تاريخ الإضافة</Text>
                                             <Text style={styles.textGeneralInfo}>{formatDate(hiveData.Added)}</Text>
                                         </View>
                                     </View>
@@ -148,28 +148,28 @@ const HiveDetailsScreen = ({ route, navigation }) => {
                                     <View style={styles.divider} />
 
                                     <View style={styles.section}>
-                                        <Text style={styles.header}>Colonie</Text>
+                                        <Text style={styles.header}>المستعمرة</Text>
                                         <View style={styles.detailItem}>
-                                            <Text style={styles.label}>Force</Text>
+                                            <Text style={styles.label}>القوة</Text>
                                             <Text style={styles.text}>{hiveData.Colony.strength}</Text>
                                         </View>
                                         <View style={styles.detailItem}>
-                                            <Text style={styles.label}>Tempérament</Text>
+                                            <Text style={styles.label}>سلوك المستعمرة</Text>
                                             <Text style={styles.text}>{hiveData.Colony.temperament}</Text>
                                         </View>
                                         <View style={styles.detailItem}>
-                                            <Text style={styles.label}>Supers</Text>
-                                            <Text style={styles.text}>{hiveData.Colony.supers}</Text>
+                                            <Text style={styles.label}>عسالات</Text>
+                                            <Text style={[styles.text, { textAlign: 'right' }]}>{hiveData.Colony.supers}</Text>
                                         </View>
                                         {hiveData.Colony.pollenFrames && (<View style={styles.detailItem}>
-                                            <Text style={styles.label}>Cadres de pollen</Text>
-                                            <Text style={styles.text}>{hiveData.Colony.pollenFrames}</Text>
+                                            <Text style={styles.label}>إطارات حبوب اللقاح</Text>
+                                            <Text style={[styles.text, { textAlign: 'right' }]}>{hiveData.Colony.pollenFrames}</Text>
                                         </View>)}
 
 
                                         <View style={styles.detailItem}>
-                                            <Text style={styles.label}>Cadres au total</Text>
-                                            <Text style={styles.text}>{hiveData.Colony.TotalFrames}</Text>
+                                            <Text style={styles.label}>الإطارات الإجمالية</Text>
+                                            <Text style={[styles.text, { textAlign: 'right' }]}>{hiveData.Colony.TotalFrames}</Text>
                                         </View>
                                     </View>
 
@@ -179,67 +179,67 @@ const HiveDetailsScreen = ({ route, navigation }) => {
 
                                             <View style={styles.divider} />
                                             <View style={styles.section}>
-                                                <Text style={styles.header}>Reine</Text>
+                                                <Text style={styles.header}>الملكة</Text>
 
 
                                                 <View style={styles.detailItem}>
-                                                    <Text style={styles.label}>Clippée?</Text>
+                                                    <Text style={styles.label}>مقيدة؟</Text>
                                                     {hiveData.Queen.clipped ? (
 
-                                                        <Text style={styles.text}>Oui</Text>
+                                                        <Text style={styles.text}>نعم</Text>
 
-                                                    ) : (<Text style={styles.text}>Non</Text>)}
+                                                    ) : (<Text style={styles.text}>لا</Text>)}
                                                 </View>
 
 
 
                                                 <View style={styles.detailItem}>
-                                                    <Text style={styles.label}>Marquée?</Text>
+                                                    <Text style={styles.label}>معلمة؟</Text>
                                                     {hiveData.Queen.isMarked ? (
 
-                                                        <Text style={styles.text}>Oui</Text>
+                                                        <Text style={styles.text}>نعم</Text>
 
-                                                    ) : (<Text style={styles.text}>Non</Text>)}
+                                                    ) : (<Text style={styles.text}>لا</Text>)}
                                                 </View>
 
                                                 {hiveData.Queen.color !== "" && (
                                                     <View style={styles.detailItem}>
-                                                        <Text style={styles.label}>Couleur</Text>
+                                                        <Text style={styles.label}>اللون</Text>
                                                         <Text style={styles.text}>{hiveData.Queen.color}</Text>
                                                     </View>
                                                 )}
 
                                                 <View style={styles.detailItem}>
-                                                    <Text style={styles.label}>Éclos</Text>
-                                                    <Text style={styles.text}>{hiveData.Queen.hatched}</Text>
+                                                    <Text style={styles.label}>تاريخ الفقس</Text>
+                                                    <Text style={[styles.text, { textAlign: 'right' }]}>{hiveData.Queen.hatched}</Text>
                                                 </View>
 
 
                                                 <View style={styles.detailItem}>
-                                                    <Text style={styles.label}>Statut</Text>
+                                                <Text style={styles.label}>الوضع</Text>
                                                     <Text style={styles.text}>{hiveData.Queen.status}</Text>
                                                 </View>
 
 
                                                 <View style={styles.detailItem}>
-                                                    <Text style={styles.label}>Date d'installation</Text>
-                                                    <Text style={styles.text}>{formatDate(hiveData.Queen.installed)}</Text>
+                                                <Text style={styles.label}>تاريخ التثبيت</Text>
+                                                <Text style={[styles.text, { textAlign: 'right' }]}>{formatDate(hiveData.Queen.installed)}</Text>
                                                 </View>
 
 
                                                 <View style={styles.detailItem}>
-                                                    <Text style={styles.label}>État</Text>
+                                                <Text style={styles.label}>الحالة</Text>
                                                     <Text style={styles.text}>{hiveData.Queen.queen_state}</Text>
                                                 </View>
 
 
                                                 <View style={styles.detailItem}>
-                                                    <Text style={styles.label}>Race</Text>
+                                                <Text style={styles.label}>السلالة</Text>
                                                     <Text style={styles.text}>{hiveData.Queen.race}</Text>
                                                 </View>
 
                                                 <View style={styles.detailItem}>
-                                                    <Text style={styles.label}>Origine</Text>
+                                                <Text style={styles.label}>الأصل</Text>
                                                     <Text style={styles.text}>{hiveData.Queen.origin}</Text>
                                                 </View>
 

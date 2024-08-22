@@ -2,41 +2,41 @@ import React, { useState, useEffect } from 'react';
 import { ScrollView, View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import EditInspectionModal from './EditInspectionModal';
-  import axios from '../../axiosConfig';
+import axios from '../../axiosConfig';
 
 const InspectionDetailsScreen = ({ route, navigation }) => {
   const { inspectionData, badge } = route.params;
   const [modalVisible, setModalVisible] = useState(false);
-  
+
   const [formData, setFormData] = useState({ ...inspectionData });
-  
- 
+
+
 
   const handleModalInputChange = (section, fieldOrValue, value) => {
-    
+
     const updatedFormData = { ...formData };
 
-     
+
     if (section === 'Note' || section === 'HoneyStores' || section === 'PollenStores' || section === 'DronesSeen') {
       updatedFormData[section] = fieldOrValue;;
     } else if (section === 'Supplies' && fieldOrValue === 'ingredients') {
-    
+
       updatedFormData.Supplies = {
         ...updatedFormData.Supplies,
         ingredients: {
           ...updatedFormData.Supplies.ingredients,
-          ...value  
+          ...value
         }
       };
     } else {
- 
+
       updatedFormData[section] = {
         ...updatedFormData[section],
         [fieldOrValue]: value
       };
     }
 
-     
+
     setFormData(updatedFormData);
   };
 
@@ -45,12 +45,12 @@ const InspectionDetailsScreen = ({ route, navigation }) => {
   const renderIconAndTextSeen = (condition) => {
     if (condition) {
       return (
-        <Text style={[styles.highlight, styles.inlineText]}>Observée <Ionicons name="checkmark-outline" size={22} color="green" style={styles.icon} />
+        <Text style={[styles.highlight, styles.inlineText]}>موجودة<Ionicons name="checkmark-outline" size={22} color="green" style={styles.icon} />
         </Text>
       );
     } else {
       return (
-        <Text style={[styles.highlight, styles.inlineText]}>Non Observée <Ionicons name="close-outline" size={22} color="red" style={styles.icon} /></Text>
+        <Text style={[styles.highlight, styles.inlineText]}>غير موجودة<Ionicons name="close-outline" size={22} color="red" style={styles.icon} /></Text>
       );
     }
   }
@@ -62,27 +62,27 @@ const InspectionDetailsScreen = ({ route, navigation }) => {
       );
     } else {
       return (
-        <Text style={styles.highlight}>Non {text} <Ionicons name="close-outline" size={22} color="red" style={styles.icon} /></Text>
+        <Text style={styles.highlight}>غير {text} <Ionicons name="close-outline" size={22} color="red" style={styles.icon} /></Text>
       );
     }
   };
 
   const weatherConditionMapping = {
-    Thunderstorm: 'Orage',
-    Drizzle: 'Bruine',
-    Rain: 'Pluie',
-    Snow: 'Neige',
-    Mist: 'Brume',
-    Smoke: 'Fumée',
-    Haze: 'Brume sèche',
-    Dust: 'Poussière',
-    Fog: 'Brouillard',
-    Sand: 'Sable',
-    Ash: 'Cendre',
-    Squall: 'Rafale',
-    Tornado: 'Tornade',
-    Clear: 'Dégagé',
-    Clouds: 'Nuages',
+    Thunderstorm: 'عاصفة رعدية',
+    Drizzle: 'رذاذ',
+    Rain: 'مطر',
+    Snow: 'ثلج',
+    Mist: 'ضباب خفيف',
+    Smoke: 'دخان',
+    Haze: 'غبار خفيف',
+    Dust: 'غبار',
+    Fog: 'ضباب',
+    Sand: 'رمل',
+    Ash: 'رماد',
+    Squall: 'زوبعة',
+    Tornado: 'اعصار',
+    Clear: 'صافي',
+    Clouds: 'غائم',
   };
 
   const translateCondition = (condition) => {
@@ -130,7 +130,7 @@ const InspectionDetailsScreen = ({ route, navigation }) => {
     if (badge) {
       return (
         <View style={styles.badge}>
-          <Text style={{ color: 'white', fontSize: 12 }}>Dernière inspection</Text>
+          <Text style={{ color: 'white', fontSize: 12 }}>أخر متابعة</Text>
         </View>
       );
     }
@@ -143,25 +143,28 @@ const InspectionDetailsScreen = ({ route, navigation }) => {
 
       if (response.status === 200) {
         console.log('Inspection supprimée avec succès');
-         showAlertAndNavigate('Inspection supprimée avec succès');
+        showAlertAndNavigate('تم حذف المتابعة الدورية بنجاح');
+
       } else {
         console.error('Failed to delete inspection:', response.data.message);
         showAlert('Échec de la suppression de l\'inspection');
+        showAlert('فشل في حذف المتابعة الدورية');
+
       }
     } catch (error) {
       console.error('Error deleting inspection:', error.message);
-      showAlert('Erreur lors de la suppression de l\'inspection');
+      showAlert('خطأ في حذف المتابعة الدورية');
     }
   };
 
   const showAlertAndNavigate = (message) => {
     Alert.alert(
-      'Success',
+      'نجاح',
       message,
       [
         {
-          text: 'OK',
-          onPress: () => navigation.navigate('Home'),  
+          text: 'موافق',
+          onPress: () => navigation.navigate('Home'),
         },
       ],
       { cancelable: false }
@@ -170,10 +173,10 @@ const InspectionDetailsScreen = ({ route, navigation }) => {
 
   const showAlert = (message) => {
     Alert.alert(
-      'Error',
+      'خطأ',
       message,
       [
-        { text: 'OK', onPress: () => console.log('OK Pressed') }
+        { text: 'موافق', onPress: () => console.log('موافق تم الضغط') }
       ],
       { cancelable: false }
     );
@@ -181,12 +184,12 @@ const InspectionDetailsScreen = ({ route, navigation }) => {
 
   const confirmDelete = (inspectionId) => {
     Alert.alert(
-      'Confirmation',
-      'Êtes-vous sûr de vouloir supprimer cette inspection?',
+      'تأكيد',
+      'هل أنت متأكد أنك تريد حذف هذه المتابعة الدورية؟',
       [
-        { text: 'Annuler', style: 'cancel' },
+        { text: 'إلغاء', style: 'cancel' },
         {
-          text: 'Supprimer',
+          text: 'حذف',
           onPress: () => handleDelete(inspectionId),
           style: 'destructive',
         },
@@ -194,6 +197,7 @@ const InspectionDetailsScreen = ({ route, navigation }) => {
       { cancelable: true }
     );
   };
+
 
 
   return (
@@ -225,36 +229,51 @@ const InspectionDetailsScreen = ({ route, navigation }) => {
 
 
         <View style={styles.row}>
-          <Text style={styles.label}><Ionicons name="person-outline" size={14} color="#977700"  style={styles.icon} /> Inspecteur</Text>
           <Text style={styles.value}>{inspectionData.Inspector.firstName} {inspectionData.Inspector.lastName}</Text>
+          <View style={styles.labelContainer}>
+            <Text style={styles.label}>المتفقد</Text>
+            <Ionicons name="person-outline" size={14} color="#977700" style={styles.icon} />
+          </View>
         </View>
         <View style={styles.divider} />
         <View style={styles.row}>
-          <Text style={styles.label}><Ionicons name="id-card-outline" size={14} color="#977700"  style={styles.icon} /> CIN</Text>
           <Text style={styles.value}>{inspectionData.Inspector.cin}</Text>
+          <View style={styles.labelContainer}>
+            <Text style={styles.label}>رقم .ب.ت.و</Text>
+            <Ionicons name="id-card-outline" size={14} color="#977700" style={styles.icon} />
+          </View>
         </View>
         <View style={styles.divider} />
 
         <View style={styles.row}>
-          <Text style={styles.label}><Ionicons name="call-outline" size={14} color="#977700"  style={styles.icon} /> Tel</Text>
           <Text style={styles.value}>
             {inspectionData.Inspector.phone
               ? `(${inspectionData.Inspector.phone.substring(0, 4)})${inspectionData.Inspector.phone.substring(4)}`
               : ''}
           </Text>
+          <View style={styles.labelContainer}>
+            <Text style={styles.label}>الهاتف</Text>
+            <Ionicons name="call-outline" size={14} color="#977700" style={styles.icon} />
+          </View>
         </View>
 
         <View style={styles.divider} />
 
         <View style={styles.row}>
-          <Text style={styles.label}><Ionicons name="calendar-outline" size={14} color="#977700"  style={styles.icon} /> Date</Text>
           <Text style={styles.value}>{new Date(inspectionData.InspectionDateTime).toLocaleDateString('fr-FR')}</Text>
+          <View style={styles.labelContainer}>
+            <Text style={styles.label}>التاريخ</Text>
+            <Ionicons name="calendar-outline" size={14} color="#977700" style={styles.icon} />
+          </View>
         </View>
         <View style={styles.divider} />
 
         <View style={styles.row}>
-          <Text style={styles.label}><Ionicons name="time-outline" size={14} color="#977700"  style={styles.icon} /> Heure</Text>
           <Text style={styles.value}>{new Date(inspectionData.InspectionDateTime).toLocaleTimeString('fr-FR')}</Text>
+          <View style={styles.labelContainer}>
+            <Text style={styles.label}>الساعة</Text>
+            <Ionicons name="time-outline" size={14} color="#977700" style={styles.icon} />
+          </View>
         </View>
 
         {inspectionData.Queen && (
@@ -262,39 +281,57 @@ const InspectionDetailsScreen = ({ route, navigation }) => {
             <View style={styles.divider} />
 
             <View style={styles.section}>
-              <Text style={styles.header}>Reine</Text>
+              <Text style={styles.header}>الملكة</Text>
               <Text style={styles.value}>
                 {renderIconAndTextSeen(inspectionData.Queen.seen)}{'\n\n'}
-                {renderIconAndText('Marquée', inspectionData.Queen.isMarked)}
+                {renderIconAndText('معلمة', inspectionData.Queen.isMarked)}
 
 
                 {inspectionData.Queen.color && (
 
                   <>{'\n\n'}
-                    <Text style={styles.highlight}>Couleur: </Text>{inspectionData.Queen.color} <Ionicons name="color-palette-outline" size={22} color="fuchsia" style={styles.icon} />
+                    <Text style={styles.highlight}>اللون: </Text>{inspectionData.Queen.color} <Ionicons name="color-palette-outline" size={22} color="fuchsia" style={styles.icon} />
                   </>
                 )}{'\n\n'}
 
-                {renderIconAndText('Clippée', inspectionData.Queen.clipped)}
+                {renderIconAndText('مقيدة', inspectionData.Queen.clipped)}
                 {'\n\n'}
-                {renderIconAndText('Essaimée', inspectionData.Queen.isSwarmed)}
+                {renderIconAndText('مُتسربة', inspectionData.Queen.isSwarmed)}
                 {'\n\n'}
 
                 {inspectionData.Queen.queenCells && (
-                  <>
-                    <Text style={styles.highlight}>Cellules royales: </Text>{inspectionData.Queen.queenCells} <Ionicons name="keypad-outline" size={22} color="blue" style={styles.icon} />{'\n\n'}
-                  </>
+
+                  <View style={styles.labelContainer}>
+
+                    <Text style={styles.value}>{inspectionData.Queen.queenCells}</Text>
+                    <Text style={styles.highlight}>الخلايا الملكية: </Text>
+                    <Ionicons name="keypad-outline" size={22} color="blue" style={styles.icon} />
+
+                  </View>
                 )}
+                <Text>{'\n\n'}</Text>
 
                 {inspectionData.Queen.temperament && (
-                  <>
-                    <Text style={styles.highlight}>Tempérament: </Text>{inspectionData.Queen.temperament} <Ionicons name="happy-outline" size={22} color="gray" style={styles.icon} /> {'\n\n'}
-                  </>
+
+                  <View style={styles.labelContainer}>
+
+                    <Text style={styles.value}>{inspectionData.Queen.temperament}</Text>
+                    <Text style={styles.highlight}>سلوك الملكة: </Text>
+                    <Ionicons name="happy-outline" size={22} color="gray" style={styles.icon} />
+
+                  </View>
                 )}
+                <Text>{'\n\n'}</Text>
+
                 {inspectionData.Queen.note && (
-                  <>
-                    <Text style={styles.highlight}>Note: </Text>{inspectionData.Queen.note} <Ionicons name="receipt-outline" size={22} color="pink" style={styles.icon} />
-                  </>
+
+                  <View style={styles.labelContainer}>
+
+                    <Text style={styles.value}>{inspectionData.Queen.note} </Text>
+                    <Text style={styles.highlight}>ملاحظة: </Text>
+                    <Ionicons name="receipt-outline" size={22} color="pink" style={styles.icon} />
+
+                  </View>
                 )}
               </Text>
             </View>
@@ -305,58 +342,171 @@ const InspectionDetailsScreen = ({ route, navigation }) => {
         <View style={styles.divider} />
 
         <View style={styles.section}>
-          <Text style={styles.header}>Colonie</Text>
+          <Text style={styles.header}>المستعمرة</Text>
+
+          <View style={styles.labelContainer}>
+            <Text style={styles.value}> {inspectionData.Colony.deadBees ? 'وجود نحل ميت' : 'لا يوجد نحل ميت'}</Text>
+            <Ionicons name="return-down-back-outline" size={22} color="brown" style={styles.icon} />
+            <Text>{'\n\n'}</Text>
+          </View>
+
+
+          <View style={styles.labelContainer}>
+            <Text style={styles.value}>{inspectionData.Colony.strength}</Text>
+            <Text style={styles.highlight}>قوة المستعمرة: </Text>
+            <Ionicons name="fitness-outline" size={22} color="blue" style={styles.icon} />
+            <Text>{'\n\n'}</Text>
+          </View>
+
+
+
+          <View style={styles.labelContainer}>
+            <Text style={styles.value}>{inspectionData.Colony.temperament}</Text>
+            <Text style={styles.highlight}>سلوك المستعمرة: </Text>
+            <Ionicons name="happy-outline" size={22} color="gray" style={styles.icon} />
+            <Text>{'\n\n'}</Text>
+          </View>
+
+
+
+          <View style={styles.labelContainer}>
+            <Text style={styles.value}>{inspectionData.Colony.supers}</Text>
+            <Text style={styles.highlight}>عسالات: </Text>
+            <Ionicons name="file-tray-stacked-outline" size={22} color="orange" style={styles.icon} />
+            <Text>{'\n\n'}</Text>
+          </View>
+
+
+
+          <View style={styles.labelContainer}>
+            <Text style={styles.value}>{inspectionData.Colony.pollenFrames}</Text>
+            <Text style={styles.highlight}>إطارات حبوب اللقاح: </Text>
+            <Ionicons name="file-tray-outline" size={22} color="orange" style={styles.icon} />
+            <Text>{'\n\n'}</Text>
+          </View>
+
+
+
+          <View style={styles.labelContainer}>
+            <Text style={styles.value}>{inspectionData.Colony.TotalFrames}</Text>
+            <Text style={styles.highlight}>إجمالي الإطارات: </Text>
+            <Ionicons name="file-tray-full-outline" size={22} color="orange" style={styles.icon} />
+            <Text>{'\n\n'}</Text>
+          </View>
+
           <Text style={styles.value}>
-            <Ionicons name="return-down-forward-outline" size={22} color="brown" style={styles.icon} /> {inspectionData.Colony.deadBees ? 'Des abeilles mortes sont présentes' : 'Aucune abeille morte'}{'\n\n'}
-            <Text style={styles.highlight}>Force: </Text>{inspectionData.Colony.strength} <Ionicons name="fitness-outline" size={22} color="blue" style={styles.icon} />{'\n\n'}
-            <Text style={styles.highlight}>Tempérament: </Text>{inspectionData.Colony.temperament} <Ionicons name="happy-outline" size={22} color="gray" style={styles.icon} />{'\n\n'}
-            <Text style={styles.highlight}>Supers: </Text>{inspectionData.Colony.supers} <Ionicons name="file-tray-stacked-outline" size={22} color="orange" style={styles.icon} />{'\n\n'}
-            <Text style={styles.highlight}>Cadres de pollen: </Text>{inspectionData.Colony.pollenFrames} <Ionicons name="file-tray-outline" size={22} color="orange" style={styles.icon} />{'\n\n'}
-            <Text style={styles.highlight}>Cadres au total: </Text>{inspectionData.Colony.TotalFrames} <Ionicons name="file-tray-full-outline" size={22} color="orange" style={styles.icon} />{'\n\n'}
             {inspectionData.Colony.note && (
-              <>
-                <Text style={styles.highlight}>Note: </Text>{inspectionData.Colony.note} <Ionicons name="receipt-outline" size={22} color="pink" style={styles.icon} />{'\n'}
-              </>
+
+
+              <View style={styles.labelContainer}>
+                <Text style={styles.value}>{inspectionData.Colony.note}</Text>
+                <Text style={styles.highlight}>ملاحظة: </Text>
+                <Ionicons name="receipt-outline" size={22} color="pink" style={styles.icon} />
+                <Text>{'\n\n'}</Text>
+              </View>
             )}
+
           </Text>
         </View>
 
         <View style={styles.divider} />
 
         <View style={styles.section}>
-          <Text style={styles.header}>Couvain et Mâles</Text>
-          <Text style={styles.value}>
-            <Text style={styles.highlight}>État: </Text>{inspectionData.Brood.state} <Ionicons name="shield-checkmark-outline" size={22} color="gray" style={styles.icon} />{'\n\n'}
-            <Text style={styles.highlight}>Nombre total du couvain: </Text>{inspectionData.Brood.totalBrood} <Ionicons name="keypad-outline" size={22} color="blue" style={styles.icon} />{'\n\n'}
-            <Text style={styles.highlight}>Couvain mâle: </Text>{inspectionData.Brood.maleBrood === 'Régulièr' ? (
-              <><Text>{inspectionData.Brood.maleBrood}</Text> <Ionicons name="thumbs-up-outline" size={22} color="green" style={styles.icon} /></>
+          <Text style={styles.header}>الحضنة والذكور</Text>
 
-            ) : (
-              <><Text>{inspectionData.Brood.maleBrood}</Text> <Ionicons name="thumbs-down-outline" size={22} color="red" style={styles.icon} /></>)}{'\n\n'}
-            <Text style={styles.highlight}>Mâles observés </Text>
-            {inspectionData.DronesSeen ? <Ionicons name="checkmark-outline" size={22} color="green" style={styles.icon} />
-              : <Ionicons name="close-outline" size={22} color="red" style={styles.icon} />
-            }{'\n\n'}
-          </Text>
+          <View style={styles.labelContainer}>
+            <Text style={styles.value}>{inspectionData.Brood.state}</Text>
+            <Text style={styles.highlight}>الحالة: </Text>
+            <Ionicons name="shield-checkmark-outline" size={22} color="gray" style={styles.icon} />
+            <Text>{'\n\n'}</Text>
+          </View>
+
+          <View style={styles.labelContainer}>
+            <Text style={styles.value}>{inspectionData.Brood.totalBrood}</Text>
+            <Text style={styles.highlight}>إجمالي الحضنة: </Text>
+            <Ionicons name="keypad-outline" size={22} color="blue" style={styles.icon} />
+            <Text>{'\n\n'}</Text>
+          </View>
+
+
+          {inspectionData.Brood.maleBrood === 'منتظمة' ? (
+            <View style={styles.labelContainer}>
+              <Ionicons name="thumbs-up-outline" size={22} color="green" style={styles.icon} />
+              <Text style={styles.value}>{inspectionData.Brood.maleBrood}</Text>
+              <Text style={styles.highlight}>حضنة الذكور: </Text>
+              <Text>{'\n\n'}</Text>
+            </View>
+          ) : (
+            <View style={styles.labelContainer}>
+              <Ionicons name="thumbs-down-outline" size={22} color="red" style={styles.icon} />
+              <Text style={styles.value}>{inspectionData.Brood.maleBrood}</Text>
+              <Text style={styles.highlight}>حضنة الذكور: </Text>
+              <Text>{'\n\n'}</Text>
+            </View>
+          )}
+
+
+          {inspectionData.DronesSeen ? (
+            <View style={styles.labelContainer}>
+              <Ionicons name="checkmark-outline" size={22} color="green" style={styles.icon} />
+              <Text style={styles.highlight}>وجود الذكور</Text>
+            </View>
+          ) : (
+            <View style={styles.labelContainer}>
+              <Ionicons name="close-outline" size={22} color="red" style={styles.icon} />
+              <Text style={styles.highlight}>وجود الذكور</Text>
+            </View>
+          )}
+
         </View>
 
         <View style={styles.divider} />
         {inspectionData.Supplies && (
 
           <View style={styles.section}>
-            <Text style={styles.header}>Nourritures</Text>
-            <Text style={styles.value}>
-              <Text style={styles.highlight}>Produit: </Text>{inspectionData.Supplies.product} <Ionicons name="flower-outline" size={22} color="orange" style={styles.icon} />{'\n\n'}
-              <Text style={styles.highlight}>Ingrédients: </Text>{inspectionData.Supplies.ingredients.name} <Ionicons name="extension-puzzle-outline" size={22} color="green" style={styles.icon} />{'\n\n'}
-              <Text style={styles.highlight}>Quantité: </Text>{inspectionData.Supplies.ingredients.quantity} <Ionicons name="layers-outline" size={22} color="brown" style={styles.icon} />{'\n\n'}
-              <Text style={styles.highlight}>Unité: </Text>{inspectionData.Supplies.ingredients.unit} <Ionicons name="eyedrop-outline" size={22} color="#5188C7" style={styles.icon} />{'\n\n'}
-              {inspectionData.Supplies.note && (
-                <>
-                  <Text style={styles.highlight}>
-                    Note:</Text> {inspectionData.Supplies.note} <Ionicons name="receipt-outline" size={22} color="pink" style={styles.icon} />
+            <Text style={styles.header}>غذاء النحل</Text>
 
-                  {'\n\n'}
-                </>
+            <View style={styles.labelContainer}>
+              <Text style={styles.value}>{inspectionData.Supplies.product}</Text>
+              <Text style={styles.highlight}>المنتج: </Text>
+              <Ionicons name="flower-outline" size={22} color="orange" style={styles.icon} />
+              <Text>{'\n\n'}</Text>
+            </View>
+
+
+
+            <View style={styles.labelContainer}>
+              <Text style={styles.value}>{inspectionData.Supplies.ingredients.name}</Text>
+              <Text style={styles.highlight}>المكونات: </Text>
+              <Ionicons name="extension-puzzle-outline" size={22} color="green" style={styles.icon} />
+              <Text>{'\n\n'}</Text>
+            </View>
+
+            <View style={styles.labelContainer}>
+              <Text style={styles.value}>{inspectionData.Supplies.ingredients.quantity}</Text>
+              <Text style={styles.highlight}>الكمية: </Text>
+              <Ionicons name="layers-outline" size={22} color="brown" style={styles.icon} />
+              <Text>{'\n\n'}</Text>
+            </View>
+
+            <View style={styles.labelContainer}>
+              <Text style={styles.value}>{inspectionData.Supplies.ingredients.unit}</Text>
+              <Text style={styles.highlight}>الوحدة: </Text>
+              <Ionicons name="eyedrop-outline" size={22} color="#5188C7" style={styles.icon} />
+              <Text>{'\n\n'}</Text>
+            </View>
+
+            <Text style={styles.value}>
+
+              {inspectionData.Supplies.note && (
+
+
+                <View style={styles.labelContainer}>
+                  <Text style={styles.value}>{inspectionData.Supplies.note}</Text>
+                  <Text style={styles.highlight}>ملاحظة: </Text>
+                  <Ionicons name="receipt-outline" size={22} color="pink" style={styles.icon} />
+                  <Text>{'\n\n'}</Text>
+                </View>
               )}
             </Text>
           </View>
@@ -370,24 +520,55 @@ const InspectionDetailsScreen = ({ route, navigation }) => {
           <>
             <View style={styles.divider} />
             <View style={styles.section}>
-              <Text style={styles.header}>Maladie et Traitement </Text>
-              <Text style={styles.value}>
-                <Text style={styles.highlight}>Maladie: </Text>{inspectionData.BeeHealth.disease} <Ionicons name="color-filter-outline" size={22} color="red" style={styles.icon} />{'\n\n'}
-                <Text style={styles.highlight}>Traitement: </Text>{inspectionData.BeeHealth.treatment} <Ionicons name="pulse-outline" size={22} color="green" style={styles.icon} />{'\n\n'}
-                <Text style={styles.highlight}>Durée: </Text>
-                {inspectionData.BeeHealth.duration.from && new Date(inspectionData.BeeHealth.duration.from).toLocaleDateString('fr-FR')}
-                {' '} à {' '}
-                {inspectionData.BeeHealth.duration.to && new Date(inspectionData.BeeHealth.duration.to).toLocaleDateString('fr-FR')} <Ionicons name="calendar-number-outline" size={22} color="gray" style={styles.icon} />
-                {'\n\n'}
-                <Text style={styles.highlight}>Quantité: </Text>{inspectionData.BeeHealth.quantity} <Ionicons name="layers-outline" size={22} color="brown" style={styles.icon} />{'\n\n'}
-                <Text style={styles.highlight}>Doses: </Text>{inspectionData.BeeHealth.doses} <Ionicons name="color-fill-outline" size={22} color="#5188C7" style={styles.icon} />{'\n\n'}
-                {inspectionData.BeeHealth.note && (
-                  <>
-                    <Text style={styles.highlight}>
-                      Note:</Text> {inspectionData.BeeHealth.note} <Ionicons name="receipt-outline" size={22} color="pink" style={styles.icon} />
-                  </>
-                )}
-              </Text>
+              <Text style={styles.header}>صحة النحل</Text>
+
+              <View style={styles.labelContainer}>
+                <Text style={styles.value}>{inspectionData.BeeHealth.disease}</Text>
+                <Text style={styles.highlight}>المرض: </Text>
+                <Ionicons name="color-filter-outline" size={22} color="red" style={styles.icon} />
+                <Text>{'\n\n'}</Text>
+              </View>
+
+              <View style={styles.labelContainer}>
+                <Text style={styles.value}>{inspectionData.BeeHealth.treatment}</Text>
+                <Text style={styles.highlight}>العلاج: </Text>
+                <Ionicons name="pulse-outline" size={22} color="green" style={styles.icon} />
+                <Text>{'\n\n'}</Text>
+              </View>
+
+              <View style={styles.labelContainer}>
+                <Text style={styles.value}>{inspectionData.BeeHealth.duration.from && new Date(inspectionData.BeeHealth.duration.from).toLocaleDateString('fr-FR')}
+                  {' '} إلى{' '}
+                  {inspectionData.BeeHealth.duration.to && new Date(inspectionData.BeeHealth.duration.to).toLocaleDateString('fr-FR')}</Text>
+                <Text style={styles.highlight}>المدة: </Text>
+                <Ionicons name="calendar-number-outline" size={22} color="gray" style={styles.icon} />
+                <Text>{'\n\n'}</Text>
+              </View>
+
+
+              <View style={styles.labelContainer}>
+                <Text style={styles.value}>{inspectionData.BeeHealth.quantity}</Text>
+                <Text style={styles.highlight}>الكمية: </Text>
+                <Ionicons name="layers-outline" size={22} color="brown" style={styles.icon} />
+                <Text>{'\n\n'}</Text>
+              </View>
+
+              <View style={styles.labelContainer}>
+                <Text style={styles.value}>{inspectionData.BeeHealth.doses}</Text>
+                <Text style={styles.highlight}>الجرعات: </Text>
+                <Ionicons name="color-fill-outline" size={22} color="#5188C7" style={styles.icon} />
+                <Text>{'\n\n'}</Text>
+              </View>
+
+              {inspectionData.BeeHealth.note && (
+
+                <View style={styles.labelContainer}>
+                  <Text style={styles.value}>{inspectionData.BeeHealth.note}</Text>
+                  <Text style={styles.highlight}>ملاحظة: </Text>
+                  <Ionicons name="receipt-outline" size={22} color="pink" style={styles.icon} />
+                  <Text>{'\n\n'}</Text>
+                </View>
+              )}
             </View>
             <View style={styles.divider} />
           </>
@@ -396,11 +577,22 @@ const InspectionDetailsScreen = ({ route, navigation }) => {
 
 
         <View style={styles.section}>
-          <Text style={styles.header}>Récoltes</Text>
-          <Text style={styles.value}>
-            <Text style={styles.highlight}>Réserves de miel: </Text>{inspectionData.HoneyStores} <Ionicons name="flask-outline" size={22} color="orange" style={styles.icon} /> {'\n\n'}
-            <Text style={styles.highlight}>Réserves de pollen: </Text>{inspectionData.PollenStores} <Ionicons name="file-tray-outline" size={22} color="orange" style={styles.icon} />
-          </Text>
+          <Text style={styles.header}>الحصاد</Text>
+
+          <View style={styles.labelContainer}>
+            <Text style={styles.value}>{inspectionData.HoneyStores}</Text>
+            <Text style={styles.highlight}>حصاد العسل: </Text>
+            <Ionicons name="flask-outline" size={22} color="orange" style={styles.icon} />
+            <Text>{'\n\n'}</Text>
+          </View>
+
+          <View style={styles.labelContainer}>
+            <Text style={styles.value}>{inspectionData.PollenStores}</Text>
+            <Text style={styles.highlight}>حصاد حبوب اللقاح: </Text>
+            <Ionicons name="file-tray-outline" size={22} color="orange" style={styles.icon} />
+            <Text>{'\n\n'}</Text>
+          </View>
+
         </View>
 
 
@@ -408,11 +600,20 @@ const InspectionDetailsScreen = ({ route, navigation }) => {
           <>
             <View style={styles.divider} />
             <View style={styles.section}>
-              <Text style={styles.header}>Ajouts  </Text>
-              <Text style={styles.value}>
-                {inspectionData.Adding.ActivityAdd} <Ionicons name="checkmark-circle-outline" size={22} color="green" style={styles.icon} />{'\n\n'}
-                <Text style={styles.highlight}>Quantité ajoutée: </Text>{inspectionData.Adding.QuantityAdded} <Ionicons name="layers-outline" size={22} color="brown" style={styles.icon} />
-              </Text>
+              <Text style={styles.header}>الاضافات</Text>
+
+              <View style={styles.labelContainer}>
+                <Text style={styles.value}>{inspectionData.Adding.ActivityAdd}</Text>
+                <Ionicons name="checkmark-circle-outline" size={22} color="green" style={styles.icon} />
+              </View>
+
+              <View style={styles.labelContainer}>
+                <Text style={styles.value}>{inspectionData.Adding.QuantityAdded}</Text>
+                <Text style={styles.highlight}>الكمية المضافة: </Text>
+                <Ionicons name="layers-outline" size={22} color="brown" style={styles.icon} />
+                <Text>{'\n\n'}</Text>
+              </View>
+
             </View>
           </>
         )}
@@ -422,11 +623,20 @@ const InspectionDetailsScreen = ({ route, navigation }) => {
           <>
             <View style={styles.divider} />
             <View style={styles.section}>
-              <Text style={styles.header}>Enlévements </Text>
-              <Text style={styles.value}>
-                {inspectionData.Removing.ActivityRemove} <Ionicons name="close-circle-outline" size={22} color="red" style={styles.icon} />{'\n\n'}
-                <Text style={styles.highlight}>Quantité retirée: </Text>{inspectionData.Removing.QuantityRemoved} <Ionicons name="layers-outline" size={22} color="brown" style={styles.icon} />
-              </Text>
+              <Text style={styles.header}>الإزالات</Text>
+
+
+              <View style={styles.labelContainer}>
+                <Text style={styles.value}> {inspectionData.Removing.ActivityRemove}</Text>
+                <Ionicons name="close-circle-outline" size={22} color="red" style={styles.icon} />
+              </View>
+
+              <View style={styles.labelContainer}>
+                <Text style={styles.value}>{inspectionData.Removing.QuantityRemoved}</Text>
+                <Text style={styles.highlight}>الكميةالمزيلة: </Text>
+                <Ionicons name="layers-outline" size={22} color="brown" style={styles.icon} />
+                <Text>{'\n\n'}</Text>
+              </View>
             </View>
           </>
 
@@ -435,25 +645,64 @@ const InspectionDetailsScreen = ({ route, navigation }) => {
         <View style={styles.divider} />
 
         <View style={styles.section}>
-          <Text style={styles.header}>Météo</Text>
-          <Text style={styles.value}>
-            <Text style={styles.highlight}>Condition: </Text>{translatedCondition} {renderWeatherIcon(inspectionData.Weather.condition)}
-            {'\n\n'}
-            <Text style={styles.highlight}>Température: </Text>{inspectionData.Weather.temperature}°C <Ionicons name="thermometer-outline" size={22} color="red" style={styles.icon} />{'\n\n'}
-            <Text style={styles.highlight}>Humidité: </Text>{inspectionData.Weather.humidity}% <Ionicons name="water-outline" size={22} color="#5188C7" style={styles.icon} />{'\n\n'}
-            <Text style={styles.highlight}>Pression: </Text>{inspectionData.Weather.pressure} hPa <Ionicons name="speedometer-outline" size={22} color="gray" style={styles.icon} />{'\n\n'}
-            <Text style={styles.highlight}>Vitesse du vent: </Text>{inspectionData.Weather.windSpeed} m/s <Ionicons name="flash-outline" size={22} color="green" style={styles.icon} />{'\n\n'}
-            <Text style={styles.highlight}>Direction du vent: </Text>{inspectionData.Weather.windDirection}° <Ionicons name="compass-outline" size={22} color="orange" style={styles.icon} />
-          </Text>
+          <Text style={styles.header}>الطقس</Text>
+
+
+          <View style={styles.labelContainer}>
+            {renderWeatherIcon(inspectionData.Weather.condition)}
+            <Text style={styles.value}>{translatedCondition} </Text>
+            <Text style={styles.highlight}>الحالة: </Text>
+            <Text>{'\n\n'}</Text>
+          </View>
+
+          <View style={styles.labelContainer}>
+            <Ionicons name="thermometer-outline" size={22} color="red" style={styles.icon} />
+            <Text style={styles.value}>{inspectionData.Weather.temperature} °C</Text>
+            <Text style={styles.highlight}>درجة الحرارة: </Text>
+            <Text>{'\n\n'}</Text>
+          </View>
+
+
+          <View style={styles.labelContainer}>
+            <Ionicons name="water-outline" size={22} color="#5188C7" style={styles.icon} />
+            <Text style={styles.value}>{inspectionData.Weather.humidity} %</Text>
+            <Text style={styles.highlight}>الرطوبة: </Text>
+            <Text>{'\n\n'}</Text>
+          </View>
+
+          <View style={styles.labelContainer}>
+            <Ionicons name="speedometer-outline" size={22} color="gray" style={styles.icon} />
+            <Text style={styles.value}>{inspectionData.Weather.pressure} hPa</Text>
+            <Text style={styles.highlight}>الضغط: </Text>
+            <Text>{'\n\n'}</Text>
+          </View>
+
+          <View style={styles.labelContainer}>
+            <Ionicons name="flash-outline" size={22} color="green" style={styles.icon} />
+            <Text style={styles.value}>{inspectionData.Weather.windSpeed} (كم/ساعة)</Text>
+            <Text style={styles.highlight}>سرعة الرياح: </Text>
+            <Text>{'\n\n'}</Text>
+          </View>
+
+          <View style={styles.labelContainer}>
+            <Ionicons name="compass-outline" size={22} color="orange" style={styles.icon} />
+            <Text style={styles.value}>{inspectionData.Weather.windDirection} °</Text>
+            <Text style={styles.highlight}>اتجاه الرياح: </Text>
+            <Text>{'\n\n'}</Text>
+          </View>
+
         </View>
         <View style={styles.divider} />
 
         {inspectionData.Note ? (
           <View style={styles.section}>
-            <Text style={styles.header}>Note</Text>
-            <Text style={styles.value}>
-              {inspectionData.Note} <Ionicons name="receipt-outline" size={22} color="pink" style={styles.icon} />
-            </Text>
+            <Text style={styles.header}>ملاحظة</Text>
+
+            <View style={styles.labelContainer}>
+              <Text style={styles.value}>{inspectionData.Note}</Text>
+              <Ionicons name="receipt-outline" size={22} color="pink" style={styles.icon} />
+
+            </View>
           </View>
         ) : null}
 
@@ -479,7 +728,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FBF5E0',
     marginTop: 10,
     padding: 4,
-   },
+  },
   card: {
     backgroundColor: '#FFFFFF',
     borderRadius: 10,
@@ -501,12 +750,20 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 10,
   },
+  labelContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+  },
   label: {
     fontSize: 16,
     fontWeight: 'bold',
+    marginRight: 5,
   },
   value: {
     fontSize: 15,
+    maxWidth: '100%',
+    textAlign: 'right',
   },
   section: {
     marginBottom: 20,
@@ -546,17 +803,17 @@ const styles = StyleSheet.create({
 
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between', 
-    marginBottom: 20,  
+    justifyContent: 'space-between',
+    marginBottom: 20,
   },
 
   badgeContainer: {
-    position: 'relative',  
+    position: 'relative',
   },
   iconsContainer: {
     flexDirection: 'row',
-    alignItems: 'center',  
-    marginLeft: 'auto',  
+    alignItems: 'center',
+    marginLeft: 'auto',
   },
 
   badge: {

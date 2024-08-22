@@ -83,7 +83,7 @@ export default function StorageScreen({ navigation }) {
   const handleUpdateQuantity = async () => {
     try {
       if (!selectedProduct || !selectedUnit || !newQuantity || isNaN(newQuantity) || newQuantity <= 0) {
-        Alert.alert('Erreur', 'Veuillez remplir tous les champs et entrer une quantité valide.');
+        Alert.alert('خطأ', 'يرجى ملء جميع الحقول وإدخال كمية صالحة.');
         return;
       }
 
@@ -97,19 +97,19 @@ export default function StorageScreen({ navigation }) {
       const storageEntry = storageEntries.find((entry) => entry.Product === selectedProduct);
 
       if (!storageEntry) {
-        Alert.alert('Erreur', `Produit "${selectedProduct}" non trouvé dans le stock.`);
+        Alert.alert('خطأ', `المنتج "${selectedProduct}" غير موجود في المخزون.`);
         return;
       }
 
       const quantityEntry = storageEntry.Quantities.find((q) => q.Unit === selectedUnit);
 
       if (!quantityEntry) {
-        Alert.alert('Erreur', `Unité "${selectedUnit}" non trouvée pour le produit "${selectedProduct}".`);
+        Alert.alert('خطأ', `الوحدة "${selectedUnit}" غير موجودة للمنتج "${selectedProduct}".`);
         return;
       }
 
       if (newQuantity > quantityEntry.Total) {
-        Alert.alert('Erreur', 'La quantité réduite ne peut pas être supérieure à la quantité actuelle.');
+        Alert.alert('خطأ', 'الكمية المخفضة لا يمكن أن تكون أكبر من الكمية الحالية.');
         return;
       }
 
@@ -122,13 +122,13 @@ export default function StorageScreen({ navigation }) {
       if (response.status === 200 && response.data.success) {
         fetchTotals();
         setShowModal(false);
-        Alert.alert('Succès', 'Quantité mise à jour avec succès');
+        Alert.alert('نجاح', 'تم تحديث الكمية بنجاح');
       } else {
-        Alert.alert('Erreur', response.data.message || 'Erreur lors de la mise à jour de la quantité');
+        Alert.alert('خطأ', response.data.message || 'خطأ في تحديث الكمية');
       }
     } catch (error) {
       console.error('Error updating quantity:', error);
-      Alert.alert('Erreur', 'Erreur lors de la mise à jour de la quantité');
+      Alert.alert('خطأ', 'خطأ في تحديث الكمية');
     }
   };
 
@@ -141,26 +141,28 @@ export default function StorageScreen({ navigation }) {
 
   const filterUnits = (product) => {
     switch (product) {
-      case 'Miel':
-      case 'Pollen':
-        return units.filter((unit) => unit !== 'Millilitre (ml)');
-      case 'Cire d\'abeille':
-      case 'Propolis':
-        return units.filter((unit) => unit !== 'Litre (L)' && unit !== 'Millilitre (ml)');
-      case 'Gelée royale':
-        return units.filter((unit) => unit !== 'Kilogramme (kg)' && unit !== 'Litre (L)');
-      case 'Pain d\'abeille':
-        return units.filter((unit) => unit !== 'Litre (L)' && unit !== 'Millilitre (ml)');
-      case 'Venin d\'abeille':
-        return units.filter((unit) => unit !== 'Kilogramme (kg)' && unit !== 'Litre (L)');
+      case 'عسل': // Honey
+      case 'حبوب اللقاح': // Pollen
+        return units.filter((unit) => unit !== 'ملليلتر (ml)');
+      case 'شمع النحل': // Beeswax
+      case 'العكبر': // Propolis
+        return units.filter((unit) => unit !== 'لتر (L)' && unit !== 'ملليلتر (ml)');
+      case 'الهلام الملكي': // Royal Jelly
+        return units.filter((unit) => unit !== 'كيلوغرام (kg)' && unit !== 'لتر (L)');
+      case 'خبز النحل': // Bee Bread
+        return units.filter((unit) => unit !== 'لتر (L)' && unit !== 'ملليلتر (ml)');
+      case 'سم النحل': // Bee Venom
+        return units.filter((unit) => unit !== 'كيلوغرام (kg)' && unit !== 'لتر (L)');
       default:
         return units;
     }
   };
+  
+
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <HomeHeader navigation={navigation} title={'Produits en stock'} />
+      <HomeHeader navigation={navigation} title={'المنتجات المخزنة'} />
 
       <View style={[styles.centeredView]}>
         <Image
@@ -189,21 +191,23 @@ export default function StorageScreen({ navigation }) {
               return (
                 <View key={index}>
                   <Card.Content style={styles.cardContent}>
-                    <Text style={styles.productName}>{product}</Text>
+                  {isInStock && (
+                      <TouchableOpacity onPress={() => openModal(product)}>
+                        <Ionicons name="remove-circle" size={24} color="#2EB922" />
+                      </TouchableOpacity>
+                    )}
                     <View style={styles.productDetailContainer}>
                       {isInStock ? (
                         Object.entries(productTotals).map(([unit, quantity], idx) => (
                           <Text key={`${unit}-${idx}`} style={styles.productDetail}>{`${quantity} ${unit}`}</Text>
                         ))
                       ) : (
-                        <Text style={[styles.productDetail, styles.notInStock]}>Pas en stock</Text>
+                        <Text style={[styles.productDetail, styles.notInStock]}>غير متوفر في المخزون</Text>
                       )}
                     </View>
-                    {isInStock && (
-                      <TouchableOpacity onPress={() => openModal(product)}>
-                        <Ionicons name="remove-circle" size={24} color="#2EB922" />
-                      </TouchableOpacity>
-                    )}
+               
+                                        <Text style={styles.productName}>{product}</Text>
+
                   </Card.Content>
                   {index !== HarvestProducts.length - 1 && <View style={styles.divider} />}
                 </View>
@@ -221,11 +225,11 @@ export default function StorageScreen({ navigation }) {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Diminution de la quantité</Text>
+            <Text style={styles.modalTitle}>تعديل الكمية</Text>
             <Text style={styles.modalProduct}>{selectedProduct}</Text>
             <TextInput
               style={styles.input}
-              placeholder="Quantité à réduire"
+              placeholder="الكمية المراد تقليلها"
               keyboardType="numeric"
               value={newQuantity}
               onChangeText={setNewQuantity}
@@ -236,7 +240,7 @@ export default function StorageScreen({ navigation }) {
               onValueChange={(itemValue) => setSelectedUnit(itemValue)}
               style={styles.picker}
             >
-              <Picker.Item label="Unité..." value="" enabled={false} />
+              <Picker.Item label="الوحدة..." value="" enabled={false} />
               {filterUnits(selectedProduct).map((unit) => (
                 <Picker.Item label={unit} value={unit} key={unit} />
               ))}
@@ -246,13 +250,13 @@ export default function StorageScreen({ navigation }) {
                 style={[styles.modalButton, styles.buttonClose]}
                 onPress={() => setShowModal(false)}
               >
-                <Text style={styles.textStyle}>Annuler</Text>
+                <Text style={styles.textStyle}>إلغاء</Text>
               </Pressable>
               <Pressable
                 style={[styles.modalButton, styles.buttonSave]}
                 onPress={handleUpdateQuantity}
               >
-                <Text style={styles.textStyle}>Enregistrer</Text>
+                <Text style={styles.textStyle}>تعديل</Text>
               </Pressable>
             </View>
           </View>
@@ -346,6 +350,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 8,
     marginBottom: 10,
+    textAlign:'right'
   },
   picker: {
     width: '100%',

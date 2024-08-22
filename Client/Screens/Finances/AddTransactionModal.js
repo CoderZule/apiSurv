@@ -46,36 +46,37 @@ const AddTransactionModal = ({
                     <Card style={styles.card}>
                         <ScrollView contentContainerStyle={styles.scrollViewContent} keyboardShouldPersistTaps="handled">
 
-                            <Text style={styles.modalTitle}>Ajouter une transaction</Text>
+                            <Text style={styles.modalTitle}>إضافة معاملة</Text>
 
-                            <Text style={styles.label}>Type d'opération</Text>
+                            <Text style={styles.label}>نوع العملية</Text>
 
                             <View style={styles.tabContainer}>
                                 <TouchableOpacity
-                                    style={[styles.tabButton, transactionType === 'Revenus' && styles.activeTab]}
-                                    onPress={() => handleTransactionTypeChange('Revenus')}
+                                    style={[styles.tabButton, transactionType === 'الدخل' && styles.activeTab]}
+                                    onPress={() => handleTransactionTypeChange('الدخل')}
                                 >
-                                    <Text style={styles.tabText}>Revenus</Text>
+                                    <Text style={styles.tabText}>الدخل</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity
-                                    style={[styles.tabButton, transactionType === 'Dépenses' && styles.activeTab]}
-                                    onPress={() => handleTransactionTypeChange('Dépenses')}
+                                    style={[styles.tabButton, transactionType === 'النفقات' && styles.activeTab]}
+                                    onPress={() => handleTransactionTypeChange('النفقات')}
                                 >
-                                    <Text style={styles.tabText}>Dépenses</Text>
+                                    <Text style={styles.tabText}>النفقات</Text>
                                 </TouchableOpacity>
                             </View>
 
 
-                            <Text style={styles.label}>Description</Text>
+                            <Text style={styles.label}>الوصف</Text>
                             <TextInput
                                 style={styles.textInput}
+                                placeholder='الوصف'
                                 multiline={true}
                                 numberOfLines={3}
                                 onChangeText={text => setDescription(text)}
                                 value={description}
                             />
 
-                            <Text style={styles.label}>Date</Text>
+                            <Text style={styles.label}>التاريخ</Text>
                             <View style={styles.datePickerContainer}>
                                 <Pressable onPress={() => setShowDatePicker(true)}>
                                     <Text style={styles.datePickerText}>{date.toLocaleDateString()}</Text>
@@ -93,16 +94,16 @@ const AddTransactionModal = ({
                                 )}
                             </View>
 
-                            <Text style={styles.label}>Catégorie</Text>
+                            <Text style={styles.label}>الفئة</Text>
                             <View style={styles.inputContainer}>
                                 <Picker
                                     selectedValue={selectedCategory}
                                     onValueChange={(itemValue) => setSelectedCategory(itemValue)}
                                     style={styles.picker}
                                 >
-                                    <Picker.Item label="Sélectionner..." value="" enabled={false} />
-                                    {(transactionType === 'Revenus' || transactionType === 'Dépenses'
-                                        ? (transactionType === 'Revenus' ? IncomeCategory : ExpenseCategory)
+                                    <Picker.Item label="اختر..." value="" enabled={false} />
+                                    {(transactionType === 'الدخل' || transactionType === 'النفقات'
+                                        ? (transactionType === 'الدخل' ? IncomeCategory : ExpenseCategory)
                                         : []
                                     ).map((category) => (
                                         <Picker.Item label={category} value={category} key={category} />
@@ -111,10 +112,11 @@ const AddTransactionModal = ({
                             </View>
 
 
-                            <Text style={styles.label}>Montant</Text>
+                            <Text style={styles.label}>المبلغ</Text>
                             <View style={styles.amountInputContainer}>
                                 <TextInput
                                     value={amount}
+                                    placeholder='المبلغ'
                                     onChangeText={text => setAmount(text)}
                                     keyboardType="numeric"
                                     style={styles.amountTextInput}
@@ -124,9 +126,10 @@ const AddTransactionModal = ({
                                 <Text style={styles.currencyText}>د.ت</Text>
                             </View>
 
-                            <Text style={styles.label}>Note</Text>
+                            <Text style={styles.label}>ملاحظة</Text>
                             <TextInput
                                 style={styles.textInput}
+                                placeholder='ملاحظة'
                                 multiline={true}
                                 numberOfLines={5}
                                 onChangeText={text => setNote(text)}
@@ -137,10 +140,10 @@ const AddTransactionModal = ({
 
                         <View style={styles.buttonContainer}>
                             <TouchableOpacity style={styles.buttonCancel} onPress={() => closeModal()}>
-                                <Text style={styles.buttonText}>Annuler</Text>
+                                <Text style={styles.buttonText}>إلغاء</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.buttonSubmit} onPress={() => handleFormSubmit()}>
-                                <Text style={styles.buttonText}>Ajouter</Text>
+                                <Text style={styles.buttonText}>إضافة</Text>
                             </TouchableOpacity>
                         </View>
                     </Card>
@@ -228,6 +231,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         backgroundColor: '#FFFFFF',
         color: '#333333',
+        textAlign:'right'
     },
     buttonContainer: {
         flexDirection: 'row',
@@ -282,6 +286,7 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 15,
         color: '#333333',
+        textAlign:'right'
     },
     currencyText: {
         paddingRight: 15,

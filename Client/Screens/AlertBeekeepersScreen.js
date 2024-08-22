@@ -13,6 +13,7 @@ export default function AlertBeekeepersScreen({ navigation }) {
     const [loading, setLoading] = useState(true);
     const [selectedGovernorate, setSelectedGovernorate] = useState('');
 
+
     const [governorates, setGovernorates] = useState([
         "Ariana", "Beja", "Ben Arous", "Bizerte", "Gabes", "Gafsa", "Jendouba", "Kairouan",
         "Kasserine", "Kebili", "Kef", "Mahdia", "Mannouba", "Medenine",
@@ -58,14 +59,14 @@ export default function AlertBeekeepersScreen({ navigation }) {
 
     return (
         <SafeAreaView style={styles.safeArea}>
-            <HomeHeader navigation={navigation} title={'Présence de maladies'} />
+            <HomeHeader navigation={navigation} title={'وجود الأمراض'} />
             <View style={styles.pickerContainer}>
                 <Picker
                     selectedValue={selectedGovernorate}
                     onValueChange={(itemValue) => setSelectedGovernorate(itemValue)}
                     style={styles.picker}
                 >
-                    <Picker.Item label="Toutes les régions" value="" />
+                    <Picker.Item label="جميع المناطق" value="" />
                     {governorates.map((gouvernorate, index) => (
                         <Picker.Item key={index} label={gouvernorate} value={gouvernorate} />
                     ))}
@@ -85,10 +86,11 @@ export default function AlertBeekeepersScreen({ navigation }) {
                                     />
                                     <Title style={styles.title}>{inspection.Hive.Name}</Title>
                                 </View>
-                                <Paragraph style={styles.subtitle}>Rucher: <Text style={styles.boldText}>{`${inspection.Hive.Apiary.Name}`}</Text></Paragraph>
-                                <Paragraph style={styles.subtitle}>Emplacement: <Text style={styles.boldText}>{`${inspection.Hive.Apiary.Location.city}, ${inspection.Hive.Apiary.Location.governorate}`}</Text></Paragraph>
-                                <Paragraph style={styles.disease}>{`Maladie: ${inspection.BeeHealth.disease}`}</Paragraph>
-                                <Paragraph style={styles.date}>{`Date: ${new Date(inspection.InspectionDateTime).toLocaleDateString('fr-FR')}`}</Paragraph>
+                                <Paragraph style={styles.subtitle}>المنحل: <Text style={styles.boldText}>{`${inspection.Hive.Apiary.Name}`}</Text></Paragraph>
+                                <Paragraph style={styles.subtitle}>الخلية: <Text style={styles.boldText}>{`${inspection.Hive.Name}`}</Text></Paragraph>
+                                <Paragraph style={styles.subtitle}>الموقع: <Text style={styles.boldText}>{`${inspection.Hive.Apiary.Location.city}, ${inspection.Hive.Apiary.Location.governorate}`}</Text></Paragraph>
+                                <Paragraph style={styles.disease}>{`المرض: ${inspection.BeeHealth.disease}`}</Paragraph>
+                                <Paragraph style={styles.date}>{`التاريخ: ${new Date(inspection.InspectionDateTime).toLocaleDateString('fr-FR')}`}</Paragraph>
                                 <Button
                                     mode="contained"
                                     style={styles.button}
@@ -97,13 +99,13 @@ export default function AlertBeekeepersScreen({ navigation }) {
                                         console.log('Button pressed: Alerter les apiculteurs');
                                     }}
                                 >
-                                    Alerter les apiculteurs
+                                      تنبيه النحالين
                                 </Button>
                             </Card.Content>
                         </Card>
                     ))
                 ) : (
-                    <Text style={styles.error}>Aucune maladie détectée.</Text>
+                    <Text style={styles.error}>لم يتم اكتشاف أي مرض.</Text>
                 )}
             </ScrollView>
         </SafeAreaView >

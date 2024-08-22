@@ -7,42 +7,42 @@ import HomeHeader from '../Components/HomeHeader';
 export default function AboutAppScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.safeArea}>
-      <HomeHeader navigation={navigation} title={'À propos'} />
+       <HomeHeader navigation={navigation} title={'حول التطبيق'} />
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Bienvenue dans notre application pour apiculteurs, apiSUrv</Text>
+          <Text style={styles.sectionTitle}>مرحباً بكم في تطبيقنا لمربي النحل، apiSUrv</Text>
           <Text style={styles.sectionText}>
-            Découvrez une application complète dédiée à l'apiculture 🐝, conçue pour simplifier et optimiser la gestion de votre activité. Maximisez votre récolte de miel avec des outils avancés pour la gestion des ruches et des ruchers, tout en surveillant la santé de vos abeilles.
+            اكتشف تطبيقاً شاملاً مخصصاً لتربية النحل 🐝، مصمماً لتبسيط وتحسين إدارة نشاطك. قم بزيادة محصول العسل الخاص بك باستخدام أدوات متقدمة لإدارة الخلايا والمزارع، بينما تراقب صحة النحل لديك.
           </Text>
         </View>
         <View style={styles.section}>
-          <Text style={styles.sectionSubtitle}>Fonctionnalités principales :</Text>
+          <Text style={styles.sectionSubtitle}>الميزات الرئيسية:</Text>
           <View style={styles.feature}>
-            <Text style={styles.featureText}>📷 Inspections des ruches par scan de QR codes pour une gestion efficace.</Text>
+            <Text style={styles.featureText}>📷 فحص الخلايا من خلال مسح رموز QR لإدارة فعالة.</Text>
           </View>
           <View style={styles.feature}>
-            <Text style={styles.featureText}>🏠 Détails sur les ruchers et ruches pour une vue complète.</Text>
+            <Text style={styles.featureText}>🏠 تفاصيل حول المناحل والخلايا لرؤية شاملة.</Text>
           </View>
           <View style={styles.feature}>
-            <Text style={styles.featureText}>📝 Suivi des tâches quotidiennes pour une organisation sans faille.</Text>
+            <Text style={styles.featureText}>📝 متابعة المهام اليومية لتنظيم دون عوائق.</Text>
           </View>
           <View style={styles.feature}>
-            <Text style={styles.featureText}>📊 Historique des récoltes pour une gestion précise des données.</Text>
+            <Text style={styles.featureText}>📊 سجل الحصاد لإدارة دقيقة للبيانات.</Text>
           </View>
           <View style={styles.feature}>
-            <Text style={styles.featureText}>📦 Gestion des stocks pour un suivi efficace des ressources.</Text>
+            <Text style={styles.featureText}>📦 إدارة المخزون لمتابعة فعالة للموارد.</Text>
           </View>
           <View style={styles.feature}>
-            <Text style={styles.featureText}>💰 Gestion des finances pour une transparence totale.</Text>
+            <Text style={styles.featureText}>💰 إدارة الشؤون المالية لتحقيق الشفافية الكاملة.</Text>
           </View>
           <View style={styles.feature}>
-            <Text style={styles.featureText}>📈 Statistiques détaillées pour des décisions informées.</Text>
+            <Text style={styles.featureText}>📈 إحصاءات مفصلة لاتخاذ قرارات مدروسة.</Text>
           </View>
           <View style={styles.feature}>
-            <Text style={styles.featureText}>🔍 Surveillance proactive de la santé des abeilles.</Text>
+            <Text style={styles.featureText}>🔍 مراقبة استباقية لصحة النحل.</Text>
           </View>
           <View style={styles.feature}>
-            <Text style={styles.featureText}>📸 Galerie pour stocker et organiser des photos et vidéos de vos inspections et récoltes.</Text>
+            <Text style={styles.featureText}>📸 معرض لتخزين وتنظيم الصور ومقاطع الفيديو للفحوصات والحصاد.</Text>
           </View>
         </View>
       </ScrollView>
@@ -53,7 +53,7 @@ export default function AboutAppScreen({ navigation }) {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFF9F0',
+    backgroundColor: '#FBF5E0'
   },
   container: {
     paddingHorizontal: 24,

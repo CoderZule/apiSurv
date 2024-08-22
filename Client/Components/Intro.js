@@ -9,11 +9,12 @@ const Intro = () => {
   
   const styles = StyleSheet.create({
     title: {
-      fontSize: 19,
+      fontSize: 25, 
       fontWeight:'bold',
        marginTop: 30,
-      marginBottom: 5,
+      marginBottom: 13,
        color: '#977700',
+       textAlign: 'center',
      },
     image: {
       width: 330,
@@ -21,9 +22,9 @@ const Intro = () => {
     },
     text: {
       textAlign:"center",
-      fontSize: 15,
+      fontSize: 17,
       fontFamily:'',
-      color: '#342D21',
+      color: '#969696',
      },
     button: {
       marginTop: 20,
@@ -45,22 +46,22 @@ const Intro = () => {
   const slides = [
     {
       key: 1,
-      title: 'Maximisez Votre Récolte de Miel',
-      text: 'Optimisez vos récoltes et suivez \nvotre production avec facilité',
+      title: 'حقق أقصى استفادة من محصول العسل الخاص بك',
+      text: 'قم بتحسين محاصيلك وتتبع إنتاجك بسهولة',
       image: require('../assets/Intro/intro1.png'),
       backgroundColor: '#59b2ab',
     },
     {
       key: 2,
-      title: 'Surveillez la Santé de Vos Abeilles',
-      text: 'Gardez un œil sur la santé de vos\n abeilles pour des colonies vigoureuses',
+      title: 'راقب صحة نحلك',
+      text: 'راقب صحة نحلك لضمان مستعمرات قوية',
       image: require('../assets/Intro/intro2.png'),
       backgroundColor: '#febe29',
     },
     {
       key: 3,
-      title: 'Gérez Vos Ruchers avec Simplicité',
-      text: 'Accédez aux données de vos\nruchers instantanément avec le scan QR',
+      title: 'قم بإدارة مناحلك ببساطة',
+      text: 'احصل على بيانات مناحلك فورًا باستخدام مسح QR',
       image: require('../assets/Intro/intro3.png'),
       backgroundColor: '#22bcb5',
     }
@@ -74,7 +75,7 @@ const Intro = () => {
         <Text style={styles.text}>{item.text}</Text>
          {index === slides.length - 1 && (
           <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login')}>
-            <Text style={styles.buttonText}>Commencer</Text>
+            <Text style={styles.buttonText}>ابدأ</Text>
           </TouchableOpacity>
         )}
       </View>

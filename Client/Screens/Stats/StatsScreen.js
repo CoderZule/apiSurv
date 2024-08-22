@@ -15,9 +15,9 @@ export default function StatsScreen({ navigation }) {
   const [currentUser, setCurrentUser] = useState(null);
   const isFocused = useIsFocused();
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedReport, setSelectedReport] = useState('Finances');
-  const [selectedUnit, setSelectedUnit] = useState('Litre (L)');
-  const [selectedProduct, setSelectedProduct] = useState('Miel');
+  const [selectedReport, setSelectedReport] = useState('المعاملات المالية');
+  const [selectedUnit, setSelectedUnit] = useState('لتر (L)');
+  const [selectedProduct, setSelectedProduct] = useState('عسل');
 
   const [apiaries, setApiaries] = useState([]);
   const [transactions, setTransactions] = useState([]);
@@ -93,21 +93,21 @@ export default function StatsScreen({ navigation }) {
         transactions.forEach(transaction => {
           const transactionYear = new Date(transaction.TransactionDate).getFullYear();
           if (transactionYear === currentYear) {
-            if (transaction.OperationType === 'Revenus') {
+            if (transaction.OperationType === 'الدخل') {
               currentYearTotals.revenues += transaction.Amount;
-            } else if (transaction.OperationType === 'Dépenses') {
+            } else if (transaction.OperationType === 'النفقات') {
               currentYearTotals.expenses += transaction.Amount;
             }
           } else if (transactionYear === previousYear) {
-            if (transaction.OperationType === 'Revenus') {
+            if (transaction.OperationType === 'الدخل') {
               previousYearTotals.revenues += transaction.Amount;
-            } else if (transaction.OperationType === 'Dépenses') {
+            } else if (transaction.OperationType === 'النفقات') {
               previousYearTotals.expenses += transaction.Amount;
             }
           }
         });
 
-         const currentYearTotal = currentYearTotals.revenues - currentYearTotals.expenses;
+        const currentYearTotal = currentYearTotals.revenues - currentYearTotals.expenses;
         const previousYearTotal = previousYearTotals.revenues - previousYearTotals.expenses;
 
         setChartDataFinances({
@@ -195,11 +195,12 @@ export default function StatsScreen({ navigation }) {
 
 
   const unitAbbreviations = {
-    "Litre (L)": "L",
-    "Kilogramme (kg)": "kg",
-    "Gramme (g)": "g",
-    "Millilitre (ml)": "ml",
+    "لتر (L)": "L",
+    "كيلوجرام (kg)": "kg",
+    "جرام (g)": "g",
+    "ميليلتر (ml)": "ml",
   };
+
 
   const chartConfigHarvest = {
     backgroundGradientFrom: "#FBF5E0",
@@ -216,7 +217,11 @@ export default function StatsScreen({ navigation }) {
       stroke: "#e3e3e3",
       strokeDasharray: "0",
     },
-    formatYLabel: (value) => `${parseFloat(value).toFixed(1)} ${unitAbbreviations[selectedUnit]}`,
+    formatYLabel: (value) => {
+      const unitLabel = unitAbbreviations[selectedUnit] || '';
+      return `${parseFloat(value).toFixed(1)} ${unitLabel}`;
+    },
+
   };
 
   const currentQuantity = chartDataHarvest.datasets[0].data[0];
@@ -248,12 +253,13 @@ export default function StatsScreen({ navigation }) {
 
 
   const strengthMapping = {
-    "Très Faible": 0,
-    "Faible": 25,
-    "Modérée": 50,
-    "Forte": 75,
-    "Très Forte": 100,
+    "ضعيف جداً": 0,
+    "ضعيف": 25,
+    "معتدل": 50,
+    "قوي": 75,
+    "قوي جداً": 100,
   };
+
 
   useEffect(() => {
     const fetchHivesByApiary = async () => {
@@ -264,33 +270,33 @@ export default function StatsScreen({ navigation }) {
         const response = await axios.get('/hive/getHivesByApiary', {
           params: { apiaryId: selectedApiary },
         });
-        const hives = response.data.data;  
+        const hives = response.data.data;
 
-     
+
         if (!Array.isArray(hives) || hives.length === 0) {
           setChartDataStrength({
             labels: [],
             datasets: [{ data: [] }],
           });
-          setSingleHiveMessage('Aucune ruche disponible dans ce rucher.'); 
+          setSingleHiveMessage('لا توجد خلايا نحل متاحة في هذا المنحل.');
           return;
         }
 
-      
+
         const colonyStrengths = hives.map(hive => ({
           name: hive.Name,
-          strength: strengthMapping[hive.Colony.strength] || 0,  
+          strength: strengthMapping[hive.Colony.strength] || 0,
         }));
 
-     
+
         if (colonyStrengths.length === 1) {
-          const singleHive = colonyStrengths[0];  
-          setSingleHiveMessage(`Vous n'avez qu'une seule ruche avec une force de ${singleHive.strength}%`);
+          const singleHive = colonyStrengths[0];
+          setSingleHiveMessage(`لديك خلية نحل واحدة فقط بقوة ${singleHive.strength}%`);
         } else {
-         
+
           const topColonyStrengths = colonyStrengths
-            .sort((a, b) => b.strength - a.strength) 
-            .slice(0, 3);  
+            .sort((a, b) => b.strength - a.strength)
+            .slice(0, 3);
 
           setChartDataStrength({
             labels: topColonyStrengths.map(colony => colony.name),
@@ -298,7 +304,7 @@ export default function StatsScreen({ navigation }) {
               data: topColonyStrengths.map(colony => colony.strength),
             }]
           });
-          setSingleHiveMessage('');  
+          setSingleHiveMessage('');
         }
       } catch (error) {
         console.error('Error fetching hives:', error);
@@ -328,24 +334,42 @@ export default function StatsScreen({ navigation }) {
     formatYLabel: (value) => `${parseFloat(value).toFixed(0)} %`,
   };
 
+  const filteredUnits = units.filter(unit => {
+    switch (selectedProduct) {
+      case 'عسل': // Honey
+      case 'حبوب اللقاح': // Pollen
+        return !['ملليلتر (ml)'].includes(unit);
+      case 'شمع النحل': // Beeswax
+      case 'العكبر': // Propolis
+      case 'خبز النحل': // Bee Bread
+        return !['لتر (L)', 'ملليلتر (ml)'].includes(unit);
+      case 'الهلام الملكي': // Royal Jelly
+        return !['كيلوغرام (kg)', 'لتر (L)'].includes(unit);
+      case 'سم النحل': // Bee Venom
+        return !['كيلوغرام (kg)', 'لتر (L)'].includes(unit);
+      default:
+        return true;
+    }
+  });
+
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <HomeHeader navigation={navigation} title={'Stats et Graphs'} />
+      <HomeHeader navigation={navigation} title={'الإحصائيات والرسوم البيانية'} />
       <View style={styles.container}>
         <Picker
           selectedValue={selectedReport}
           style={styles.picker}
           onValueChange={(itemValue) => setSelectedReport(itemValue)}
         >
-          <Picker.Item label="Finances" value="Finances" />
-          <Picker.Item label="Récoltes" value="Récoltes" />
-          <Picker.Item label="Force" value="Force" />
+          <Picker.Item label="المعاملات المالية" value="المعاملات المالية" />
+          <Picker.Item label="الحصاد" value="الحصاد" />
+          <Picker.Item label="قوة خلايا النحل" value="قوة خلايا النحل" />
 
 
         </Picker>
 
-        {selectedReport === 'Finances' && (
+        {selectedReport === "المعاملات المالية" && (
           <Card
             style={styles.card}
             onLayout={(event) => {
@@ -353,7 +377,7 @@ export default function StatsScreen({ navigation }) {
               setCardWidth(width);
             }}
           >
-            <Text style={styles.title}>Dernières Transactions</Text>
+            <Text style={styles.title}>أحدث المعاملات</Text>
             {isLoading ? (
               <View style={[styles.container, styles.loadingContainer]}>
                 <LottieView
@@ -378,42 +402,51 @@ export default function StatsScreen({ navigation }) {
                     />
                   )}
                   <View style={styles.balanceContainer}>
+
                     <View style={styles.balanceSection}>
-                      <Text style={styles.balanceTitle}>Solde Année Courante</Text>
+                      <Text style={styles.balanceTitle}>الرصيد للسنة السابقة</Text>
                       <View style={styles.divider} />
                       <View style={styles.inlineContainer}>
-                        <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Total: </Text>
-                        <Text style={styles.balanceTextTotal}>{Math.abs(financialData.currentYearTotal).toLocaleString()} {financialData.currentYearTotal >= 0 ? '' : '-'} د.ت </Text>
-                      </View>
-                      <View style={styles.inlineContainer}>
-                        <Text>Revenus: </Text>
-                        <Text style={styles.balanceTextRevenus}>{financialData.currentYearRevenues} د.ت</Text>
-                      </View>
-                      <View style={styles.inlineContainer}>
-                        <Text>Dépenses: </Text>
-                        <Text style={styles.balanceTextDepenses}>{financialData.currentYearExpenses} - د.ت </Text>
-                      </View>
-                    </View>
-                    <View style={styles.balanceSection}>
-                      <Text style={styles.balanceTitle}>Solde Année Précédente</Text>
-                      <View style={styles.divider} />
-                      <View style={styles.inlineContainer}>
-                        <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Total: </Text>
                         <Text style={styles.balanceTextTotal}>{Math.abs(financialData.previousYearTotal).toLocaleString()} {financialData.previousYearTotal >= 0 ? '' : '-'} د.ت </Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 16 }}>الإجمالي: </Text>
+
                       </View>
                       <View style={styles.inlineContainer}>
-                        <Text>Revenus: </Text>
                         <Text style={styles.balanceTextRevenus}>{financialData.previousYearRevenues} د.ت</Text>
+                        <Text>الدخل: </Text>
                       </View>
                       <View style={styles.inlineContainer}>
-                        <Text>Dépenses: </Text>
                         <Text style={styles.balanceTextDepenses}>{financialData.previousYearExpenses} - د.ت </Text>
+                        <Text>النفقات:</Text>
                       </View>
                     </View>
+
+                    <View style={styles.balanceSection}>
+                      <Text style={styles.balanceTitle}>الرصيد للسنة{'\n'}الحالية</Text>
+
+
+                      <View style={styles.divider} />
+
+                      <View style={styles.inlineContainer}>
+                        <Text style={styles.balanceTextTotal}>{Math.abs(financialData.currentYearTotal).toLocaleString()} {financialData.currentYearTotal >= 0 ? '' : '-'} د.ت </Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 16 }}>الإجمالي: </Text>
+                      </View>
+                      <View style={styles.inlineContainer}>
+                        <Text style={styles.balanceTextRevenus}>{financialData.currentYearRevenues} د.ت</Text>
+                        <Text>الدخل: </Text>
+                      </View>
+                      <View style={styles.inlineContainer}>
+                        <Text style={styles.balanceTextDepenses}>{financialData.currentYearExpenses} - د.ت </Text>
+                        <Text>النفقات: </Text>
+                      </View>
+                    </View>
+
+
                   </View>
                 </>
               ) : (
-                <Text style={styles.noDataText}>Vous n'avez aucune transaction pour l'instant.</Text>
+                <Text style={styles.noDataText}>لا توجد معاملات حالياً.</Text>
+
               )
             )}
           </Card>
@@ -421,21 +454,19 @@ export default function StatsScreen({ navigation }) {
 
 
 
-        {selectedReport === 'Force' && (
+        {selectedReport === "قوة خلايا النحل" && (
           <Card style={[styles.card, { width: cardWidth }]} onLayout={(event) => setCardWidth(event.nativeEvent.layout.width)}>
-            <Text style={styles.title}>Top 3 Ruches en Force</Text>
-
-
+            <Text style={styles.title}>أعلى 3  خلايا نحل من حيث القوة</Text>
 
             {apiaries.length > 0 ? (
               <View>
                 <View style={styles.pickerContainer}>
-                  <Text style={styles.pickerTitle}>Rucher:</Text>
+
                   <Picker
                     selectedValue={selectedApiary}
                     onValueChange={(itemValue) => {
                       setSelectedApiary(itemValue);
-                      setSingleHiveMessage('');  
+                      setSingleHiveMessage('');
                       setChartDataStrength({
                         labels: [],
                         datasets: [{ data: [] }],
@@ -443,10 +474,15 @@ export default function StatsScreen({ navigation }) {
                     }}
                     style={styles.pickerSelect}
                   >
+                    <Picker.Item label="اختر منحل" value="" enabled={false} />
+
                     {apiaries.map(apiary => (
                       <Picker.Item key={apiary._id} label={apiary.Name} value={apiary._id} />
                     ))}
                   </Picker>
+
+                  <Text style={styles.pickerTitle}>المنحل:</Text>
+
                 </View>
                 {isLoading ? (
                   <View style={[styles.container, styles.loadingContainer]}>
@@ -477,14 +513,14 @@ export default function StatsScreen({ navigation }) {
               </View>
             ) : (
 
-              <Text style={styles.noDataText}>Vous n'avez aucun rucher pour l'instant.
+              <Text style={styles.noDataText}>ليس لديك أي مناحل في الوقت الراهن.
               </Text>
             )}
 
           </Card>
         )}
 
-        {selectedReport === 'Récoltes' && (
+        {selectedReport === "الحصاد" && (
           <Card
             style={styles.card}
             onLayout={(event) => {
@@ -492,12 +528,11 @@ export default function StatsScreen({ navigation }) {
               setCardWidth(width);
             }}
           >
-            <Text style={styles.title}>Dernières Récoltes</Text>
+            <Text style={styles.title}>أحدث المحاصيل</Text>
 
             <View style={styles.pickerContainer}>
 
 
-              <Text style={styles.pickerTitle}>Produit:</Text>
               <Picker
                 selectedValue={selectedProduct}
                 style={styles.pickerSelect}
@@ -510,29 +545,28 @@ export default function StatsScreen({ navigation }) {
                   <Picker.Item key={product} label={product} value={product} />
                 ))}
               </Picker>
+
+              <Text style={styles.pickerTitle}>المنتج:</Text>
             </View>
 
 
             <View style={styles.pickerContainer}>
 
-
-              <Text style={styles.pickerTitle}>Unité:</Text>
               <Picker
                 selectedValue={selectedUnit}
                 style={styles.pickerSelect}
                 onValueChange={(itemValue) => setSelectedUnit(itemValue)}
               >
 
-                {units.map(unit => (
+                {filteredUnits.map(unit => (
                   <Picker.Item key={unit} label={unit} value={unit} />
                 ))}
               </Picker>
+              <Text style={styles.pickerTitle}>الوحدة:</Text>
             </View>
 
 
             <View style={styles.pickerContainer}>
-
-              <Text style={styles.pickerTitle}>Année:</Text>
               <Picker
                 selectedValue={selectedYear}
                 onValueChange={(itemValue) => setSelectedYear(itemValue)}
@@ -543,6 +577,7 @@ export default function StatsScreen({ navigation }) {
                   return <Picker.Item key={year} label={year.toString()} value={year} />;
                 })}
               </Picker>
+              <Text style={styles.pickerTitle}>السنة:</Text>
             </View>
 
             {isLoading ? (
@@ -567,7 +602,8 @@ export default function StatsScreen({ navigation }) {
                 />
               ) : (
 
-                <Text style={styles.noDataText}>Aucune donnée disponible</Text>
+                <Text style={styles.noDataText}>لا توجد بيانات.</Text>
+
 
               )
             )}
@@ -664,26 +700,27 @@ const styles = StyleSheet.create({
 
   noDataText: {
     textAlign: 'center',
-    justifyContent:'center',
+    justifyContent: 'center',
     fontSize: 16,
     color: '#888',
     marginTop: 20,
   },
   pickerContainer: {
     marginTop: 15,
-    flexDirection: 'row',  
-    alignItems: 'center',  
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   pickerTitle: {
     fontSize: 16,
     marginTop: 15,
     fontWeight: 'bold',
     marginBottom: 10,
-    marginRight: 10,  
+    marginLeft: 10,
     textAlign: 'center',
   },
   pickerSelect: {
     backgroundColor: '#E8E8E8',
     width: '75%',
+
   },
 });

@@ -11,14 +11,12 @@ import {
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { FontAwesome5 } from '@expo/vector-icons';
-
-import axios from '../../axiosConfig'
+import axios from '../../axiosConfig';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LoginScreen() {
   const navigation = useNavigation();
-
 
   const [form, setForm] = useState({
     email: '',
@@ -31,25 +29,23 @@ export default function LoginScreen() {
       const response = await axios.post('/user/login', {
         Email: form.email,
         Password: form.password,
-        platform: 'mobile',  
+        platform: 'mobile',
       });
-  
+
       await AsyncStorage.multiSet([
         ['token', response.data.token],
         ['currentUser', JSON.stringify(response.data.currentUser)],
       ]);
-  
-      // Prevent user from going back to the login screen after login
+
       navigation.reset({
         index: 0,
-        routes: [{ name: 'DrawerNavigator' }], // Reset to the drawer navigator
+        routes: [{ name: 'DrawerNavigator' }],
       });
-  
+
     } catch (error) {
-      Alert.alert('Échec de connexion', 'Identifiants invalides. Veuillez réessayer.');
+      Alert.alert('فشل الاتصال', 'بيانات الاعتماد غير صحيحة. يرجى المحاولة مرة أخرى.');
     }
   };
-  
 
   const togglePasswordVisibility = () => {
     setForm({ ...form, hidePassword: !form.hidePassword });
@@ -57,25 +53,25 @@ export default function LoginScreen() {
 
   const handlePress = () => {
     Alert.alert(
-      'Confirmation',
-      "Voulez-vous vraiment envoyer un email pour réinitialiser votre mot de passe?",
+      'تأكيد',
+      "هل أنت متأكد أنك تريد إرسال بريد إلكتروني لإعادة تعيين كلمة المرور الخاصة بك؟",
       [
         {
-          text: 'Annuler',
+          text: 'إلغاء',
           style: 'cancel',
         },
         {
-          text: 'Envoyer',
+          text: 'إرسال',
           onPress: () => {
-            const subject = encodeURIComponent('Réinitialisation du mot de passe'); 
-            const body = encodeURIComponent('Bonjour,\n\nJe vous prie de réinitialiser mon mot de passe.\n\nCordialement,');         
+            const subject = encodeURIComponent('إعادة تعيين كلمة المرور');
+            const body = encodeURIComponent('مرحباً،\n\nأرجو إعادة تعيين كلمة المرور الخاصة بي.\n\nمع تحياتي،');
             Linking.openURL(`mailto:adminapisurv@gmail.com?subject=${subject}&body=${body}`);
           },
         },
       ],
       { cancelable: false }
     );
-  }
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -88,15 +84,15 @@ export default function LoginScreen() {
               source={require('../../assets/logo.png')}
             />
             <Text style={styles.subtitle}>
-              Connectez-vous à votre compte
+              تسجيل الدخول إلى حسابك
             </Text>
           </View>
 
           <View style={styles.form}>
             <View style={styles.input}>
-              <Text style={styles.inputLabel}>E-mail</Text>
+              <Text style={styles.inputLabel}>البريد الإلكتروني</Text>
               <View style={styles.inputContainer}>
-              <FontAwesome5 name="envelope" size={22} color="#977700" style={styles.inputIcon} />
+                <FontAwesome5 name="envelope" size={22} color="#977700" style={styles.inputIcon} />
                 <TextInput
                   autoCapitalize="none"
                   autoCorrect={false}
@@ -105,32 +101,31 @@ export default function LoginScreen() {
                   onChangeText={email => setForm({ ...form, email })}
                   placeholder="exemple@apisurv.com"
                   placeholderTextColor="#6b7280"
-                  style={styles.inputControl}
                   value={form.email}
                 />
               </View>
             </View>
 
             <View style={styles.input}>
-              <Text style={styles.inputLabel}>Mot de passe</Text>
+              <Text style={styles.inputLabel}>كلمة المرور</Text>
               <View style={styles.inputContainer}>
-              <FontAwesome5  name="lock" size={22} color="#977700" style={styles.inputIcon} />
+                <FontAwesome5 name="lock" size={22} color="#977700" style={styles.inputIcon} />
                 <TextInput
                   autoCorrect={false}
                   clearButtonMode="while-editing"
                   onChangeText={password => setForm({ ...form, password })}
                   placeholder="********"
                   placeholderTextColor="#6b7280"
-                  style={styles.inputControl}
                   secureTextEntry={form.hidePassword}
                   value={form.password}
+                  style={styles.inputField}
                 />
                 <TouchableOpacity onPress={togglePasswordVisibility}>
-                <FontAwesome5 
+                  <FontAwesome5
                     name={form.hidePassword ? 'eye-slash' : 'eye'}
                     size={22}
                     color="#6b7280"
-                    style={styles.inputIcon}
+                    style={styles.inputIconEye}
                   />
                 </TouchableOpacity>
               </View>
@@ -139,16 +134,14 @@ export default function LoginScreen() {
             <View style={styles.formAction}>
               <TouchableOpacity onPress={handleLogin}>
                 <View style={styles.btn}>
-                  <Text style={styles.btnText}>Se connecter</Text>
+                  <Text style={styles.btnText}>تسجيل الدخول</Text>
                 </View>
               </TouchableOpacity>
             </View>
 
             <Text style={styles.formLink} onPress={handlePress}>
-              Mot de passe oublié?
+              نسيت كلمة المرور؟
             </Text>
-
-
           </View>
         </KeyboardAwareScrollView>
       </View>
@@ -190,11 +183,10 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     flexBasis: 0,
     backgroundColor: '#fff',
-    borderTopLeftRadius: 50,   
-    borderTopRightRadius: 50,  
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
     paddingVertical: 45,
   },
-
   input: {
     marginBottom: 16,
   },
@@ -209,7 +201,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#f9f9f9',
-
     borderRadius: 30,
     paddingHorizontal: 10,
     paddingVertical: 8,
@@ -219,12 +210,13 @@ const styles = StyleSheet.create({
   inputIcon: {
     padding: 10,
   },
-  inputControl: {
+  inputField: {
     flex: 1,
-    paddingHorizontal: 8,
     fontSize: 15,
-    fontWeight: '500',
     color: '#342D21',
+  },
+  inputIconEye: {
+    marginLeft: 10,
   },
   formAction: {
     marginTop: 16,
@@ -246,7 +238,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     backgroundColor: '#FEE502',
     borderRadius: 30,
-
   },
   btnText: {
     fontSize: 17,

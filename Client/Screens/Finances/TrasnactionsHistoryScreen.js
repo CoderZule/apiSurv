@@ -55,7 +55,7 @@ export default function TransactionsHistoryScreen({ navigation }) {
       setTransactions(response.data.data);
     } catch (error) {
       console.error('Error fetching transactions data:', error);
-      Alert.alert('Error', 'Erreur lors du chargement des transactions');
+      Alert.alert('خطأ', 'حدث خطأ أثناء تحميل المعاملات');
     }
     finally {
       setIsLoading(false);
@@ -80,13 +80,13 @@ export default function TransactionsHistoryScreen({ navigation }) {
 
   const handleFormSubmit = async () => {
     if (!description || !amount || !date) {
-      return Alert.alert('Erreur', 'Veuillez remplir tous les champs');
+      return Alert.alert('خطأ', 'يرجى ملء جميع الحقول');
     }
     if (operationType && !selectedCategory) {
-      return Alert.alert('Erreur', "Veuillez sélectionner une catégorie");
+      return Alert.alert('خطأ', "يرجى اختيار فئة");
     }
     if (!operationType) {
-      return Alert.alert('Erreur', "Veuillez préciser le type d'opération");
+      return Alert.alert('خطأ', "يرجى تحديد نوع العملية");
     }
     else {
       try {
@@ -102,7 +102,7 @@ export default function TransactionsHistoryScreen({ navigation }) {
         };
 
         const response = await axios.post('/transaction/create', formData);
-        Alert.alert('Success', 'Transaction ajoutée avec succès');
+        Alert.alert('نجاح', 'تمت إضافة المعاملة بنجاح');
 
         setOperationType('');
         setDescription('');
@@ -115,7 +115,7 @@ export default function TransactionsHistoryScreen({ navigation }) {
 
       } catch (error) {
         console.error('Error creating transaction entry:', error);
-        Alert.alert('Error', 'Erreur lors de l\'ajout de la transaction');
+        Alert.alert('خطأ', 'حدث خطأ أثناء إضافة المعاملة');
       }
     }
   };
@@ -134,16 +134,17 @@ export default function TransactionsHistoryScreen({ navigation }) {
           badge: index === lastItemIndex ? true : false,
         })}
       >
-        <Text style={styles.tableCell}>{item.Category}</Text>
-        <Text style={styles.tableCell}>{item.Amount} د.ت</Text>
-        <Text style={styles.tableCell}>
+          <Text style={styles.tableCell}>
           {new Date(item.TransactionDate).toLocaleDateString('fr-FR')}{'\n'}
           {index === lastItemIndex && (
             <View style={styles.badge}>
-              <Text style={{ color: 'white', fontSize: 9, fontWeight: 'bold' }}>Dernière transaction</Text>
+             <Text style={{ color: 'white', fontSize: 12, fontWeight: 'bold', textAlign:'right' }}>آخر معاملة</Text>
             </View>
           )}
         </Text>
+        <Text style={styles.tableCell}>{item.Amount} د.ت</Text>
+        <Text style={styles.tableCell}>{item.Category}</Text>
+
 
       </TouchableOpacity>
     );
@@ -153,7 +154,7 @@ export default function TransactionsHistoryScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <HomeHeader navigation={navigation} title={'Finances'} />
+      <HomeHeader navigation={navigation} title={'المعاملات المالية'} />
       <ScrollView horizontal={true}>
         <Card style={styles.card}>
 
@@ -168,9 +169,9 @@ export default function TransactionsHistoryScreen({ navigation }) {
           <ScrollView horizontal={true}>
             <View style={styles.table}>
               <View style={styles.tableHeader}>
-                <Text style={styles.tableHeaderText}>Catégorie</Text>
-                <Text style={styles.tableHeaderText}>Montant</Text>
-                <Text style={styles.tableHeaderText}>Date</Text>
+              <Text style={styles.tableHeaderText}>التاريخ</Text>
+              <Text style={styles.tableHeaderText}>المبلغ</Text>
+              <Text style={styles.tableHeaderText}>الفئة</Text>
 
               </View>
 
@@ -192,7 +193,7 @@ export default function TransactionsHistoryScreen({ navigation }) {
                   ListEmptyComponent={
                     <View style={styles.tableRow}>
                       <Text style={styles.noDataCell}>
-                        Aucune transaction trouvée.
+                      لا يوجد أي معاملات حتى الآن.
                       </Text>
                     </View>
                   }
@@ -288,17 +289,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   badge: {
-
-
     backgroundColor: "#2EB922",
-    borderRadius: 12,
-    padding: 4,
+    borderRadius: 10,
+    paddingHorizontal: 6,
+    paddingVertical: 4,
     alignItems: 'center',
     justifyContent: 'center',
-
-
-
-
   },
   container: {
     flex: 1,

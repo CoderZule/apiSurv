@@ -14,12 +14,12 @@ export default function ChangePasswordOnFirstLogin({ visible, onClose, userId })
 
     const handlePasswordChange = async () => {
         if (!newPassword || !confirmPassword) {
-            setError("Veuillez saisir un nouveau mot de passe.");
+            setError("يرجى إدخال كلمة مرور جديدة.");
             return;
         }
 
         if (newPassword !== confirmPassword) {
-            setError("Les mots de passe ne correspondent pas.");
+            setError("كلمات المرور غير متطابقة.");
             return;
         }
 
@@ -30,7 +30,7 @@ export default function ChangePasswordOnFirstLogin({ visible, onClose, userId })
             });
 
             if (response.data.success) {
-               
+
                 const currentUserString = await AsyncStorage.getItem('currentUser');
                 if (currentUserString) {
                     const user = JSON.parse(currentUserString);
@@ -38,18 +38,18 @@ export default function ChangePasswordOnFirstLogin({ visible, onClose, userId })
                     await AsyncStorage.setItem('currentUser', JSON.stringify(updatedUser));
                 }
                 Alert.alert(
-                    "Succès",
-                    "Le mot de passe a été changé avec succès.",
-                    [{ text: "OK", onPress: onClose }]
+                    "نجاح",
+                    "تم تغيير كلمة المرور بنجاح.",
+                    [{ text: "موافق", onPress: onClose }]
                 );
             } else {
-                setError("Erreur lors du changement de mot de passe.");
+                setError("خطأ أثناء تغيير كلمة المرور.");
             }
         } catch (error) {
             if (error.response && error.response.status === 400) {
-                setError("Le nouveau mot de passe ne peut pas être le même que l'ancien.");
+                setError("لا يمكن أن تكون كلمة المرور الجديدة هي نفسها القديمة.");
             } else {
-                setError("Erreur lors du changement de mot de passe.");
+                setError("خطأ أثناء تغيير كلمة المرور.");
                 console.error(error);
             }
         }
@@ -73,18 +73,10 @@ export default function ChangePasswordOnFirstLogin({ visible, onClose, userId })
         >
             <View style={styles.modalContainer}>
                 <View style={styles.modalContent}>
-                    <Text style={styles.modalTitle}>Changer le mot de passe</Text>
-                    <Text style={styles.modalSubTitle}>Votre mot de passe a expiré. Veuillez saisir un nouveau mot de passe</Text>
+                    <Text style={styles.modalTitle}>تغيير كلمة المرور</Text>
+                    <Text style={styles.modalSubTitle}>كلمة مرورك انتهت صلاحيتها. يرجى إدخال كلمة مرور جديدة</Text>
                     <View style={styles.inputContainer}>
                         <View style={styles.input}>
-
-                            <TextInput
-                                placeholder="Nouveau mot de passe"
-                                secureTextEntry={hideNewPassword}
-                                value={newPassword}
-                                onChangeText={setNewPassword}
-                                style={{ flex: 1 }}
-                            />
                             <TouchableOpacity onPress={toggleNewPasswordVisibility}>
                                 <FontAwesome5
                                     name={hideNewPassword ? 'eye-slash' : 'eye'}
@@ -93,18 +85,19 @@ export default function ChangePasswordOnFirstLogin({ visible, onClose, userId })
                                     style={styles.inputIcon}
                                 />
                             </TouchableOpacity>
+                            <TextInput
+                                placeholder="كلمة مرور جديدة"
+                                secureTextEntry={hideNewPassword}
+                                value={newPassword}
+                                onChangeText={setNewPassword}
+                                style={{ flex: 1, textAlign:'right' }}
+                            />
+                            <FontAwesome5 name="lock" size={22} color="#977700" style={styles.inputIcon} />
+
                         </View>
                     </View>
                     <View style={styles.inputContainer}>
                         <View style={styles.input}>
-
-                            <TextInput
-                                placeholder="Confirmer le mot de passe"
-                                secureTextEntry={hideConfirmPassword}
-                                value={confirmPassword}
-                                onChangeText={setConfirmPassword}
-                                style={{ flex: 1 }}
-                            />
                             <TouchableOpacity onPress={toggleConfirmPasswordVisibility}>
                                 <FontAwesome5
                                     name={hideConfirmPassword ? 'eye-slash' : 'eye'}
@@ -113,6 +106,17 @@ export default function ChangePasswordOnFirstLogin({ visible, onClose, userId })
                                     style={styles.inputIcon}
                                 />
                             </TouchableOpacity>
+
+                            <TextInput
+                                placeholder="تأكيد كلمة المرور"
+                                secureTextEntry={hideConfirmPassword}
+                                value={confirmPassword}
+                                onChangeText={setConfirmPassword}
+                                style={{ flex: 1, textAlign:'right' }}
+                            />
+                            <FontAwesome5 name="lock" size={22} color="#977700" style={styles.inputIcon} />
+
+
                         </View>
                     </View>
                     {error ? <Text style={styles.errorText}>{error}</Text> : null}
@@ -157,6 +161,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         width: '100%',
         marginBottom: 10,
+        backgroundColor: '#f9f9f9'
+        
     },
     input: {
         flexDirection: 'row',
@@ -168,6 +174,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 5,
         marginRight: 10,
+ 
     },
     errorText: {
         color: 'red',

@@ -1,114 +1,143 @@
+export const colors = ['أحمر', 'أزرق', 'أخضر', 'أصفر', 'برتقالي', 'بنفسجي', 'وردي', 'بني', 'أبيض', 'أسود'];
+export const queenColors = ['أحمر', 'أزرق', 'أخضر', 'أصفر', 'أبيض'];
 
-export const colors = ['Rouge', 'Bleu', 'Vert', 'Jaune', 'Orange', 'Violet', 'Rose', 'Marron', 'Blanc', 'Noir'];
-export const queenColors = ['Rouge', 'Bleu', 'Vert', 'Jaune', 'Blanc'];
 
-export const queen_cells = ['Aucun', 'Essaim', 'Supersedure', 'Urgence'];
+export const queen_cells = ['لا شيء', 'تطريد', 'استبدال', 'طارئ'];
+
 export const temperament = [
-  "Agressive",
-  "Nerveuse",
-  "Calme",
-
+  "عدوانية",
+  "عصبية",
+  "هادئة",
 ];
+
 export const force = [
-  "Très Faible",
-  "Faible",
-  "Modérée",
-  "Forte",
-  "Très Forte"
-
+  "ضعيف جداً",
+  "ضعيف",
+  "معتدل",
+  "قوي",
+  "قوي جداً"
 ];
+
 export const brood = [
-  "Fermé",
-  "Ouvert",
-  "Irrégulièr",
-  "En rayon",
-  "Médiane du cadre",
-  "Régulièr"
-];
-export const malebrood = [
-  "Irrégulièr",
-  "Régulièr"
+  "مغلق",
+  "مفتوح",
+  "غير منتظم",
+  "على القرص",
+  "وسط الإطار",
+  "منتظم"
 ];
 
-export const supplies = ["Miel", "Pollen"];
-export const units = ["Litre (L)",
-  "Kilogramme (kg)",
-  "Gramme (g)",
-  "Millilitre (ml)"];
+export const malebrood = [
+  "غير منتظمة",
+  "منتظمة"
+];
+
+export const supplies = ["عسل", "حبوب اللقاح"];
+
+
+export const units = [
+  "لتر (L)",
+  "كيلوغرام (kg)",
+  "غرام (g)",
+  "ملليلتر (ml)"
+];
 
 export const diseases = [
-  'Acariose',
-  'Loque américaine',
-  'Abeilles africanisées',
-  'Loque américaine',
-  'Animaux',
-  'Crise craie',
-  'Couvain refroidi',
-  'Syndrome d\'effondrement des colonies (CCD)',
-  'Dysenterie',
-  'Loque européenne',
-  'Loque européenne',
-  'Ouvrières pondeuses',
-  'Nosema',
-  'Pertes causées par les pesticides',
-  'Sans reine',
-  'Petit coléoptère de la ruche',
-  'Loque pierreuse',
-  'Tropilaelaps',
-  'Varroa',
-  'Guêpes',
-  'Teigne de la cire',
-  'Autre'];
-
-export const treatments = [
-  'Acaricide ajouté',
-  'Acaricide retiré',
-  'Apiguard',
-  'Apistan',
-  'Apivar',
-  'Check Mite',
-  'Acide formique',
-  'Pads Formic Pro',
-  'Fumagilline-B',
-  'Miticide ajouté',
-  'Miticide retiré',
-  'Autre',
-  'Acide oxalique',
-  'Poussière de sucre',
-  'Terramycine',
-  'Thymol',
-  'Tylosine'
+  'أكاروس',
+  'تعفن الحضنة الأمريكي',
+  'النحل الأفريقي',
+  'تعفن الحضنة الأمريكي',
+  'الحيوانات',
+  'مرض الطباشير',
+  'حضنة باردة',
+  'متلازمة انهيار المستعمرات (CCD)',
+  'إسهال النحل',
+  'تعفن الحضنة الأوروبي',
+  'عاملات وضع البيض',
+  'نوزيما',
+  'خسائر بسبب المبيدات',
+  'بدون ملكة',
+  'خنفساء صغيرة في الخلية',
+  'تعفن الحجر',
+  'تروبيلايلاپس',
+  'فاروا',
+  'دبابير',
+  'عثة الشمع',
+  'أخرى'
 ];
 
-export const doses = ["Gouttes", "Milligramme","Grammes", "Millilitres"];
-export const HoneyPollenHarvest = ["Faible", "Moyenne", "Élevée"];
+export const treatments = [
+  'إضافة مبيد الأكاروس',
+  'إزالة مبيد الأكاروس',
+  'أبيغارد',
+  'أبيستان',
+  'أبيفار',
+  'شيك مايت',
+  'حمض الفورميك',
+  'لوحات فورميك برو',
+  'فوماغيلين-ب',
+  'إضافة مبيد الحشرات',
+  'إزالة مبيد الحشرات',
+  'أخرى',
+  'حمض الأوكساليك',
+  'غبار السكر',
+  'تيراميسين',
+  'ثيمول',
+  'تايلوسين'
+];
+
+
+export const doses = ["قطرات", "ميليغرام", "غرامات", "ميليلتر"];
+export const HoneyPollenHarvest = ["منخفض", "متوسط", "مرتفع"];
 export const options = [
-  { name: "Couvain ouvert", requiresNumberInput: true },
-  { name: "Couvain fermé", requiresNumberInput: true },
-  { name: "Cadre de miel", requiresNumberInput: true },
-  { name: "Cadre de pollen", requiresNumberInput: true },
-  { name: "Cire gaufrée", requiresNumberInput: true },
-  { name: "Rayon de miel", requiresNumberInput: true }
+  { name: "حضنة مفتوحة", requiresNumberInput: true },
+  { name: "حضنة مغلقة", requiresNumberInput: true },
+  { name: "إطار عسل", requiresNumberInput: true },
+  { name: "إطار حبوب اللقاح", requiresNumberInput: true },
+  { name: "شمع مشمع", requiresNumberInput: true },
+  { name: "قرص عسل", requiresNumberInput: true }
 ];
 
                                  
-export const HarvestProducts = ["Miel", "Pollen", "Cire d'abeille", "Propolis", "Gelée royale", "Pain d'abeille", "Venin d'abeille"];
-
-export const HarvestSeasons = ["Printemps", "Été", "Automne", "Hiver"];
-export const HarvestMethods = [
-  "Extraction manuelle",
-  "Extraction centrifuge",
-  "Récolte à la main",
-  "Récolte mécanique",
-  "Récolte au balayage",
-  "Récolte par grattage"
+export const HarvestProducts = [
+  "عسل",           // Honey
+  "حبوب اللقاح",    // Pollen
+  "شمع النحل",      // Beeswax
+  "العكبر",        // Propolis
+  "الهلام الملكي",  // Royal Jelly
+  "خبز النحل",      // Bee Bread
+  "سم النحل"        // Bee Venom
 ];
 
-export const taskpriority = ['Faible', 'Élevée', 'Normale', 'Critique'];
+export const HarvestSeasons = [
+  "الربيع",
+  "الصيف",
+  "الخريف",
+  "الشتاء"
+];
+
+export const HarvestMethods = [
+  "الاستخراج اليدوي",
+  "الاستخراج بالطرد المركزي",
+  "الجمع اليدوي",
+  "الجمع الميكانيكي",
+  "الجمع باستخدام المكنسة",
+  "الجمع بالحك"
+];
+
+export const taskpriority = ['منخفض', 'مرتفع', 'عادي', 'حاسم'];
 
 
-export const IncomeCategory = ['Miel', 'Pollen', 'Pollinisation', 'Propolis', 'Essaim', 'Cire'];
-export const ExpenseCategory = ['Équipement', 'Nourriture', 'Ruches', 'Médicament','Outils', 'Transport'];
+export const IncomeCategory = [
+ "عسل",           // Honey
+"حبوب اللقاح",    // Pollen
+"شمع النحل",      // Beeswax
+"العكبر",        // Propolis
+"الهلام الملكي",  // Royal Jelly
+"خبز النحل",      // Bee Bread
+"سم النحل"        // Bee Venom
+];
+export const ExpenseCategory = ['معدات', 'طعام', 'خلايا نحل', 'أدوية', 'أدوات', 'نقل'];
 
 
 

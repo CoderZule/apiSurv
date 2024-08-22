@@ -25,38 +25,38 @@ const HarvestDetailsScreen = ({ route, navigation }) => {
             const response = await axios.delete(`/harvest/deleteHarvest/${harvestId}`);
             if (response.status === 200) {
                 console.log('Harvest deleted successfully');
-                showAlertAndNavigate('Récolte supprimée avec succès');
+                showAlertAndNavigate('تم حذف الحصاد بنجاح');
             } else {
                 console.error('Failed to delete harvest:', response.data.message);
-                showAlert('Échec de la suppression de la récolte');
+                showAlert('فشل في حذف الحصاد');
             }
         } catch (error) {
             console.error('Error deleting harvest:', error.message);
-            showAlert('Erreur lors de la suppression de la récolte');
+            showAlert('خطأ في حذف الحصاد');
         }
     };
 
     const showAlertAndNavigate = (message) => {
         Alert.alert(
-            'Success',
+            'نجاح',
             message,
-            [{ text: 'OK', onPress: () => navigation.goBack() }],
+            [{ text: 'موافق', onPress: () => navigation.goBack() }],
             { cancelable: false }
         );
     };
 
     const showAlert = (message) => {
-        Alert.alert('Error', message, [{ text: 'OK' }], { cancelable: false });
+        Alert.alert('خطأ', message, [{ text: 'موافق' }], { cancelable: false });
     };
 
     const confirmDelete = (harvestId) => {
         Alert.alert(
-            'Confirmation',
-            'Êtes-vous sûr de vouloir supprimer cette récolte ?',
+            'تأكيد',
+            'هل أنت متأكد أنك تريد حذف هذا الحصاد؟',
             [
-                { text: 'Annuler', style: 'cancel' },
+                { text: 'إلغاء', style: 'cancel' },
                 {
-                    text: 'Supprimer',
+                    text: 'حذف',
                     onPress: () => handleDelete(harvestId),
                     style: 'destructive',
                 },
@@ -69,12 +69,14 @@ const HarvestDetailsScreen = ({ route, navigation }) => {
         if (badge) {
             return (
                 <View style={styles.badge}>
-                    <Text style={{ color: 'white', fontSize: 12 }}>Dernière récolte</Text>
+                    <Text style={{ color: 'white', fontSize: 12 }}>آخر حصاد</Text>
                 </View>
             );
         }
         return null;
     };
+
+
 
     return (
         <ScrollView style={styles.container}>
@@ -102,82 +104,98 @@ const HarvestDetailsScreen = ({ route, navigation }) => {
 
 
                 <View style={styles.row}>
-                    <Text style={styles.label}> <Ionicons name="trail-sign-outline" size={14} color="#977700" />  Rucher
-                    </Text>
                     <Text style={styles.value}>{formData.Apiary}</Text>
+                    <View style={styles.labelContainer}>
+                        <Text style={styles.label}>المنحل</Text>
+                        <Ionicons name="trail-sign-outline" size={14} color="#977700" />
+                    </View>
                 </View>
+
                 <View style={styles.divider} />
 
                 <View style={styles.row}>
-                    <Text style={styles.label}> <FontAwesome5 name="archive" size={14} color="#977700" /> Ruche
-                    </Text>
                     <Text style={styles.value}>{formData.Hive}</Text>
+                    <View style={styles.labelContainer}>
+                        <Text style={styles.label}>الخلية</Text>
+                        <FontAwesome5 name="archive" size={14} color="#977700" />
+                    </View>
                 </View>
                 <View style={styles.divider} />
 
                 <View style={styles.row}>
-                    <Text style={styles.label}> <Ionicons name="flower-outline" size={14} color="orange" /> Produit
-                    </Text>
                     <Text style={styles.value}>{formData.Product}</Text>
+                    <View style={styles.labelContainer}>
+                        <Text style={styles.label}>المنتج</Text>
+                        <Ionicons name="flower-outline" size={14} color="orange" />
+                    </View>
+
                 </View>
 
                 <View style={styles.divider} />
 
                 <View style={styles.row}>
-                    <Text style={styles.label}>
-                        <Ionicons name="layers-outline" size={14} color="brown" /> Quantité
-                    </Text>
                     <Text style={styles.value}>{formData.Quantity}</Text>
+                    <View style={styles.labelContainer}>
+                        <Text style={styles.label}>الكمية</Text>
+                        <Ionicons name="layers-outline" size={14} color="brown" />
+                    </View>
                 </View>
+
                 <View style={styles.divider} />
 
                 <View style={styles.row}>
-                    <Text style={styles.label}>
-                        <Ionicons name="eyedrop-outline" size={14} color="#5188C7" /> Unité
-                    </Text>
                     <Text style={styles.value}>{formData.Unit}</Text>
+                    <View style={styles.labelContainer}>
+                        <Text style={styles.label}>الوحدة</Text>
+                        <Ionicons name="eyedrop-outline" size={14} color="#5188C7" />
+                    </View>
                 </View>
+
                 <View style={styles.divider} />
 
                 <View style={styles.row}>
-                    <Text style={styles.label}>
-                        <Ionicons name="leaf-outline" size={14} color="#2EB922" /> Saison
-                    </Text>
                     <Text style={styles.value}>{formData.Season}</Text>
-                </View>
-                <View style={styles.divider} />
-
-                <View style={styles.row}>
-                    <Text style={styles.label}>
-                        <Ionicons name="construct-outline" size={14} color="gray" /> Méthode de récolte
-                    </Text>
-                    <Text style={styles.valueLine}>{"     "}{formData.HarvestMethods}</Text>
-
+                    <View style={styles.labelContainer}>
+                        <Text style={styles.label}>الموسم</Text>
+                        <Ionicons name="leaf-outline" size={14} color="#2EB922" />
+                    </View>
                 </View>
 
                 <View style={styles.divider} />
 
                 <View style={styles.row}>
-                    <Text style={styles.label}>
-                        <Ionicons name="checkmark-circle-outline" size={14} color="#2EB922" /> Résultats des tests de qualité
-                    </Text>
-                    <Text style={styles.value}>{"     "}{formData.QualityTestResults}</Text>
+                    <Text style={styles.valueLine}>{formData.HarvestMethods}</Text>
+                    <View style={styles.labelContainer}>
+                        <Text style={styles.label}>طريقة الحصاد</Text>
+                        <Ionicons name="construct-outline" size={14} color="gray" />
+                    </View>
+                </View>
 
+                <View style={styles.divider} />
+
+                <View style={styles.row}>
+                    <Text style={styles.value}>{formData.QualityTestResults}</Text>
+                    <View style={styles.labelContainer}>
+                        <Text style={styles.label}>نتائج اختبارات الجودة</Text>
+                        <Ionicons name="checkmark-circle-outline" size={14} color="#2EB922" />
+                    </View>
                 </View>
                 <View style={styles.divider} />
 
                 <View style={styles.row}>
-                    <Text style={styles.label}>
-                        <Ionicons name="calendar-outline" size={14} color="#977700" /> Date
-                    </Text>
                     <Text style={styles.value}>{new Date(formData.Date).toLocaleDateString('fr-FR')}</Text>
+                    <View style={styles.labelContainer}>
+                        <Text style={styles.label}>التاريخ</Text>
+                        <Ionicons name="calendar-outline" size={14} color="#977700" />
+                    </View>
+                    
                 </View>
             </View>
 
             <EditHarvestModal
                 visible={modalVisible}
                 onSave={() => {
-                 
+
                     setModalVisible(false);
                 }}
                 onCancel={() => setModalVisible(false)}
@@ -220,17 +238,21 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginBottom: 10,
-        flexWrap: 'wrap',  
-
+        flexWrap: 'wrap',
+        alignItems: 'center',
     },
-
+    labelContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
     label: {
         fontSize: 16,
         fontWeight: 'bold',
+        marginRight: 5,
     },
     value: {
         fontSize: 15,
-        maxWidth: '100%',  
+        maxWidth: '100%',
     },
 
     section: {
@@ -271,17 +293,17 @@ const styles = StyleSheet.create({
 
     buttonContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-between',  
-        marginBottom: 20, 
+        justifyContent: 'space-between',
+        marginBottom: 20,
     },
 
     badgeContainer: {
-        position: 'relative',  
+        position: 'relative',
     },
     iconsContainer: {
         flexDirection: 'row',
-        alignItems: 'center',  
-        marginLeft: 'auto',    
+        alignItems: 'center',
+        marginLeft: 'auto',
     },
 
     badge: {

@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Modal, StyleSheet, View, Text, TouchableOpacity, TextInput, ScrollView, Pressable, KeyboardAvoidingView, Platform } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { HarvestMethods, HarvestSeasons, HarvestProducts, units } from '../Data';
 import { Card } from 'react-native-paper';
- 
+
 const AddHarvestModal = ({
     selectedApiary,
     setSelectedApiary,
@@ -30,10 +30,10 @@ const AddHarvestModal = ({
     closeModal,
     apiaries,
     filteredHives,
-  }) => {
+}) => {
 
 
- 
+
     return (
         <Modal
             animationType="slide"
@@ -49,31 +49,31 @@ const AddHarvestModal = ({
                 <View style={styles.modalView}>
                     <Card style={styles.card}>
                         <ScrollView contentContainerStyle={styles.scrollViewContent} keyboardShouldPersistTaps="handled">
-                            <Text style={styles.modalTitle}>Ajouter une récolte</Text>
+                            <Text style={styles.modalTitle}>إضافة حصاد</Text>
 
 
-                            <Text style={styles.label}>Rucher</Text>
+                            <Text style={styles.label}>المنحل</Text>
                             <View style={styles.inputContainer}>
                                 <Picker
                                     selectedValue={selectedApiary}
                                     onValueChange={(itemValue) => setSelectedApiary(itemValue)}
                                     style={styles.picker}
                                 >
-                                    <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                                    <Picker.Item label="اختر..." value="" enabled={false} />
                                     {apiaries.map((apiary) => (
                                         <Picker.Item label={apiary.Name} value={apiary._id} key={apiary._id} />
                                     ))}
                                 </Picker>
                             </View>
 
-                            <Text style={styles.label}>Ruche</Text>
+                            <Text style={styles.label}>الخلية</Text>
                             <View style={styles.inputContainer}>
                                 <Picker
                                     selectedValue={selectedHive}
                                     onValueChange={(itemValue) => setSelectedHive(itemValue)}
                                     style={styles.picker}
                                 >
-                                    <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                                    <Picker.Item label="اختر..." value="" enabled={false} />
                                     {filteredHives.map((hive) => (
                                         <Picker.Item label={hive.Name} value={hive._id} key={hive._id} />
                                     ))}
@@ -81,21 +81,21 @@ const AddHarvestModal = ({
                             </View>
 
 
-                            <Text style={styles.label}>Produit</Text>
+                            <Text style={styles.label}>المنتج</Text>
                             <View style={styles.inputContainer}>
                                 <Picker
                                     selectedValue={selectedProduct}
                                     onValueChange={(itemValue) => setSelectedProduct(itemValue)}
                                     style={styles.picker}
                                 >
-                                    <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                                    <Picker.Item label="اختر..." value="" enabled={false} />
                                     {HarvestProducts.map((product) => (
                                         <Picker.Item label={product} value={product} key={product} />
                                     ))}
                                 </Picker>
                             </View>
 
-                            <Text style={styles.label}>Date</Text>
+                            <Text style={styles.label}>التاريخ</Text>
                             <View style={styles.datePickerContainer}>
                                 <Pressable onPress={() => setShowDatePicker(true)}>
                                     <Text style={styles.datePickerText}>{date.toLocaleDateString()}</Text>
@@ -113,7 +113,7 @@ const AddHarvestModal = ({
                                 )}
                             </View>
 
-                            <Text style={styles.label}>Quantité</Text>
+                            <Text style={styles.label}>الكمية</Text>
                             <TextInput
                                 value={quantity}
                                 onChangeText={text => setQuantity(text)}
@@ -123,70 +123,70 @@ const AddHarvestModal = ({
                                 returnKeyType="done"
                             />
 
-                            <Text style={styles.label}>Unité</Text>
+                            <Text style={styles.label}>الوحدة</Text>
                             <View style={styles.inputContainer}>
                                 <Picker
                                     selectedValue={selectedUnit}
                                     onValueChange={(itemValue) => setSelectedUnit(itemValue)}
                                     style={styles.picker}
                                 >
-                                    <Picker.Item label="Sélectionner..." value="" enabled={false} />
-        {units
-            .filter((unit) => {
-                
-                if (selectedProduct === 'Miel') {
-                    return !['Millilitre (ml)'].includes(unit);
-                } else if (selectedProduct === 'Pollen') {
-                    return !['Millilitre (ml)'].includes(unit);
-                } else if (selectedProduct === 'Cire d\'abeille') {
-                    return !['Litre (L)', 'Millilitre (ml)'].includes(unit);
-                } else if (selectedProduct === 'Propolis') {
-                    return !['Litre (L)', 'Millilitre (ml)'].includes(unit);
-                } else if (selectedProduct === 'Gelée royale') {
-                    return !['Kilogramme (kg)', 'Litre (L)'].includes(unit);
-                } else if (selectedProduct === 'Pain d\'abeille') {
-                    return !['Litre (L)', 'Millilitre (ml)'].includes(unit);
-                } else if (selectedProduct === 'Venin d\'abeille') {
-                    return !['Kilogramme (kg)', 'Litre (L)'].includes(unit);
-                } else {
-                    return true;  
-                }
-            })
-            .map((unit) => (
-                <Picker.Item label={unit} value={unit} key={unit} />
-            ))}
+                                    <Picker.Item label="اختر..." value="" enabled={false} />
+                                    {units
+                                        .filter((unit) => {
+                                            if (selectedProduct === 'عسل') { // Honey
+                                              return !['ملليلتر (ml)'].includes(unit);
+                                            } else if (selectedProduct === 'حبوب اللقاح') { // Pollen
+                                              return !['ملليلتر (ml)'].includes(unit);
+                                            } else if (selectedProduct === 'شمع النحل') { // Beeswax
+                                              return !['لتر (L)', 'ملليلتر (ml)'].includes(unit);
+                                            } else if (selectedProduct === 'العكبر') { // Propolis
+                                              return !['لتر (L)', 'ملليلتر (ml)'].includes(unit);
+                                            } else if (selectedProduct === 'الهلام الملكي') { // Royal Jelly
+                                              return !['كيلوغرام (kg)', 'لتر (L)'].includes(unit);
+                                            } else if (selectedProduct === 'خبز النحل') { // Bee Bread
+                                              return !['لتر (L)', 'ملليلتر (ml)'].includes(unit);
+                                            } else if (selectedProduct === 'سم النحل') { // Bee Venom
+                                              return !['كيلوغرام (kg)', 'لتر (L)'].includes(unit);
+                                            } else {
+                                              return true;
+                                            }
+                                        })
+                                        .map((unit) => (
+                                            <Picker.Item label={unit} value={unit} key={unit} />
+                                        ))}
+
                                 </Picker>
                             </View>
 
-                            <Text style={styles.label}>Saison</Text>
+                            <Text style={styles.label}>الموسم</Text>
                             <View style={styles.inputContainer}>
                                 <Picker
                                     selectedValue={selectedSeason}
                                     onValueChange={(itemValue) => setSelectedSeason(itemValue)}
                                     style={styles.picker}
                                 >
-                                    <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                                    <Picker.Item label="اختر..." value="" enabled={false} />
                                     {HarvestSeasons.map((season) => (
                                         <Picker.Item label={season} value={season} key={season} />
                                     ))}
                                 </Picker>
                             </View>
 
-                            <Text style={styles.label}>Méthode de récolte</Text>
+                            <Text style={styles.label}>طريقة الحصاد</Text>
                             <View style={styles.inputContainer}>
                                 <Picker
                                     selectedValue={selectedHarvestMethod}
                                     onValueChange={(itemValue) => setSelectedHarvestMethod(itemValue)}
                                     style={styles.picker}
                                 >
-                                    <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                                    <Picker.Item label="اختر..." value="" enabled={false} />
                                     {HarvestMethods.map((method) => (
                                         <Picker.Item label={method} value={method} key={method} />
                                     ))}
                                 </Picker>
                             </View>
 
-                            <Text style={styles.label}>Résultats des tests de qualité</Text>
+                            <Text style={styles.label}>نتائج اختبارات الجودة</Text>
                             <TextInput
                                 value={qualityTestResults}
                                 onChangeText={text => setQualityTestResults(text)}
@@ -198,10 +198,10 @@ const AddHarvestModal = ({
 
                         <View style={styles.buttonContainer}>
                             <TouchableOpacity style={styles.buttonCancel} onPress={() => closeModal()}>
-                                <Text style={styles.buttonText}>Annuler</Text>
+                                <Text style={styles.buttonText}>إلغاء</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.buttonSubmit} onPress={() => handleFormSubmit()}>
-                                <Text style={styles.buttonText}>Ajouter</Text>
+                                <Text style={styles.buttonText}>إضافة</Text>
                             </TouchableOpacity>
                         </View>
                     </Card>
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     },
     card: {
         width: '90%',
-        maxHeight: '80%',  
+        maxHeight: '80%',
         padding: 20,
         borderRadius: 10,
         backgroundColor: '#FFFFFF',
@@ -240,8 +240,8 @@ const styles = StyleSheet.create({
     },
     scrollViewContent: {
         flexGrow: 1,
-        justifyContent: 'flex-start',  
-        alignItems: 'center',  
+        justifyContent: 'flex-start',
+        alignItems: 'center',
     },
     label: {
         fontSize: 16,
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         backgroundColor: '#FBF5E0',
         borderBottomColor: '#CCCCCC',
-        width: '100%',  
+        width: '100%',
     },
     picker: {
         height: 50,
@@ -271,6 +271,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         backgroundColor: '#FFFFFF',
         color: '#333333',
+        textAlign: 'right'
     },
     buttonContainer: {
         flexDirection: 'row',
@@ -298,7 +299,7 @@ const styles = StyleSheet.create({
     },
     buttonText: {
 
-        fontSize: 14,  
+        fontSize: 14,
         fontWeight: 'bold',
         color: '#373737',
     },

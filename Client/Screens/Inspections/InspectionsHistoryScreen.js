@@ -12,7 +12,7 @@ const InspectionsHistoryScreen = ({ route, navigation }) => {
                     style={styles.image}
                     resizeMode="contain"
                 />
-                <Text style={styles.centeredText}>Aucune inspection n'a été ajoutée pour le moment.</Text>
+                <Text style={styles.centeredText}>لم يتم إضافة أي متابعة حتى الآن.</Text>
             </View>
         );
     }
@@ -26,7 +26,7 @@ const InspectionsHistoryScreen = ({ route, navigation }) => {
                 data={InspectionsHistoryData}
                 keyExtractor={(item, index) => index.toString()}
                 ListHeaderComponent={
-                    <Text style={styles.title}>Historique des inspections</Text>
+                    <Text style={styles.title}>سجل المتابعات الدورية </Text>
                 }
                 renderItem={({ item, index }) => (
                     <ImageBackground source={require('../../assets/inshis.jpg')} style={styles.inspectionItem}>
@@ -58,7 +58,7 @@ const InspectionsHistoryScreen = ({ route, navigation }) => {
                             </Text>
                             {index === lastItemIndex && (
                                 <View style={styles.badge}>
-                                    <Text style={{ color: 'white', fontSize: 9, fontWeight: 'bold' }}>Dernière inspection</Text>
+                                    <Text style={{ color: 'white', fontSize: 12, fontWeight: 'bold' }}>أخر متابعة</Text>
                                 </View>
                             )}
                             {index !== lastItemIndex && <View style={styles.divider} />}

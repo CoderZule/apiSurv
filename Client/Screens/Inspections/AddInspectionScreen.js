@@ -47,7 +47,7 @@ const Option = React.memo(({ option, isSelected, onPressHandler, quantity, onQua
           { width: 50, marginBottom: 5 },
         ]}
         keyboardType="numeric"
-        placeholder="Qty"
+        placeholder="الكمية"
       />
     )}
   </TouchableOpacity>
@@ -72,12 +72,8 @@ const AddInspectionScreen = ({ route }) => {
   const [time, setTime] = useState(new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }));
 
 
-
   const [inspector, setInspector] = useState('');
-  const [isLoading, setIsLoading] = useState(true);  
-
-
-
+  const [isLoading, setIsLoading] = useState(true);
 
 
   useEffect(() => {
@@ -140,9 +136,6 @@ const AddInspectionScreen = ({ route }) => {
     InspectionNote: ''
 
 
-
-
-
   });
 
   const togglePickerFrom = () => {
@@ -172,9 +165,6 @@ const AddInspectionScreen = ({ route }) => {
   };
 
 
-
-
-
   useEffect(() => {
     if (!formData.isMarked) {
       setFormData(prevData => ({
@@ -201,15 +191,15 @@ const AddInspectionScreen = ({ route }) => {
     const quantity = selectedItem ? selectedItem.quantity : 0;
 
     const onPressHandler = () => {
-      handleChange(option.name, quantity);  
+      handleChange(option.name, quantity);
     };
 
     const onQuantityChange = (text) => {
       const quantity = parseInt(text);
       if (isNaN(quantity) || quantity < 0) {
-        handleChange(option.name, 0);  
+        handleChange(option.name, 0);
       } else {
-        handleChange(option.name, quantity);  
+        handleChange(option.name, quantity);
       }
     };
 
@@ -229,13 +219,13 @@ const AddInspectionScreen = ({ route }) => {
     setSelectedAjouts(prevState => {
       const index = prevState.findIndex(item => item.name === itemName);
       if (index !== -1) {
-        
+
         const updatedState = prevState.map(item =>
           item.name === itemName ? { ...item, quantity } : item
         );
-        return updatedState.filter(item => item.quantity > 0);  
+        return updatedState.filter(item => item.quantity > 0);
       } else {
-        
+
         return [...prevState, { name: itemName, quantity }];
       }
     });
@@ -245,13 +235,13 @@ const AddInspectionScreen = ({ route }) => {
     setSelectedEnlevements(prevState => {
       const index = prevState.findIndex(item => item.name === itemName);
       if (index !== -1) {
-      
+
         const updatedState = prevState.map(item =>
           item.name === itemName ? { ...item, quantity } : item
         );
-        return updatedState.filter(item => item.quantity > 0); 
+        return updatedState.filter(item => item.quantity > 0);
       } else {
-      
+
         return [...prevState, { name: itemName, quantity }];
       }
     });
@@ -281,7 +271,7 @@ const AddInspectionScreen = ({ route }) => {
     if (showWeatherDetails) {
       getLocationAndFetchWeather();
     } else {
-       
+
       setFormData(prevState => ({
         ...prevState,
         temperature: '',
@@ -300,7 +290,7 @@ const AddInspectionScreen = ({ route }) => {
       const { status } = await Location.requestForegroundPermissionsAsync();
 
       if (status !== 'granted') {
-      
+
         return;
       }
 
@@ -323,7 +313,7 @@ const AddInspectionScreen = ({ route }) => {
         humidity: data.main.humidity.toString(),
         pressure: data.main.pressure.toString(),
         windSpeed: data.wind.speed.toString(),
-        windDirection: data.wind.deg.toString(),  
+        windDirection: data.wind.deg.toString(),
         condition: data.weather[0].main
       }));
     } catch (error) {
@@ -336,7 +326,7 @@ const AddInspectionScreen = ({ route }) => {
   const handleAddInspection = async () => {
     try {
 
-      
+
       const filteredAjouts = selectedAjouts.filter(activity => activity.quantity > 0);
       const filteredEnlevements = selectedEnlevements.filter(activity => activity.quantity > 0);
 
@@ -349,9 +339,9 @@ const AddInspectionScreen = ({ route }) => {
           lastName: inspector.Lastname,
           cin: inspector.Cin,
           phone: inspector.Phone
-        },  
+        },
 
-        InspectionDateTime: date,  
+        InspectionDateTime: date,
 
         ApiaryAndHive: {
           apiaryName: hiveData.Apiary.Name,
@@ -442,10 +432,10 @@ const AddInspectionScreen = ({ route }) => {
 
         if (formattedData.Queen.seen) {
           if (formattedData.Queen.isMarked && formattedData.Queen.color === '') {
-            return Alert.alert('Erreur', 'Veuillez choisir une couleur pour la reine');
+            return Alert.alert('خطأ', 'يرجى اختيار لون للملكة');
           }
           if (!formattedData.Queen.temperament || !formattedData.Queen.queenCells) {
-            return Alert.alert('Erreur', 'Veuillez compléter les informations sur la reine');
+            return Alert.alert('خطأ', 'يرجى إكمال معلومات الملكة');
           }
         } else {
           formattedData.Queen.isMarked = false;
@@ -458,48 +448,49 @@ const AddInspectionScreen = ({ route }) => {
         }
       }
 
-     
+
 
       if (!formattedData.Colony.supers | !formattedData.Colony.pollenFrames | !formattedData.Colony.TotalFrames) {
-        return Alert.alert('Erreur', 'Les informations concernant les équipements sont requises');
+        return Alert.alert('خطأ', 'معلومات المعدات مطلوبة');
       }
 
       const suppliesFieldsFilled = [formattedData.Supplies.product, formattedData.Supplies.ingredients.name, formattedData.Supplies.ingredients.quantity, formattedData.Supplies.ingredients.unit].some(field => field);
       const suppliesFieldsIncomplete = [formattedData.Supplies.product, formattedData.Supplies.ingredients.name, formattedData.Supplies.ingredients.quantity, formattedData.Supplies.ingredients.unit].some(field => !field);
 
       if (suppliesFieldsFilled && suppliesFieldsIncomplete) {
-        return Alert.alert('Erreur', 'Veuillez compléter toutes les informations sur les nourritures');
+        return Alert.alert('خطأ', 'يرجى إكمال جميع المعلومات عن غذاء النحل');
       }
 
 
       if (!formattedData.Brood.state || !formattedData.Brood.maleBrood || formattedData.Brood.totalBrood === undefined || formattedData.DronesSeen === undefined) {
-        return Alert.alert('Erreur', 'Les informations concernant le couvain & mâle sont requises');
+        return Alert.alert('خطأ', 'معلومات الحضنة والذكور مطلوبة');
+
       }
 
       if (!formattedData.Colony.strength || !formattedData.Colony.temperament || formattedData.Colony.deadBees === undefined) {
-        return Alert.alert('Erreur', 'Les informations de la colonie sont requises');
+        return Alert.alert('خطأ', 'معلومات المستعمرة مطلوبة');
       }
 
-      
+
       const beeHealthFieldsFilled = [formattedData.BeeHealth.disease, formattedData.BeeHealth.treatment, formattedData.BeeHealth.duration.from, formattedData.BeeHealth.duration.to, formattedData.BeeHealth.quantity, formattedData.BeeHealth.doses].some(field => field);
       const beeHealthFieldsIncomplete = [formattedData.BeeHealth.disease, formattedData.BeeHealth.treatment, formattedData.BeeHealth.duration.from, formattedData.BeeHealth.duration.to, formattedData.BeeHealth.quantity, formattedData.BeeHealth.doses].some(field => !field);
 
       if (beeHealthFieldsFilled && beeHealthFieldsIncomplete) {
-        return Alert.alert('Erreur', 'Veuillez compléter toutes les informations sur la santé des abeilles');
+        return Alert.alert('خطأ', 'يرجى إكمال جميع المعلومات عن صحة النحل');
       }
 
 
       if (!formattedData.HoneyStores) {
-        return Alert.alert('Erreur', 'Les réserves de miel sont requises');
+        return Alert.alert('خطأ', 'مخزونات العسل مطلوبة');
       }
       if (!formattedData.PollenStores) {
-        return Alert.alert('Erreur', 'Les réserves de pollen sont requises');
+        return Alert.alert('خطأ', 'مخزونات حبوب اللقاح مطلوبة');
       }
       if (!formattedData.Weather.condition || formattedData.Weather.temperature === undefined || formattedData.Weather.humidity === undefined || formattedData.Weather.pressure === undefined || formattedData.Weather.windSpeed === undefined || formattedData.Weather.windDirection === undefined) {
-        return Alert.alert('Erreur', 'Les informations météorologiques sont requises');
+        return Alert.alert('خطأ', 'المعلومات الجوية مطلوبة');
       }
       if (!formattedData.Hive) {
-        return Alert.alert('Erreur', 'La ruche est requise');
+        return Alert.alert('خطأ', 'الخلية مطلوبة');
       }
 
 
@@ -509,21 +500,21 @@ const AddInspectionScreen = ({ route }) => {
       const response = await axios.post('/inspection/create', formattedData);
 
       if (response.status === 201) {
-        Alert.alert('Succès', 'Inspection ajoutée avec succès', [
+        Alert.alert('نجاح', 'تمت إضافة المتابعة بنجاح', [
           {
-            text: 'OK',
+            text: 'موافق',
             onPress: () => {
               navigation.navigate('Home');
             }
           }
         ]);
       } else {
-        Alert.alert('Erreur', "Échec de l'ajout de l'inspection");
+        Alert.alert('خطأ', 'فشل في إضافة المتابعة');
       }
 
     } catch (error) {
       console.error('Error creating inspection:', error);
-      Alert.alert('Error', "Échec de l'ajout de l'inspection");
+      Alert.alert('خطأ', 'فشل في إضافة المتابعة');
     }
   };
 
@@ -543,11 +534,11 @@ const AddInspectionScreen = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Ajouter une inspection</Text>
+      <Text style={styles.title}>إضافة متابعة دورية</Text>
       {isLoading ? (
         <View style={[styles.container, styles.loadingContainer]}>
           <LottieView
-            source={require('../../assets/lottie/loading.json')}  
+            source={require('../../assets/lottie/loading.json')}
             autoPlay
             loop
             style={{ width: 100, height: 100 }}
@@ -559,19 +550,20 @@ const AddInspectionScreen = ({ route }) => {
 
             {/* Inspector Details*/}
             <View style={styles.fieldset}>
-              <Text style={styles.fieldsetTitle}>Inspecteur</Text>
+              <Text style={styles.fieldsetTitle}>المتفقد</Text>
               <View style={[styles.detailItem, styles.inline]}>
-                <Text style={styles.label}>Nom et prénom  <FontAwesome5 name="user-alt" size={14} color="#977700" style={styles.inputIcon} />
-                </Text>
+                <FontAwesome5 name="user-alt" size={14} color="#977700" style={styles.inputIcon} />
+                <Text style={styles.label}>الاسم واللقب </Text>
                 <TextInput
                   style={[styles.textInput, styles.inlineInput, styles.disabledTextInput]}
                   value={`${inspector.Firstname} ${inspector.Lastname}`}
                   editable={false}
                 />
+
               </View>
               <View style={[styles.detailItem, styles.inline]}>
-                <Text style={styles.label}>CIN <FontAwesome5 name="id-card-alt" size={14} color="#977700" style={styles.inputIcon} />
-                </Text>
+                <FontAwesome5 name="id-card-alt" size={14} color="#977700" style={styles.inputIcon} />
+                <Text style={styles.label}>رقم .ب.ت.و </Text>
                 <TextInput
                   style={[styles.textInput, styles.inlineInput, styles.disabledTextInput]}
                   value={inspector.Cin}
@@ -579,9 +571,8 @@ const AddInspectionScreen = ({ route }) => {
                 />
               </View>
               <View style={[styles.detailItem, styles.inline]}>
-
-                <Text style={styles.label}> Tel <FontAwesome5 name="phone" size={14} color="#977700" style={styles.inputIcon} />
-                </Text>
+                <FontAwesome5 name="phone" size={14} color="#977700" style={styles.inputIcon} />
+                <Text style={styles.label}>الهاتف </Text>
                 <TextInput
                   style={[styles.textInput, styles.inlineInput, styles.disabledTextInput]}
                   value={inspector.Phone}
@@ -590,15 +581,15 @@ const AddInspectionScreen = ({ route }) => {
               </View>
 
             </View>
-           
+
 
 
             {/* Hive and Apiary Details */}
             <View style={styles.fieldset}>
-              <Text style={styles.fieldsetTitle}>Rucher et Ruche</Text>
+              <Text style={styles.fieldsetTitle}>المنحل والخلية</Text>
               <View style={[styles.detailItem, styles.inline]}>
-                <Text style={styles.label}>Rucher  <Ionicons name="trail-sign-outline" size={14} color="#977700" style={styles.icon} />
-                </Text>
+                <Ionicons name="trail-sign-outline" size={14} color="#977700" style={styles.icon} />
+                <Text style={styles.label}> المنحل </Text>
                 <TextInput
                   style={[styles.textInput, styles.inlineInput, styles.disabledTextInput]}
                   value={hiveData.Apiary.Name}
@@ -606,7 +597,8 @@ const AddInspectionScreen = ({ route }) => {
                 />
               </View>
               <View style={[styles.detailItem, styles.inline]}>
-                <Text style={styles.label}>Ruche   <FontAwesome5 name="archive" size={14} color="#977700" style={styles.icon} /></Text>
+                <FontAwesome5 name="archive" size={14} color="#977700" style={styles.icon} />
+                <Text style={styles.label}> الخلية </Text>
                 <TextInput
                   style={[styles.textInput, styles.inlineInput, styles.disabledTextInput]}
                   value={hiveData.Name}
@@ -614,14 +606,15 @@ const AddInspectionScreen = ({ route }) => {
                 />
               </View>
             </View>
-          
+
 
 
             {/* Data and Time Details */}
             <View style={styles.fieldset}>
-              <Text style={styles.fieldsetTitle}>Date et Heure</Text>
+              <Text style={styles.fieldsetTitle}>التاريخ والوقت</Text>
               <View style={[styles.detailItem, styles.inline]}>
-                <Text style={styles.label}>Date <FontAwesome5 name="calendar-alt" size={14} color="#977700" style={styles.icon} />   </Text>
+                <FontAwesome5 name="calendar-alt" size={14} color="#977700" style={styles.icon} />
+                <Text style={styles.label}> التاريخ </Text>
                 <TextInput
                   style={[styles.textInput, styles.inlineInput, styles.disabledTextInput]}
                   value={new Date().toLocaleDateString('fr-FR')}
@@ -629,8 +622,8 @@ const AddInspectionScreen = ({ route }) => {
                 />
               </View>
               <View style={[styles.detailItem, styles.inline]}>
-                <Text style={styles.label}>Heure <FontAwesome5 name="clock" size={14} color="#977700" style={styles.icon} />
-                </Text>
+                <FontAwesome5 name="clock" size={14} color="#977700" style={styles.icon} />
+                <Text style={styles.label}> الوقت </Text>
                 <TextInput
                   style={[styles.textInput, styles.inlineInput, styles.disabledTextInput]}
                   value={time}
@@ -638,18 +631,18 @@ const AddInspectionScreen = ({ route }) => {
                 />
               </View>
             </View>
-        
+
 
 
             {/* Queen Details*/}
             {hiveData.Queen && (
               <View style={styles.fieldset}>
-                <Text style={styles.fieldsetTitle}>Reine</Text>
+                <Text style={styles.fieldsetTitle}>الملكة</Text>
 
 
                 <View>
                   <View style={styles.inline}>
-                    <Text style={styles.label}>Observée</Text>
+                    <Text style={styles.label}>موجودة</Text>
                     <Switch
                       trackColor={{ false: "#767577", true: "#81b0ff" }}
                       thumbColor={showQueenDetails ? "#f4f3f4" : "#f4f3f4"}
@@ -666,7 +659,7 @@ const AddInspectionScreen = ({ route }) => {
                   {showQueenDetails && (
                     <>
                       <View style={[styles.detailItem, styles.inline]}>
-                        <Text style={styles.label}>Clippée</Text>
+                        <Text style={styles.label}>مقيدة</Text>
                         <Switch
                           trackColor={{ false: "#767577", true: "#81b0ff" }}
                           thumbColor={formData.clipped ? "#f4f3f4" : "#f4f3f4"}
@@ -677,7 +670,7 @@ const AddInspectionScreen = ({ route }) => {
                       </View>
 
                       <View style={[styles.detailItem, styles.inline]}>
-                        <Text style={styles.label}>Essaimé</Text>
+                        <Text style={styles.label}>مُتسربة</Text>
                         <Switch
                           trackColor={{ false: "#767577", true: "#81b0ff" }}
                           thumbColor={formData.isSwarmed ? "#f4f3f4" : "#f4f3f4"}
@@ -688,7 +681,7 @@ const AddInspectionScreen = ({ route }) => {
                       </View>
 
                       <View style={[styles.detailItem, styles.inline]}>
-                        <Text style={styles.label}>Marquée</Text>
+                        <Text style={styles.label}>معلمة</Text>
                         <Switch
                           trackColor={{ false: "#767577", true: "#81b0ff" }}
                           thumbColor={formData.isMarked ? "#f4f3f4" : "#f4f3f4"}
@@ -700,7 +693,7 @@ const AddInspectionScreen = ({ route }) => {
 
                       {formData.isMarked && (
                         <View style={[styles.detailItem, styles.inline]}>
-                          <Text style={styles.label}>Couleur</Text>
+                          <Text style={styles.label}>اللون</Text>
                           <Picker
                             style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
                             selectedValue={formData.color}
@@ -714,13 +707,13 @@ const AddInspectionScreen = ({ route }) => {
                       )}
 
                       <View style={[styles.detailItem, styles.inline]}>
-                        <Text style={styles.label}>Tempérament</Text>
+                        <Text style={styles.label}>سلوك الملكة</Text>
                         <Picker
                           style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
                           selectedValue={formData.q_temperament}
                           onValueChange={(value) => handleInputChange('q_temperament', value)}
                         >
-                          <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                      <Picker.Item label="اختر..." value="" enabled={false} />
                           {temperament.map((state, index) => (
                             <Picker.Item key={index} label={state} value={state} />
                           ))}
@@ -728,13 +721,13 @@ const AddInspectionScreen = ({ route }) => {
                       </View>
 
                       <View style={[styles.detailItem, styles.inline]}>
-                        <Text style={styles.label}>Cellules royales</Text>
+                        <Text style={styles.label}>الخلايا الملكية</Text>
                         <Picker
                           style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
                           selectedValue={formData.queenCells}
                           onValueChange={(value) => handleInputChange('queenCells', value)}
                         >
-                          <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                      <Picker.Item label="اختر..." value="" enabled={false} />
                           {queen_cells.map((state, index) => (
                             <Picker.Item key={index} label={state} value={state} />
                           ))}
@@ -742,7 +735,7 @@ const AddInspectionScreen = ({ route }) => {
                       </View>
 
                       <View style={[styles.detailItem, styles.inline]}>
-                        <Text style={styles.label}>Note</Text>
+                        <Text style={styles.label}>ملاحظة</Text>
                         <TextInput
                           style={[styles.textInput, styles.inlineInput, styles.textArea]}
                           multiline={true}
@@ -756,14 +749,14 @@ const AddInspectionScreen = ({ route }) => {
                 </View>
               </View>)}
 
-           
+
 
             {/* Equipments Details  */}
             <View style={styles.fieldset}>
-              <Text style={styles.fieldsetTitle}>Équipements</Text>
+              <Text style={styles.fieldsetTitle}>المعدات</Text>
 
               <View style={[styles.detailItem, styles.inline]}>
-                <Text style={styles.label}>Nombre de hausses</Text>
+                <Text style={styles.label}>عدد العسالات </Text>
                 <TextInput
                   style={[styles.textInput, styles.inlineInput]}
                   keyboardType='numeric'
@@ -772,7 +765,7 @@ const AddInspectionScreen = ({ route }) => {
                 />
               </View>
               <View style={[styles.detailItem, styles.inline]}>
-                <Text style={styles.label}>Nombre de trappes à pollen</Text>
+                <Text style={styles.label}>عدد إطارات حبوب اللقاح </Text>
                 <TextInput
                   style={[styles.textInput, styles.inlineInput]}
                   keyboardType='numeric'
@@ -783,7 +776,7 @@ const AddInspectionScreen = ({ route }) => {
 
 
               <View style={[styles.detailItem, styles.inline]}>
-                <Text style={styles.label}>Nombre total de cadres</Text>
+                <Text style={styles.label}>إجمالي الإطارات </Text>
                 <TextInput
                   style={[styles.textInput, styles.inlineInput]}
                   keyboardType='numeric'
@@ -794,21 +787,20 @@ const AddInspectionScreen = ({ route }) => {
 
 
             </View>
-            
+
 
             {/* Supplies Details  */}
             <View style={styles.fieldset}>
-              <Text style={styles.fieldsetTitle}>Nourritures</Text>
+              <Text style={styles.fieldsetTitle}>غذاء النحل</Text>
 
               <View style={[styles.detailItem, styles.inline]}>
-                <Text style={styles.label}>Produit</Text>
+                <Text style={styles.label}>المنتج </Text>
                 <Picker
                   style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
                   selectedValue={formData.product}
                   onValueChange={(value) => handleInputChange('product', value)}
                 >
-                  {/* Adding the default disabled option */}
-                  <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                      <Picker.Item label="اختر..." value="" enabled={false} />
 
                   {supplies.map((state, index) => (
                     <Picker.Item key={index} label={state} value={state} />
@@ -817,7 +809,7 @@ const AddInspectionScreen = ({ route }) => {
               </View>
 
               <View style={[styles.detailItem, styles.inline]}>
-                <Text style={styles.label}>Ingrédients</Text>
+                <Text style={styles.label}>المكونات </Text>
                 <TextInput
                   style={[styles.textInput, styles.inlineInput]}
                   onChangeText={(value) => handleInputChange('name', value)}
@@ -826,7 +818,7 @@ const AddInspectionScreen = ({ route }) => {
               </View>
 
               <View style={[styles.detailItem, styles.inline]}>
-                <Text style={styles.label}>Quantité totale</Text>
+                <Text style={styles.label}>الكمية </Text>
                 <TextInput
                   style={[styles.textInput, styles.inlineInput]}
                   keyboardType='numeric'
@@ -837,14 +829,13 @@ const AddInspectionScreen = ({ route }) => {
 
 
               <View style={[styles.detailItem, styles.inline]}>
-                <Text style={styles.label}>Unité</Text>
+                <Text style={styles.label}>الوحدة </Text>
                 <Picker
                   style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
                   selectedValue={formData.unit}
                   onValueChange={(value) => handleInputChange('unit', value)}
                 >
-                  {/* Adding the default disabled option */}
-                  <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                      <Picker.Item label="اختر..." value="" enabled={false} />
 
                   {units.map((state, index) => (
                     <Picker.Item key={index} label={state} value={state} />
@@ -853,7 +844,7 @@ const AddInspectionScreen = ({ route }) => {
               </View>
 
               <View style={[styles.detailItem, styles.inline]}>
-                <Text style={styles.label}>Note</Text>
+                <Text style={styles.label}>ملاحظة </Text>
                 <TextInput
                   style={[styles.textInput, styles.inlineInput, styles.textArea]}
                   multiline={true}
@@ -863,23 +854,22 @@ const AddInspectionScreen = ({ route }) => {
                 />
               </View>
             </View>
-          
+
 
 
             {/* Brood Details*/}
             <View style={styles.fieldset}>
-              <Text style={styles.fieldsetTitle}>Couvain & Mâles</Text>
+              <Text style={styles.fieldsetTitle}>الحضنة والذكور</Text>
 
               <View style={[styles.detailItem, styles.inline]}>
-                <Text style={styles.label}>État du couvain</Text>
+                <Text style={styles.label}>الحالة </Text>
                 <Picker
                   style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
                   selectedValue={formData.state}
                   onValueChange={(value) => handleInputChange('state', value)}
 
                 >
-                  {/* Adding the default disabled option */}
-                  <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                      <Picker.Item label="اختر..." value="" enabled={false} />
 
                   {brood.map((state, index) => (
                     <Picker.Item key={index} label={state} value={state} />
@@ -888,7 +878,7 @@ const AddInspectionScreen = ({ route }) => {
               </View>
 
               <View style={[styles.detailItem, styles.inline]}>
-                <Text style={styles.label}>Nombre total du couvain</Text>
+                <Text style={styles.label}>إجمالي الحضنة </Text>
                 <TextInput
                   style={[styles.textInput, styles.inlineInput]}
                   keyboardType='numeric'
@@ -900,14 +890,13 @@ const AddInspectionScreen = ({ route }) => {
 
 
               <View style={[styles.detailItem, styles.inline]}>
-                <Text style={styles.label}>Couvain mâle</Text>
+                <Text style={styles.label}>حضنة الذكور </Text>
                 <Picker
                   style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
                   selectedValue={formData.maleBrood}
                   onValueChange={(value) => handleInputChange('maleBrood', value)}
                 >
-                  {/* Adding the default disabled option */}
-                  <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                      <Picker.Item label="اختر..." value="" enabled={false} />
 
                   {malebrood.map((state, index) => (
                     <Picker.Item key={index} label={state} value={state} />
@@ -916,7 +905,7 @@ const AddInspectionScreen = ({ route }) => {
               </View>
 
               <View style={[styles.detailItem, styles.inline]}>
-                <Text style={styles.label}>Mâles Observés</Text>
+                <Text style={styles.label}>وجود الذكور</Text>
                 <Switch
                   trackColor={{ false: "#767577", true: "#81b0ff" }}
                   thumbColor={formData.DronesSeen ? "#f4f3f4" : "#f4f3f4"}
@@ -927,15 +916,15 @@ const AddInspectionScreen = ({ route }) => {
               </View>
 
             </View>
-          
+
 
             {/* Colony Details*/}
             <View style={styles.fieldset}>
-              <Text style={styles.fieldsetTitle}>Colonie</Text>
+              <Text style={styles.fieldsetTitle}>المستعمرة</Text>
 
 
               <View style={[styles.detailItem, styles.inline]}>
-                <Text style={styles.label}>Abeilles mortes</Text>
+                <Text style={styles.label}>وجود نحل ميت</Text>
                 <Switch
                   trackColor={{ false: "#767577", true: "#81b0ff" }}
                   thumbColor={formData.deadBees ? "#f4f3f4" : "#f4f3f4"}
@@ -946,14 +935,13 @@ const AddInspectionScreen = ({ route }) => {
               </View>
 
               <View style={[styles.detailItem, styles.inline]}>
-                <Text style={styles.label}>Tempérament</Text>
+                <Text style={styles.label}>سلوك المستعمرة </Text>
                 <Picker
                   style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
                   selectedValue={formData.c_temperament}
                   onValueChange={(value) => handleInputChange('c_temperament', value)}
                 >
-                  {/* Adding the default disabled option */}
-                  <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                      <Picker.Item label="اختر..." value="" enabled={false} />
 
                   {temperament.map((state, index) => (
                     <Picker.Item key={index} label={state} value={state} />
@@ -963,14 +951,13 @@ const AddInspectionScreen = ({ route }) => {
 
 
               <View style={[styles.detailItem, styles.inline]}>
-                <Text style={styles.label}>Force</Text>
+                <Text style={styles.label}>قوة المستعمرة </Text>
                 <Picker
                   style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
                   selectedValue={formData.strength}
                   onValueChange={(value) => handleInputChange('strength', value)}
                 >
-                  {/* Adding the default disabled option */}
-                  <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                      <Picker.Item label="اختر..." value="" enabled={false} />
 
                   {force.map((state, index) => (
                     <Picker.Item key={index} label={state} value={state} />
@@ -979,7 +966,7 @@ const AddInspectionScreen = ({ route }) => {
               </View>
 
               <View style={[styles.detailItem, styles.inline]}>
-                <Text style={styles.label}>Note</Text>
+                <Text style={styles.label}>ملاحظة </Text>
                 <TextInput
                   style={[styles.textInput, styles.inlineInput, styles.textArea]}
                   multiline={true}
@@ -990,21 +977,20 @@ const AddInspectionScreen = ({ route }) => {
               </View>
 
             </View>
- 
+
 
             {/* Treatment Details  */}
             <View style={styles.fieldset}>
-              <Text style={styles.fieldsetTitle}>Maladie et traitement</Text>
+              <Text style={styles.fieldsetTitle}>صحة النحل</Text>
 
               <View style={[styles.detailItem, styles.inline]}>
-                <Text style={styles.label}>Maladie</Text>
+                <Text style={styles.label}>المرض </Text>
                 <Picker
                   style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
                   selectedValue={formData.disease}
                   onValueChange={(value) => handleInputChange('disease', value)}
                 >
-                  {/* Adding the default disabled option */}
-                  <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                   <Picker.Item label="اختر..." value="" enabled={false} />
 
                   {diseases.map((state, index) => (
                     <Picker.Item key={index} label={state} value={state} />
@@ -1013,14 +999,13 @@ const AddInspectionScreen = ({ route }) => {
               </View>
 
               <View style={[styles.detailItem, styles.inline]}>
-                <Text style={styles.label}>Traitements</Text>
+                <Text style={styles.label}>العلاج </Text>
                 <Picker
                   style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
                   selectedValue={formData.treatment}
                   onValueChange={(value) => handleInputChange('treatment', value)}
                 >
-                  {/* Adding the default disabled option */}
-                  <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                   <Picker.Item label="اختر..." value="" enabled={false} />
 
                   {treatments.map((state, index) => (
                     <Picker.Item key={index} label={state} value={state} />
@@ -1029,10 +1014,10 @@ const AddInspectionScreen = ({ route }) => {
               </View>
 
               <View style={styles.fieldset}>
-                <Text style={styles.fieldsetTitle}>Durée</Text>
+                <Text style={styles.fieldsetTitle}>المدة</Text>
                 <View>
                   <View style={[styles.detailItem, styles.inline]}>
-                    <Text style={styles.label}>À partir de</Text>
+                    <Text style={styles.label}>من   </Text>
                     <Pressable onPress={togglePickerFrom}>
                       <Text style={[styles.textInput, styles.inlineInput]}>
                         {formData.from ? formData.from.toLocaleDateString('fr-FR') : 'Sélectionner une date'}
@@ -1055,10 +1040,10 @@ const AddInspectionScreen = ({ route }) => {
 
                 <View>
                   <View style={[styles.detailItem, styles.inline]}>
-                    <Text style={styles.label}>À               </Text>
+                    <Text style={styles.label}>إلى   </Text>
                     <Pressable onPress={togglePickerTo}>
                       <Text style={[styles.textInput, styles.inlineInput]}>
-                        {formData.to ? formData.to.toLocaleDateString('fr-FR') : 'Sélectionner une date'}
+                        {formData.to ? formData.to.toLocaleDateString('fr-FR') : 'حدد تاريخا'}
                       </Text>
                     </Pressable>
                   </View>
@@ -1077,7 +1062,7 @@ const AddInspectionScreen = ({ route }) => {
               </View>
 
               <View style={[styles.detailItem, styles.inline]}>
-                <Text style={styles.label}>Quantité</Text>
+                <Text style={styles.label}>الكمية </Text>
                 <TextInput
                   style={[styles.textInput, styles.inlineInput]}
                   keyboardType='numeric'
@@ -1088,14 +1073,13 @@ const AddInspectionScreen = ({ route }) => {
 
 
               <View style={[styles.detailItem, styles.inline]}>
-                <Text style={styles.label}>Doses</Text>
+                <Text style={styles.label}>الجرعات </Text>
                 <Picker
                   style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
                   selectedValue={formData.doses}
                   onValueChange={(value) => handleInputChange('doses', value)}
                 >
-                  {/* Adding the default disabled option */}
-                  <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                   <Picker.Item label="اختر..." value="" enabled={false} />
 
                   {doses.map((state, index) => (
                     <Picker.Item key={index} label={state} value={state} />
@@ -1104,7 +1088,7 @@ const AddInspectionScreen = ({ route }) => {
               </View>
 
               <View style={[styles.detailItem, styles.inline]}>
-                <Text style={styles.label}>Note</Text>
+                <Text style={styles.label}>ملاحظة </Text>
                 <TextInput
                   style={[styles.textInput, styles.inlineInput, styles.textArea]}
                   multiline={true}
@@ -1114,21 +1098,20 @@ const AddInspectionScreen = ({ route }) => {
                 />
               </View>
             </View>
-           
+
 
             {/* Honey and Pollen stores Details  */}
             <View style={styles.fieldset}>
-              <Text style={styles.fieldsetTitle}>Récoltes</Text>
+              <Text style={styles.fieldsetTitle}>الحصاد</Text>
 
               <View style={[styles.detailItem, styles.inline]}>
-                <Text style={styles.label}>Récolte de miel </Text>
+                <Text style={styles.label}>حصاد العسل </Text>
                 <Picker
                   style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
                   selectedValue={formData.HoneyStores}
                   onValueChange={(value) => handleInputChange('HoneyStores', value)}
                 >
-                  {/* Adding the default disabled option */}
-                  <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                   <Picker.Item label="اختر..." value="" enabled={false} />
 
                   {HoneyPollenHarvest.map((state, index) => (
                     <Picker.Item key={index} label={state} value={state} />
@@ -1137,14 +1120,13 @@ const AddInspectionScreen = ({ route }) => {
               </View>
 
               <View style={[styles.detailItem, styles.inline]}>
-                <Text style={styles.label}>Récolte de pollens </Text>
+                <Text style={styles.label}>حصاد حبوب اللقاح </Text>
                 <Picker
                   style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
                   selectedValue={formData.PollenStores}
                   onValueChange={(value) => handleInputChange('PollenStores', value)}
                 >
-                  {/* Adding the default disabled option */}
-                  <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                   <Picker.Item label="اختر..." value="" enabled={false} />
 
                   {HoneyPollenHarvest.map((state, index) => (
                     <Picker.Item key={index} label={state} value={state} />
@@ -1156,21 +1138,21 @@ const AddInspectionScreen = ({ route }) => {
 
             </View>
 
-          
+
 
             {/* Actions Taken */}
             <ScrollView>
               <View style={styles.fieldset}>
-                <Text style={styles.fieldsetTitle}>Actions entreprises</Text>
+                <Text style={styles.fieldsetTitle}>الأنشطة</Text>
                 <View style={styles.frameContainer}>
                   <View style={styles.frame}>
-                    <Text style={styles.frameTitle}>Ajouts</Text>
+                    <Text style={styles.frameTitle}>الاضافات</Text>
                     <View style={styles.optionsContainer}>
                       {options.map((option) => renderOption(option, selectedAjouts, handleAjoutsChange))}
                     </View>
                   </View>
                   <View style={styles.frame}>
-                    <Text style={styles.frameTitle}>Enlèvements</Text>
+                    <Text style={styles.frameTitle}>الإزالات</Text>
                     <View style={styles.optionsContainer}>
                       {options.map((option) => renderOption(option, selectedEnlevements, handleEnlevementsChange))}
                     </View>
@@ -1178,12 +1160,12 @@ const AddInspectionScreen = ({ route }) => {
                 </View>
               </View>
             </ScrollView>
-           
+
 
             {/* Weather Details  */}
             <View>
               <View style={styles.inline}>
-                <Text style={styles.label}>Inclure la météo</Text>
+                <Text style={styles.label}>شمل الطقس</Text>
                 <Switch
                   trackColor={{ false: "#767577", true: "#B8E986" }}
                   thumbColor={showWeatherDetails ? "#B8E986" : "#B8E986"}
@@ -1194,10 +1176,19 @@ const AddInspectionScreen = ({ route }) => {
 
               {showWeatherDetails && (
                 <View style={styles.fieldset}>
-                  <Text style={styles.fieldsetTitle}>Météo</Text>
+                  <Text style={styles.fieldsetTitle}>الطقس</Text>
 
                   <View style={[styles.detailItem, styles.inline]}>
-                    <Text style={styles.label}>Température (°C)</Text>
+                    <Text style={styles.label}>حالة الطقس </Text>
+                    <TextInput
+                      style={[styles.textInput, styles.inlineInput]}
+                      value={formData.condition}
+                      editable={false}
+                    />
+                  </View>
+
+                  <View style={[styles.detailItem, styles.inline]}>
+                    <Text style={styles.label}>درجة الحرارة (°C) </Text>
                     <TextInput
                       style={[styles.textInput, styles.inlineInput]}
                       keyboardType="numeric"
@@ -1207,7 +1198,7 @@ const AddInspectionScreen = ({ route }) => {
                   </View>
 
                   <View style={[styles.detailItem, styles.inline]}>
-                    <Text style={styles.label}>Humidité (%)</Text>
+                    <Text style={styles.label}>الرطوبة (%) </Text>
                     <TextInput
                       style={[styles.textInput, styles.inlineInput]}
                       keyboardType="numeric"
@@ -1217,7 +1208,7 @@ const AddInspectionScreen = ({ route }) => {
                   </View>
 
                   <View style={[styles.detailItem, styles.inline]}>
-                    <Text style={styles.label}>Pression (hPa)</Text>
+                    <Text style={styles.label}>الضغط (hPa) </Text>
                     <TextInput
                       style={[styles.textInput, styles.inlineInput]}
                       keyboardType="numeric"
@@ -1227,7 +1218,7 @@ const AddInspectionScreen = ({ route }) => {
                   </View>
 
                   <View style={[styles.detailItem, styles.inline]}>
-                    <Text style={styles.label}>Vitesse du vent (km/h)</Text>
+                    <Text style={styles.label}>سرعة الرياح (كم/ساعة) </Text>
                     <TextInput
                       style={[styles.textInput, styles.inlineInput]}
                       keyboardType="numeric"
@@ -1237,7 +1228,7 @@ const AddInspectionScreen = ({ route }) => {
                   </View>
 
                   <View style={[styles.detailItem, styles.inline]}>
-                    <Text style={styles.label}>Direction du vent</Text>
+                    <Text style={styles.label}>اتجاه الرياح </Text>
                     <TextInput
                       style={[styles.textInput, styles.inlineInput]}
                       value={formData.windDirection}
@@ -1245,22 +1236,15 @@ const AddInspectionScreen = ({ route }) => {
                     />
                   </View>
 
-                  <View style={[styles.detailItem, styles.inline]}>
-                    <Text style={styles.label}>Condition météorologique</Text>
-                    <TextInput
-                      style={[styles.textInput, styles.inlineInput]}
-                      value={formData.condition}
-                      editable={false}
-                    />
-                  </View>
+                
 
                 </View>
               )}
             </View>
-         
+
 
             {/* Note Details  */}
-            <Text style={styles.fieldsetTitle}>Note</Text>
+            <Text style={styles.fieldsetTitle}>ملاحظة</Text>
             <View style={[styles.detailItem, styles.inline]}>
               <TextInput
                 style={[styles.textInput, styles.inlineInput, styles.textArea]}
@@ -1270,10 +1254,10 @@ const AddInspectionScreen = ({ route }) => {
                 value={formData.InspectionNote}
               />
             </View>
-        
+
 
             <TouchableOpacity style={styles.addButton} onPress={handleAddInspection}>
-              <Text style={styles.addButtonText}>Ajouter</Text>
+              <Text style={styles.addButtonText}>إضافة</Text>
             </TouchableOpacity>
 
 
@@ -1300,7 +1284,7 @@ const styles = StyleSheet.create({
     color: '#977700',
     textAlign: 'center',
     marginBottom: 20,
-    marginTop:20,
+    marginTop: 20,
   },
 
   inputIcon: {
@@ -1308,6 +1292,7 @@ const styles = StyleSheet.create({
   },
 
   detailsContainer: {
+
     backgroundColor: '#fff',
     borderRadius: 20,
     padding: 20,
@@ -1360,7 +1345,7 @@ const styles = StyleSheet.create({
     color: '#342D21',
   },
   inline: {
-    flexDirection: 'row',
+    flexDirection: 'row-reverse',
     alignItems: 'center',
   },
   inlineInput: {
@@ -1368,7 +1353,7 @@ const styles = StyleSheet.create({
     marginLeft: 15,
   },
   disabledTextInput: {
-    backgroundColor: '#f0f0f0',  
+    backgroundColor: '#f0f0f0',
     fontSize: 16,
     fontWeight: '400',
     width: 150,
@@ -1381,9 +1366,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   textArea: {
- 
-    height: 100,  
-    textAlignVertical: 'top',  
+
+    height: 100,
+    textAlignVertical: 'top',
   },
 
   picker: {
@@ -1393,8 +1378,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     marginBottom: 10,
-    justifyContent: 'flex-start',  
-    alignItems: 'flex-start',  
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
   },
   optionsContainer: {
     flexDirection: 'row',

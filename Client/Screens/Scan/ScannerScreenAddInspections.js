@@ -24,7 +24,7 @@ export default function ScannerScreenAddInspections({ navigation }) {
             />
 
             <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.goBack()}>
-                 <Image  source={require('../../assets/back.png')} style={styles.customIcon2} />
+                 <Image  source={require('../../assets/back.png')} style={styles.customIcon2} /><Text style={{ color: 'white' }}>الرجوع</Text>
 
             </TouchableOpacity>
 

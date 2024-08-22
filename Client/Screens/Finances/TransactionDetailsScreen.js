@@ -3,7 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity, Alert, StyleSheet } from 'rea
 import { Ionicons } from '@expo/vector-icons';
 import EditTransactionModal from './EditTransactionModal';
 import axios from '../../axiosConfig';
- 
+
 const TransactionDetailsScreen = ({ route, navigation }) => {
     const { transactionData, badge } = route.params;
     const [modalVisible, setModalVisible] = useState(false);
@@ -24,38 +24,38 @@ const TransactionDetailsScreen = ({ route, navigation }) => {
             const response = await axios.delete(`/transaction/deleteTransaction/${transactionId}`);
             if (response.status === 200) {
                 console.log('Transaction deleted successfully');
-                showAlertAndNavigate('Transaction supprimée avec succès');
+                showAlertAndNavigate('تم حذف المعاملة بنجاح');
             } else {
                 console.error('Failed to delete transaction:', response.data.message);
-                showAlert('Échec de la suppression de la transaction');
+                showAlert('فشل حذف المعاملة');
             }
         } catch (error) {
             console.error('Error deleting transaction:', error.message);
-            showAlert('Erreur lors de la suppression de la transaction');
+            showAlert('خطأ أثناء حذف المعاملة');
         }
     };
 
     const showAlertAndNavigate = (message) => {
         Alert.alert(
-            'Success',
+            'نجاح',
             message,
-            [{ text: 'OK', onPress: () => navigation.goBack() }],
+            [{ text: 'موافق', onPress: () => navigation.goBack() }],
             { cancelable: false }
         );
     };
 
     const showAlert = (message) => {
-        Alert.alert('Error', message, [{ text: 'OK' }], { cancelable: false });
+        Alert.alert('خطأ', message, [{ text: 'موافق' }], { cancelable: false });
     };
 
     const confirmDelete = (transactionId) => {
         Alert.alert(
-            'Confirmation',
-            'Êtes-vous sûr de vouloir supprimer cette transaction ?',
+            'تأكيد',
+            'هل أنت متأكد أنك تريد حذف هذه المعاملة؟',
             [
-                { text: 'Annuler', style: 'cancel' },
+                { text: 'إلغاء', style: 'cancel' },
                 {
-                    text: 'Supprimer',
+                    text: 'حذف',
                     onPress: () => handleDelete(transactionId),
                     style: 'destructive',
                 },
@@ -68,7 +68,7 @@ const TransactionDetailsScreen = ({ route, navigation }) => {
         if (badge) {
             return (
                 <View style={styles.badge}>
-                    <Text style={{ color: 'white', fontSize: 12 }}>Dernière transaction</Text>
+                    <Text style={{ color: 'white', fontSize: 12 }}>آخر معاملة</Text>
                 </View>
             );
         }
@@ -101,44 +101,55 @@ const TransactionDetailsScreen = ({ route, navigation }) => {
 
 
                 <View style={styles.row}>
-                    <Text style={styles.label}> <Ionicons name="settings-outline" size={14} color="gray" /> Type d'opération
-                    </Text>
+
                     <Text style={styles.value}>{formData.OperationType}</Text>
+                    <View style={styles.labelContainer}>
+                        <Text style={styles.label}>نوع العملية</Text>
+                        <Ionicons name="settings-outline" size={14} color="gray" />
+                    </View>
                 </View>
 
                 <View style={styles.divider} />
 
                 <View style={styles.row}>
-                    <Text style={styles.label}>
-                        <Ionicons name="newspaper-outline" size={14} color="blue" /> Description
-                    </Text>
-                    <Text style={styles.valueLine}>{"     "}{formData.Description}</Text>
 
+                    <Text style={styles.valueLine}>{formData.Description}</Text>
+                    <View style={styles.labelContainer}>
+                        <Text style={styles.label}>الوصف</Text>
+                        <Ionicons name="newspaper-outline" size={14} color="blue" />
+                    </View>
                 </View>
 
                 <View style={styles.divider} />
 
                 <View style={styles.row}>
-                    <Text style={styles.label}>
-                        <Ionicons name="calendar-number-outline" size={14} color="#977700" /> Date
-                    </Text>
+
                     <Text style={styles.value}>{new Date(formData.TransactionDate).toLocaleDateString('fr-FR')}</Text>
+                    <View style={styles.labelContainer}>
+                        <Text style={styles.label}>التاريخ</Text>
+                        <Ionicons name="calendar-number-outline" size={14} color="#977700" />
+                    </View>
                 </View>
 
                 <View style={styles.divider} />
 
 
                 <View style={styles.row}>
-                    <Text style={styles.label}> <Ionicons name="grid-outline" size={14} color="orange" /> Catégorie
-                    </Text>
+
                     <Text style={styles.value}>{formData.Category}</Text>
+                    <View style={styles.labelContainer}>
+                        <Text style={styles.label}>الفئة</Text>
+                        <Ionicons name="grid-outline" size={14} color="orange" />
+                    </View>
                 </View>
                 <View style={styles.divider} />
 
                 <View style={styles.row}>
-                    <Text style={styles.label}> <Ionicons name="cash-outline" size={14} color="green" /> Montant
-                    </Text>
                     <Text style={styles.value}>{formData.Amount}</Text>
+                    <View style={styles.labelContainer}>
+                        <Text style={styles.label}>المبلغ</Text>
+                        <Ionicons name="cash-outline" size={14} color="green" />
+                    </View>
                 </View>
 
 
@@ -146,12 +157,11 @@ const TransactionDetailsScreen = ({ route, navigation }) => {
                     (<><View style={styles.divider} />
 
                         <View style={styles.row}>
-
-                            <Text style={styles.label}>
-                                <Ionicons name="receipt-outline" size={14} color="pink" /> Note
-                            </Text>
-                            <Text style={styles.value}>{"     "}{formData.Note}</Text>
-
+                            <Text style={styles.value}>{formData.Note}</Text>
+                            <View style={styles.labelContainer}>
+                                <Text style={styles.label}>ملاحظة</Text>
+                                <Ionicons name="receipt-outline" size={14} color="pink" />
+                            </View>
                         </View></>)}
 
 
@@ -202,18 +212,23 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginBottom: 10,
-        flexWrap: 'wrap',  
-
+        flexWrap: 'wrap',
+        alignItems: 'center',
     },
-
+    labelContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
     label: {
         fontSize: 16,
         fontWeight: 'bold',
+        marginRight: 5,
     },
     value: {
         fontSize: 15,
-        maxWidth: '100%', 
+        maxWidth: '100%',
     },
+
 
     section: {
         marginBottom: 20,
@@ -253,17 +268,17 @@ const styles = StyleSheet.create({
 
     buttonContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-between', 
-        marginBottom: 20, 
+        justifyContent: 'space-between',
+        marginBottom: 20,
     },
 
     badgeContainer: {
-        position: 'relative', 
+        position: 'relative',
     },
     iconsContainer: {
         flexDirection: 'row',
-        alignItems: 'center', 
-        marginLeft: 'auto',   
+        alignItems: 'center',
+        marginLeft: 'auto',
     },
 
     badge: {

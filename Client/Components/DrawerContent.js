@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
-import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
+import { DrawerContentScrollView } from '@react-navigation/drawer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import CustomDrawerItem from './CustomDrawerItem'; // Make sure to import the custom component
 import { Ionicons } from '@expo/vector-icons';
 
 export default function DrawerContent(props) {
@@ -27,15 +28,15 @@ export default function DrawerContent(props) {
 
     const handleLogout = async () => {
         Alert.alert(
-            'Confirmation',
-            'Êtes-vous sûr de vouloir vous déconnecter?',
+            'تأكيد',
+            'هل أنت متأكد أنك تريد تسجيل الخروج؟',
             [
                 {
-                    text: 'Annuler',
+                    text: 'إلغاء',
                     style: 'cancel'
                 },
                 {
-                    text: 'Se déconnecter',
+                    text: 'تسجيل الخروج',
                     onPress: async () => {
                         try {
                             await AsyncStorage.removeItem('token');
@@ -58,92 +59,77 @@ export default function DrawerContent(props) {
         if (role === 'Apiculteur' || role === 'Assistance intermédiaire') {
             return (
                 <>
-                    <DrawerItem
-                        label="Accueil"
+                    <CustomDrawerItem
+                        label="الصفحة الرئيسية"
                         icon={() => <Ionicons name='home-outline' size={24} color="#977700" />}
                         onPress={() => props.navigation.navigate('Home')}
-                        labelStyle={styles.drawerItemLabel}
                     />
-                    <DrawerItem
-                        label="Profil"
+                    <CustomDrawerItem
+                        label="الملف الشخصي"
                         icon={() => <Ionicons name='person-outline' size={24} color="#977700" />}
                         onPress={() => props.navigation.navigate('Profil')}
-                        labelStyle={styles.drawerItemLabel}
                     />
-
                     {role === 'Assistance intermédiaire' &&
-                        <DrawerItem
-                            label="Présence de maladies"
+                        <CustomDrawerItem
+                            label="وجود الأمراض"
                             icon={() => <Ionicons name='pulse-outline' size={24} color="#977700" />}
                             onPress={() => props.navigation.navigate('AlertBeekeepers')}
-                            labelStyle={styles.drawerItemLabel}
                         />
                     }
-                    <DrawerItem
-                        label="Tâches"
+                    <CustomDrawerItem
+                        label="المهام"
                         icon={() => <Ionicons name='calendar-outline' size={24} color="#977700" />}
                         onPress={() => props.navigation.navigate('Tasks')}
-                        labelStyle={styles.drawerItemLabel}
                     />
-                    <DrawerItem
-                        label="Récoltes"
+                    <CustomDrawerItem
+                        label="الحصاد"
                         icon={() => <Ionicons name='flask-outline' size={24} color="#977700" />}
                         onPress={() => props.navigation.navigate('Harvest')}
-                        labelStyle={styles.drawerItemLabel}
                     />
-                    <DrawerItem
-                        label="Produits en stock"
+                    <CustomDrawerItem
+                        label="المنتجات المخزنة"
                         icon={() => <Ionicons name='storefront-outline' size={24} color="#977700" />}
                         onPress={() => props.navigation.navigate('Storage')}
-                        labelStyle={styles.drawerItemLabel}
                     />
-                    <DrawerItem
-                        label="Finances"
+                    <CustomDrawerItem
+                        label="المعاملات المالية"
                         icon={() => <Ionicons name='cash-outline' size={24} color="#977700" />}
                         onPress={() => props.navigation.navigate('Finances')}
-                        labelStyle={styles.drawerItemLabel}
                     />
-                    <DrawerItem
-                        label="Stats et Graphs"
+                    <CustomDrawerItem
+                        label="الإحصائيات والرسوم البيانية"
                         icon={() => <Ionicons name='bar-chart-outline' size={24} color="#977700" />}
                         onPress={() => props.navigation.navigate('Stats')}
-                        labelStyle={styles.drawerItemLabel}
                     />
-                    <DrawerItem
-                        label="Galerie"
+                    <CustomDrawerItem
+                        label="معرض الصور"
                         icon={() => <Ionicons name='images-outline' size={24} color="#977700" />}
                         onPress={() => props.navigation.navigate('Gallery')}
-                        labelStyle={styles.drawerItemLabel}
                     />
-
-                    <DrawerItem
-                        label="À propos"
+                    <CustomDrawerItem
+                        label="حول التطبيق"
                         icon={() => <Ionicons name='information-circle-outline' size={24} color="#977700" />}
                         onPress={() => props.navigation.navigate('AboutApp')}
-                        labelStyle={styles.drawerItemLabel}
                     />
                 </>
             );
         } else if (role === 'Niveau Stratégique') {
             return (
                 <>
-                    <DrawerItem
-                        label="Accueil"
+                    <CustomDrawerItem
+                        label="الصفحة الرئيسية"
                         icon={() => <Ionicons name='home-outline' size={24} color="#977700" />}
                         onPress={() => props.navigation.navigate('HomeNiveauStrat')}
-                        labelStyle={styles.drawerItemLabel}
                     />
-                    <DrawerItem
-                        label="Profil"
+                    <CustomDrawerItem
+                        label="الملف الشخصي"
                         icon={() => <Ionicons name='person-outline' size={24} color="#977700" />}
                         onPress={() => props.navigation.navigate('Profil')}
-                        labelStyle={styles.drawerItemLabel}
                     />
-                    <DrawerItem
-                        label="À propos"
+                    <CustomDrawerItem
+                        label="حول التطبيق"
                         icon={() => <Ionicons name='information-circle-outline' size={24} color="#977700" />}
                         onPress={() => props.navigation.navigate('AboutApp')}
-                        labelStyle={styles.drawerItemLabel}
                     />
                 </>
             );
@@ -161,8 +147,9 @@ export default function DrawerContent(props) {
                 {renderDrawerItems()}
                 <View style={styles.divider} />
                 <TouchableOpacity onPress={handleLogout} style={styles.logoutContainer}>
+                <Text style={styles.drawerItemLogout}>تسجيل الخروج</Text>
                     <Ionicons name="exit-outline" size={24} color="#977700" style={styles.iconStyle} />
-                    <Text style={styles.drawerItemLogout}>Se déconnecter</Text>
+                    
                 </TouchableOpacity>
             </DrawerContentScrollView>
         </View>
@@ -189,19 +176,19 @@ const styles = StyleSheet.create({
         height: 150,
     },
     logoImage: {
-        width: 140,
+        width: 150,
         height: 140,
     },
     drawerItemLabel: {
         fontSize: 15,
-        color: '#000000',
+         color: '#000000',
     },
     drawerItemLogout: {
-        fontSize: 15,
+        fontSize: 17,
         color: '#977700',
     },
     iconStyle: {
-        marginRight: 10,
+        marginLeft: 10,
     },
     logoutContainer: {
         flexDirection: 'row',

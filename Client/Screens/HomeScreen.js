@@ -82,15 +82,15 @@ export default function HomeScreen({ navigation }) {
         transactions.forEach(transaction => {
           const transactionYear = new Date(transaction.TransactionDate).getFullYear();
           if (transactionYear === currentYear) {
-            if (transaction.OperationType === 'Revenus') {
+            if (transaction.OperationType === 'الدخل') {
               currentYearTotals.revenues += transaction.Amount;
-            } else if (transaction.OperationType === 'Dépenses') {
+            } else if (transaction.OperationType === 'النفقات') {
               currentYearTotals.expenses += transaction.Amount;
             }
           } else if (transactionYear === previousYear) {
-            if (transaction.OperationType === 'Revenus') {
+            if (transaction.OperationType === 'الدخل') {
               previousYearTotals.revenues += transaction.Amount;
-            } else if (transaction.OperationType === 'Dépenses') {
+            } else if (transaction.OperationType === 'النفقات') {
               previousYearTotals.expenses += transaction.Amount;
             }
           }
@@ -206,12 +206,13 @@ export default function HomeScreen({ navigation }) {
 
 
   const strengthMapping = {
-    "Très Faible": 0,
-    "Faible": 25,
-    "Modérée": 50,
-    "Forte": 75,
-    "Très Forte": 100,
+    "ضعيف جداً": 0,
+    "ضعيف": 25,
+    "معتدل": 50,
+    "قوي": 75,
+    "قوي جداً": 100,
   };
+
 
 
   useEffect(() => {
@@ -251,15 +252,15 @@ export default function HomeScreen({ navigation }) {
 
 
   const propertiesData = [
-    { id: 1, name: 'Ruchers', value: apiariesCount.toString(), img: require('../assets/rucher.png') },
-    { id: 2, name: 'Ruches', value: hivesCount.toString(), img: require('../assets/ruche.png') },
+    { id: 1, name: 'مناحل', value: apiariesCount.toString(), img: require('../assets/rucher.png') },
+    { id: 2, name: 'خلايا النحل', value: hivesCount.toString(), img: require('../assets/ruche.png') },
     {
       id: 3,
-      name: 'Solde',
+      name: 'الرصيد',
       value: `${Math.abs(financialData.currentYearTotal).toLocaleString()} ${financialData.currentYearTotal < 0 ? '-' : ''} د.ت `,
       img: require('../assets/solde.png')
     },   
-    { id: 4, name: 'Force', value: `${strengthPercentage.toFixed(0)}%`, img: require('../assets/force.png') }, // Update here
+    { id: 4, name: 'قوة خلايا النحل', value: `${strengthPercentage.toFixed(0)}%`, img: require('../assets/force.png') }, // Update here
   ];
 
 
@@ -280,39 +281,41 @@ export default function HomeScreen({ navigation }) {
   if (!permission.granted) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
-        <Text style={{ textAlign: 'center', marginBottom: 10 }}>Nous avons besoin de votre autorisation pour afficher la caméra 📷</Text>
+        <Text style={{ textAlign: 'center', marginBottom: 10 }}>
+          نحتاج إلى إذنك لعرض الكاميرا 📷
+        </Text>
         <TouchableOpacity style={styles.button} onPress={requestPermission}>
-          <Text style={styles.buttonText}>Donner la permission</Text>
+          <Text style={styles.buttonText}>منح الإذن</Text>
         </TouchableOpacity>
       </View>
-
-    );
+    );    
   }
 
 
   const handleNotificationPress = () => {
     Alert.alert(
-      'Tâches inachevées',
-      `Vous avez ${incompleteTasksCount} tâche${incompleteTasksCount > 1 ? 's' : ''} inachevée${incompleteTasksCount > 1 ? 's' : ''}`,
+      'المهام غير المكتملة',
+      `لديك ${incompleteTasksCount} مهم${incompleteTasksCount > 1 ? 'ات' : 'ة'} غير مكتمل${incompleteTasksCount > 1 ? 'ات' : 'ة'}`,
       [
         {
-          text: 'Annuler',
+          text: 'إلغاء',
           style: 'cancel',
         },
         {
-          text: 'Afficher vos tâches',
+          text: 'عرض مهامك',
           onPress: () => navigation.navigate('Tasks'),
         },
       ],
       { cancelable: false }
     );
   };
+  
 
   return (
     <View style={styles.container}>
       <HomeHeader
         navigation={navigation}
-        title={'Accueil'}
+        title={'الصفحة الرئيسية'}
         incompleteTasksCount={incompleteTasksCount}
         onNotificationPress={handleNotificationPress}
       />
@@ -325,7 +328,7 @@ export default function HomeScreen({ navigation }) {
             loop
             style={{ width: 150, height: 150 }}
           />
-          <Text>Connexion en cours..</Text>
+          <Text>جاري تسجيل الدخول..</Text>
         </View>
 
       ) : (
@@ -334,12 +337,13 @@ export default function HomeScreen({ navigation }) {
 
 
           <View style={styles.headerTextView}>
-            <Text style={styles.headerText}>Bonjour </Text>
             <Text style={styles.headerText}></Text>
             <View style={styles.headerTextContainer}>
               {currentUser ? (<Text style={styles.headerText}>{currentUser.Firstname}</Text>
               ) : null}
             </View>
+            <Text style={styles.headerText}>مرحبا </Text>
+
           </View>
 
 
@@ -358,7 +362,7 @@ export default function HomeScreen({ navigation }) {
           <View style={styles.centeredContainer}>
             <Image source={require('../assets/qr-scan.png')} style={styles.qrScan} />
             <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
-              <Text style={styles.buttonText}>Scanner</Text>
+              <Text style={styles.buttonText}>مسح رمز QR</Text>
             </TouchableOpacity>
           </View>
         </>
@@ -373,17 +377,17 @@ export default function HomeScreen({ navigation }) {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Scanner le code QR</Text>
+            <Text style={styles.modalTitle}>مسح رمز QR</Text>
             <TouchableOpacity style={styles.modalButton} onPress={openScannerInspDetails}>
               <Ionicons name="archive-outline" size={20} color="#977700" />
-              <Text style={styles.modalButtonText}>Détails Ruche/Inspections</Text>
+              <Text style={styles.modalButtonText}>تفاصيل الخلية/المتابعات الدورية</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.modalButton} onPress={openScannerAddInspec}>
               <Ionicons name="create-outline" size={20} color="#977700" />
-              <Text style={styles.modalButtonText}>Ajouter une inspection</Text>
+              <Text style={styles.modalButtonText}>إضافة متابعة دورية</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
-              <Text style={styles.closeButtonText}>Annuler</Text>
+              <Text style={styles.closeButtonText}>إلغاء</Text>
             </TouchableOpacity>
           </View>
         </View>

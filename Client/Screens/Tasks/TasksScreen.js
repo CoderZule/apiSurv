@@ -25,7 +25,7 @@ const TaskScreen = ({ navigation }) => {
   const [completed, setCompleted] = useState(false);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [isStartPicker, setIsStartPicker] = useState(true);
- 
+
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -47,16 +47,16 @@ const TaskScreen = ({ navigation }) => {
 
   const getPriorityColor = (itemValue) => {
     switch (itemValue) {
-      case 'Faible':
-        return '#007bff'; 
-      case 'Élevée':
-        return '#dc3545';  
-      case 'Normale':
-        return '#28a745';  
-      case 'Critique':
+      case 'منخفض':
+        return '#007bff';
+      case 'مرتفع':
+        return '#dc3545';
+      case 'عادي':
+        return '#28a745';
+      case 'حاسم':
         return '#ffc107';
       default:
-        return '#000000';  
+        return '#000000';
     }
   };
 
@@ -81,7 +81,7 @@ const TaskScreen = ({ navigation }) => {
       setDescription(event.description);
       setStart(new Date(event.start));
       setEnd(new Date(event.end));
-      setCompleted(event.completed || false);  
+      setCompleted(event.completed || false);
 
     } else {
       setSelectedEvent(null);
@@ -90,7 +90,7 @@ const TaskScreen = ({ navigation }) => {
       setDescription('');
       setStart(new Date());
       setEnd(new Date());
-      setCompleted(false);  
+      setCompleted(false);
 
 
     }
@@ -124,7 +124,7 @@ const TaskScreen = ({ navigation }) => {
   const fetchTasks = async () => {
 
     if (!currentUser) {
-     
+
       console.error('Current user is null');
       return;
     }
@@ -137,13 +137,13 @@ const TaskScreen = ({ navigation }) => {
       });
       const fetchedEvents = response.data.data.map(event => ({
         ...event,
-        start: event.start ? new Date(event.start) : new Date(),  
-        end: event.end ? new Date(event.end) : new Date(),      
+        start: event.start ? new Date(event.start) : new Date(),
+        end: event.end ? new Date(event.end) : new Date(),
       }));
       setEvents(fetchedEvents);
     } catch (error) {
       console.error('Error fetching tasks:', error);
-    
+
     }
   };
 
@@ -158,9 +158,9 @@ const TaskScreen = ({ navigation }) => {
   const createTask = async () => {
     try {
       if (!title || !priority || !description || !start || !end) {
-        return Alert.alert('Erreur', 'Veuillez remplir tous les champs');
+        return Alert.alert('خطأ', 'يرجى ملء جميع الحقول');
       } else {
-       
+
         const startDate = new Date(start);
         const endDate = new Date(end);
 
@@ -169,8 +169,8 @@ const TaskScreen = ({ navigation }) => {
           title,
           priority,
           description,
-          start: startDate.toISOString(),  
-          end: endDate.toISOString(),  
+          start: startDate.toISOString(),
+          end: endDate.toISOString(),
           user: currentUser._id
         });
 
@@ -188,19 +188,19 @@ const TaskScreen = ({ navigation }) => {
 
         setEvents([...events, newTask]);
         closeModal();
-        Alert.alert('Succès', 'Tâche créée avec succès');
+        Alert.alert('نجاح', 'تم إنشاء المهمة بنجاح');
       }
 
     } catch (error) {
       console.error('Erreur lors de la création de la tâche :', error);
-     
+
     }
   };
 
   const editTask = async () => {
     try {
       if (!title || !priority || !description || !start || !end) {
-        return Alert.alert('Erreur', 'Veuillez remplir tous les champs');
+        return Alert.alert('خطأ', 'يرجى ملء جميع الحقول');
       } else {
         const editedTaskData = {
           _id: selectedEvent._id,
@@ -228,10 +228,10 @@ const TaskScreen = ({ navigation }) => {
             event._id === selectedEvent._id ? updatedTask : event
           ));
           closeModal();
-          Alert.alert('Succès', 'Tâche a été mise à jour avec succès');
+          Alert.alert('نجاح', 'تم تحديث المهمة بنجاح');
         } else {
           console.error('Failed to update task. Server responded with:', response.status);
-          
+
         }
 
       }
@@ -239,7 +239,7 @@ const TaskScreen = ({ navigation }) => {
 
     } catch (error) {
       console.error('Error updating task:', error);
-   
+
     }
   };
 
@@ -252,11 +252,11 @@ const TaskScreen = ({ navigation }) => {
       }
       const confirmDelete = await new Promise((resolve, reject) => {
         Alert.alert(
-          'Confirmation',
-          'Êtes-vous sûr de vouloir supprimer cette tâche?',
+          'تأكيد',
+          'هل أنت متأكد أنك تريد حذف هذه المهمة؟',
           [
-            { text: 'Annuler', onPress: () => resolve(false), style: 'cancel' },
-            { text: 'Supprimer', onPress: () => resolve(true) },
+            { text: 'إلغاء', onPress: () => resolve(false), style: 'cancel' },
+            { text: 'حذف', onPress: () => resolve(true) },
           ],
           { cancelable: true }
         );
@@ -269,12 +269,12 @@ const TaskScreen = ({ navigation }) => {
           closeModal();
         } else {
           console.error('Failed to delete task. Server responded with:', response.status);
-        
+
         }
       }
     } catch (error) {
       console.error('Error deleting task:', error);
-    
+
     }
   };
 
@@ -283,7 +283,7 @@ const TaskScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.safeArea}>
 
-      <HomeHeader navigation={navigation} title={'Tâches'} />
+      <HomeHeader navigation={navigation} title={'المهام'} />
 
       <Card style={styles.card}>
         <Card.Content>
@@ -314,13 +314,14 @@ const TaskScreen = ({ navigation }) => {
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
 
               <Text style={styles.modalTitle}>
-                {selectedEvent ? 'Modifier/Supprimer la tâche' : 'Nouvelle tâche'}
+                {selectedEvent ? 'تعديل/حذف المهمة' : 'إضافة مهمة جديدة'}
+
               </Text>
 
 
               {selectedEvent && (
                 <View style={styles.inline}>
-                  <Text style={styles.label}>Terminée</Text>
+                  <Text style={styles.label}>مكتملة</Text>
                   <Switch
                     trackColor={{ false: "#767577", true: "#81b0ff" }}
                     thumbColor={completed ? "#f4f3f4" : "#f4f3f4"}
@@ -328,17 +329,18 @@ const TaskScreen = ({ navigation }) => {
                     onValueChange={(itemValue) => setCompleted(itemValue)}
                     value={completed}
                   />
+                  
                 </View>
               )}
 
-              <Text style={styles.label}>Priorité</Text>
+              <Text style={styles.label}>الأولوية</Text>
               <View style={styles.inputContainer}>
                 <Picker
                   selectedValue={priority}
                   onValueChange={(itemValue) => setPriority(itemValue)}
                   style={styles.input}
                 >
-                  <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                  <Picker.Item label="اختيار الأولوية..." value="" enabled={false} />
                   {taskpriority.map((item) => (
                     <Picker.Item
                       key={item}
@@ -350,30 +352,30 @@ const TaskScreen = ({ navigation }) => {
                 </Picker>
               </View>
 
-              <Text style={styles.label}>Titre</Text>
+              <Text style={styles.label}>العنوان</Text>
               <TextInput
-                placeholder="Titre"
+                placeholder="العنوان"
                 value={title}
                 onChangeText={setTitle}
                 style={styles.input}
               />
 
-              <Text style={styles.label}>Description</Text>
+              <Text style={styles.label}>الوصف</Text>
               <TextInput
-                placeholder="Description"
+                placeholder="الوصف"
                 value={description}
                 onChangeText={setDescription}
                 style={styles.input}
               />
 
-              <Text style={styles.label}>Date début</Text>
+              <Text style={styles.label}>تحديد تاريخ البداية</Text>
               <TouchableOpacity onPress={() => showDatePicker(true)}>
-                <Text style={styles.input}>{`Date et heure de début: ${start.toLocaleString()}`}</Text>
+              <Text style={styles.input}>{`تاريخ ووقت البداية: ${start.toLocaleString()}`}</Text>
               </TouchableOpacity>
 
-              <Text style={styles.label}>Date fin</Text>
+              <Text style={styles.label}>تحديد تاريخ النهاية</Text>
               <TouchableOpacity onPress={() => showDatePicker(false)}>
-                <Text style={styles.input}>{`Date et heure de fin: ${end.toLocaleString()}`}</Text>
+              <Text style={styles.input}>{`تاريخ ووقت النهاية: ${end.toLocaleString()}`}</Text>
               </TouchableOpacity>
 
 
@@ -382,7 +384,8 @@ const TaskScreen = ({ navigation }) => {
                 onPress={selectedEvent ? editTask : createTask}
               >
                 <Ionicons name="save-outline" size={20} color="#977700" />
-                <Text style={[styles.buttonContainerText]}>Enregistrer</Text>
+                <Text style={[styles.buttonContainerText]}>{selectedEvent ? 'تعديل': 'إضافة'}</Text>
+
               </TouchableOpacity>
 
               {selectedEvent && (
@@ -391,12 +394,12 @@ const TaskScreen = ({ navigation }) => {
                   onPress={deleteTask}
                 >
                   <Ionicons name="trash-outline" size={20} color="#fff" />
-                  <Text style={[styles.buttonContainerText, { color: '#fff' }]}>Supprimer</Text>
+                  <Text style={[styles.buttonContainerText, { color: '#fff' }]}>حذف</Text>
                 </TouchableOpacity>
               )}
 
               <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
-                <Text style={styles.closeButtonText}>Annuler</Text>
+                <Text style={styles.closeButtonText}>إلغاء</Text>
               </TouchableOpacity>
             </ScrollView>
           </View>
@@ -420,12 +423,12 @@ const styles = StyleSheet.create({
   },
   card: {
     margin: 16,
-    
+
   },
   addButton: {
     position: 'absolute',
     right: 10,
-    bottom: 113,
+    bottom: 50,
     width: 50,
     height: 50,
     borderRadius: 25,
@@ -444,7 +447,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 20,
     width: '90%',
-    maxHeight: '80%',  
+    maxHeight: '80%',
   },
   scrollViewContent: {
     paddingVertical: 20,
@@ -472,6 +475,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginBottom: 10,
+    textAlign:'right'
   },
   error: {
     color: 'red',
@@ -522,7 +526,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     backgroundColor: '#FBF5E0',
     borderBottomColor: '#CCCCCC',
-    width: '100%',  
+    width: '100%',
   },
   picker: {
     height: 50,
@@ -530,8 +534,9 @@ const styles = StyleSheet.create({
     color: '#333333',
   },
   inline: {
-    flexDirection: 'row',
+    flexDirection: 'row-reverse',
     alignItems: 'center',
+     
   },
 });
 export default TaskScreen;

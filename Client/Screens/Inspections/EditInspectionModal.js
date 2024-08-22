@@ -39,7 +39,7 @@ const Option = React.memo(({ option, isSelected, onPressHandler, quantity, onQua
                     { width: 50, marginBottom: 5 },
                 ]}
                 keyboardType="numeric"
-                placeholder="Qty"
+                placeholder="الكمية"
             />
         )}
     </TouchableOpacity>
@@ -202,17 +202,17 @@ const EditInspectionModal = ({
 
         try {
             if (!updatedFormData.Colony.strength || !updatedFormData.Colony.temperament || updatedFormData.Colony.deadBees === undefined) {
-                return Alert.alert('Erreur', 'Les informations de la colonie sont requises');
+                return Alert.alert('خطأ', 'معلومات المستعمرة مطلوبة');
             }
 
             if (updatedFormData.Queen) {
 
                 if (updatedFormData.Queen.seen) {
                     if (updatedFormData.Queen.isMarked && updatedFormData.Queen.color === '') {
-                        return Alert.alert('Erreur', 'Veuillez choisir une couleur pour la reine');
+                        return Alert.alert('خطأ', 'يرجى اختيار لون للملكة');
                     }
                     if (!updatedFormData.Queen.temperament || !updatedFormData.Queen.queenCells) {
-                        return Alert.alert('Erreur', 'Veuillez compléter les informations sur la reine');
+                        return Alert.alert('خطأ', 'يرجى إكمال معلومات الملكة');
                     }
                 } else {
                     updatedFormData.Queen.seen = false;
@@ -228,36 +228,36 @@ const EditInspectionModal = ({
 
 
             if (!updatedFormData.Colony.supers | !updatedFormData.Colony.pollenFrames | !updatedFormData.Colony.TotalFrames) {
-                return Alert.alert('Erreur', 'Les informations concernant les équipements sont requises');
+                return Alert.alert('خطأ', 'معلومات المعدات مطلوبة');
             }
             if (!updatedFormData.Brood.state || !updatedFormData.Brood.maleBrood || updatedFormData.Brood.totalBrood === undefined || updatedFormData.DronesSeen === undefined) {
-                return Alert.alert('Erreur', 'Les informations concernant la couvée ou la présence de drones sont requises');
+                return Alert.alert('خطأ', 'معلومات الحضنة والذكور مطلوبة');
             }
 
             if (!updatedFormData.HoneyStores) {
-                return Alert.alert('Erreur', 'Les réserves de miel sont requises');
+                return Alert.alert('خطأ', 'مخزونات العسل مطلوبة');
             }
             if (!updatedFormData.PollenStores) {
-                return Alert.alert('Erreur', 'Les réserves de pollen sont requises');
+                return Alert.alert('خطأ', 'مخزونات حبوب اللقاح مطلوبة');
             }
             const response = await axios.post('/inspection/editInspection', updatedFormData);
 
             if (response.status === 200) {
                 Alert.alert(
-                    'Succès',
-                    'Inspection mise à jour avec succès',
-                    [{ text: 'OK' }],
+                    'نجاح',
+                    'تم تحديث المتابعة بنجاح',
+                    [{ text: 'موافق' }],
                     { cancelable: false }
                 );
-                console.log('Inspection updated successfully');
+                console.log('تم تحديث المتابعة بنجاح');
             } else {
                 Alert.alert(
-                    'Erreur',
-                    'Échec de la mise à jour de l\'inspection',
-                    [{ text: 'OK' }],
+                    'خطأ',
+                    'فشل في تحديث المتابعة',
+                    [{ text: 'موافق' }],
                     { cancelable: false }
                 );
-                console.error('Failed to update inspection', response);
+                console.error('Error updating inspection:', error);
             }
 
             setModalVisible(false);
@@ -265,14 +265,15 @@ const EditInspectionModal = ({
 
         } catch (error) {
             Alert.alert(
-                'Erreur',
-                'Une erreur s\'est produite lors de la mise à jour de l\'inspection',
-                [{ text: 'OK' }],
+                'خطأ',
+                'حدث خطأ أثناء تحديث المتابعة',
+                [{ text: 'موافق' }],
                 { cancelable: false }
             );
-            console.error('Error updating inspection:', error);
+            console.error('خطأ في تحديث المتابعة:', error);
         }
     };
+
 
     return (
         <Modal visible={modalVisible} animationType="fade" transparent={true} statusBarTranslucent={true}
@@ -280,17 +281,17 @@ const EditInspectionModal = ({
 
             <View style={styles.modalOverlay}>
                 <View style={styles.modalContainer}>
-                    <Text style={styles.modalTitle}>Modifier l'inspection</Text>
+                    <Text style={styles.modalTitle}>تعديل المتابعة الدورية</Text>
 
                     <ScrollView style={styles.modalContent}>
 
                         {/* Queen section */}
                         {formData.Queen && (
                             <View style={styles.fieldset}>
-                                <Text style={styles.fieldsetTitle}>Reine</Text>
+                                <Text style={styles.fieldsetTitle}>الملكة</Text>
                                 <View style={[styles.detailItem, styles.inline]}>
                                     <Text style={styles.label}>
-                                        Observée</Text>
+                                        موجودة</Text>
                                     <Switch
                                         value={formData.Queen.seen}
                                         onValueChange={(value) => handleModalInputChange('Queen', 'seen', value)}
@@ -299,29 +300,29 @@ const EditInspectionModal = ({
                                 {formData.Queen.seen && (
                                     <>
                                         <View style={[styles.detailItem, styles.inline]}>
-                                            <Text style={styles.label}>Clippée</Text>
+                                            <Text style={styles.label}>مقيدة</Text>
                                             <Switch
                                                 value={formData.Queen.clipped}
                                                 onValueChange={(value) => handleModalInputChange('Queen', 'clipped', value)}
                                             />
                                         </View>
                                         <View style={[styles.detailItem, styles.inline]}>
-                                            <Text style={styles.label}>Essaimé</Text>
+                                            <Text style={styles.label}>مُتسربة</Text>
                                             <Switch
                                                 value={formData.Queen.isSwarmed}
                                                 onValueChange={(value) => handleModalInputChange('Queen', 'isSwarmed', value)}
                                             />
                                         </View>
                                         <View style={[styles.detailItem, styles.inline]}>
-                                            <Text style={styles.label}>Marquée</Text>
+                                            <Text style={styles.label}>معلمة</Text>
                                             <Switch
                                                 value={formData.Queen.isMarked}
                                                 onValueChange={(value) => handleModalInputChange('Queen', 'isMarked', value)}
                                             />
                                         </View>
+
                                         {formData.Queen.isMarked && (
                                             <View style={styles.modalRow}>
-                                                <Text style={styles.modalLabel}>Couleur</Text>
                                                 {formData.Queen.color ? (<Picker
                                                     selectedValue={formData.Queen.color}
                                                     style={[styles.modalInput, { backgroundColor: '#FBF5E0' }]}
@@ -336,16 +337,18 @@ const EditInspectionModal = ({
                                                     onValueChange={(value) => handleModalInputChange('Queen', 'color', value)}
                                                 >
 
-                                                    <Picker.Item label="Selectionner" value="" disabled />
+                                                    <Picker.Item label="اختر..." value="" enabled={false} />
                                                     {queenColors.map((color, index) => (
                                                         <Picker.Item key={index} label={color} value={color} />
                                                     ))}
                                                 </Picker>)}
+                                                <Text style={styles.modalLabel}>اللون</Text>
 
                                             </View>
                                         )}
+
+
                                         <View style={styles.modalRow}>
-                                            <Text style={styles.modalLabel}>Tempérament</Text>
                                             {formData.Queen.temperament ? (<Picker
                                                 selectedValue={formData.Queen.temperament}
                                                 style={[styles.modalInput, { backgroundColor: '#FBF5E0' }]}
@@ -359,16 +362,17 @@ const EditInspectionModal = ({
                                                 style={[styles.modalInput, { backgroundColor: '#FBF5E0' }]}
                                                 onValueChange={(value) => handleModalInputChange('Queen', 'temperament', value)}
                                             >
-                                                <Picker.Item label="Selectionner" value="" disabled />
+                                                <Picker.Item label="اختر..." value="" enabled={false} />
                                                 {temperament.map((state, index) => (
                                                     <Picker.Item key={index} label={state} value={state} />
                                                 ))}
                                             </Picker>)}
+                                            <Text style={styles.modalLabel}>سلوك الملكة</Text>
+
 
                                         </View>
 
                                         <View style={styles.modalRow}>
-                                            <Text style={styles.modalLabel}>Cellules royales</Text>
                                             {formData.Queen.queenCells ? (<Picker
                                                 selectedValue={formData.Queen.queenCells}
                                                 style={[styles.modalInput, { backgroundColor: '#FBF5E0' }]}
@@ -382,17 +386,18 @@ const EditInspectionModal = ({
                                                 style={[styles.modalInput, { backgroundColor: '#FBF5E0' }]}
                                                 onValueChange={(value) => handleModalInputChange('Queen', 'queenCells', value)}
                                             >
-                                                <Picker.Item label="Selectionner" value="" disabled />
+                                                <Picker.Item label="اختر..." value="" enabled={false} />
                                                 {queen_cells.map((state, index) => (
                                                     <Picker.Item key={index} label={state} value={state} />
                                                 ))}
                                             </Picker>)}
+                                            <Text style={styles.modalLabel}>الخلايا الملكية</Text>
+
 
                                         </View>
 
 
                                         <View style={styles.modalRow}>
-                                            <Text style={styles.modalLabel}>Note</Text>
                                             <TextInput
                                                 style={[styles.modalInput, styles.modalTextArea]}
                                                 multiline
@@ -400,6 +405,8 @@ const EditInspectionModal = ({
                                                 value={formData.Queen.note}
                                                 onChangeText={(value) => handleModalInputChange('Queen', 'note', value)}
                                             />
+                                            <Text style={styles.modalLabel}>ملاحظة</Text>
+
                                         </View>
                                     </>
                                 )}
@@ -409,42 +416,45 @@ const EditInspectionModal = ({
                         {/* Equipment section */}
 
                         <View style={styles.fieldset}>
-                            <Text style={styles.fieldsetTitle}>Équipements</Text>
+                            <Text style={styles.fieldsetTitle}>المعدات</Text>
                             <View style={styles.modalRow}>
-                                <Text style={styles.modalLabel}>Nombre de hausses</Text>
                                 <TextInput
                                     style={[styles.textInput, styles.inlineInput]}
                                     keyboardType="numeric"
                                     value={formData.Colony.supers.toString()}
                                     onChangeText={(value) => handleModalInputChange('Colony', 'supers', value)}
                                 />
+                                <Text style={styles.modalLabel}>عدد العسالات                   </Text>
+
                             </View>
                             <View style={styles.modalRow}>
-                                <Text style={styles.modalLabel}>Nombre de trappes à pollen</Text>
+
                                 <TextInput
                                     style={[styles.textInput, styles.inlineInput]}
                                     keyboardType="numeric"
                                     value={formData.Colony.pollenFrames.toString()}
                                     onChangeText={(value) => handleModalInputChange('Colony', 'pollenFrames', value)}
                                 />
+                                <Text style={styles.modalLabel}>عدد إطارات حبوب اللقاح </Text>
                             </View>
                             <View style={styles.modalRow}>
-                                <Text style={styles.modalLabel}>Nombre total de cadres</Text>
+
                                 <TextInput
                                     style={[styles.textInput, styles.inlineInput]}
                                     keyboardType="numeric"
                                     value={formData.Colony.TotalFrames.toString()}
                                     onChangeText={(value) => handleModalInputChange('Colony', 'TotalFrames', value)}
                                 />
+                                <Text style={styles.modalLabel}>إجمالي الإطارات              </Text>
                             </View>
                         </View>
 
 
                         {/* Supplies section */}
                         {formData.Supplies && (<View style={styles.fieldset}>
-                            <Text style={styles.fieldsetTitle}>Nourritures</Text>
+                            <Text style={styles.fieldsetTitle}>غذاء النحل</Text>
                             <View style={styles.modalRow}>
-                                <Text style={styles.modalLabel}>Produit</Text>
+
                                 <Picker
                                     selectedValue={formData.Supplies.product}
                                     style={[styles.modalInput, { backgroundColor: '#FBF5E0' }]}
@@ -454,26 +464,29 @@ const EditInspectionModal = ({
                                         <Picker.Item key={index} label={product} value={product} />
                                     ))}
                                 </Picker>
+                                <Text style={styles.modalLabel}>المنتج </Text>
                             </View>
                             <View style={styles.modalRow}>
-                                <Text style={styles.modalLabel}>Ingrédients</Text>
+
                                 <TextInput
                                     style={styles.modalInput}
                                     value={formData.Supplies.ingredients.name}
                                     onChangeText={(value) => handleModalInputChange('Supplies', 'ingredients', { name: value })}
                                 />
+                                <Text style={styles.modalLabel}>المكونات </Text>
                             </View>
                             <View style={styles.modalRow}>
-                                <Text style={styles.modalLabel}>Quantité totale</Text>
+
                                 <TextInput
                                     style={styles.modalInput}
                                     keyboardType="numeric"
                                     value={formData.Supplies.ingredients.quantity.toString()}
                                     onChangeText={(value) => handleModalInputChange('Supplies', 'ingredients', { quantity: value })}
                                 />
+                                <Text style={styles.modalLabel}>الكمية </Text>
                             </View>
                             <View style={styles.modalRow}>
-                                <Text style={styles.modalLabel}>Unité</Text>
+
                                 <Picker
                                     selectedValue={formData.Supplies.ingredients.unit}
                                     style={[styles.modalInput, { backgroundColor: '#FBF5E0' }]}
@@ -483,9 +496,10 @@ const EditInspectionModal = ({
                                         <Picker.Item key={index} label={unit} value={unit} />
                                     ))}
                                 </Picker>
+                                <Text style={styles.modalLabel}>الوحدة </Text>
                             </View>
                             <View style={styles.modalRow}>
-                                <Text style={styles.modalLabel}>Note</Text>
+
                                 <TextInput
                                     style={[styles.modalInput, styles.modalTextArea]}
                                     multiline
@@ -493,22 +507,23 @@ const EditInspectionModal = ({
                                     value={formData.Supplies.note}
                                     onChangeText={(value) => handleModalInputChange('Supplies', 'note', value)}
                                 />
+                                <Text style={styles.modalLabel}>ملاحظة </Text>
                             </View>
                         </View>)}
 
 
                         {/* Brood Details */}
                         <View style={styles.fieldset}>
-                            <Text style={styles.fieldsetTitle}>Couvain & Mâles</Text>
+                            <Text style={styles.fieldsetTitle}>الحضنة والذكور</Text>
 
                             <View style={[styles.detailItem, styles.inline]}>
-                                <Text style={styles.label}>État du couvain</Text>
+                                <Text style={styles.label}>الحالة </Text>
                                 <Picker
                                     style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
                                     selectedValue={formData.Brood.state}
                                     onValueChange={(value) => handleModalInputChange('Brood', 'state', value)}
                                 >
-                                    <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                                    <Picker.Item label="اختر..." value="" enabled={false} />
 
                                     {brood.map((state, index) => (
                                         <Picker.Item key={index} label={state} value={state} />
@@ -517,7 +532,7 @@ const EditInspectionModal = ({
                             </View>
 
                             <View style={[styles.detailItem, styles.inline]}>
-                                <Text style={styles.label}>Nombre total du couvain</Text>
+                                <Text style={styles.label}>إجمالي الحضنة </Text>
                                 <TextInput
                                     style={[styles.textInput, styles.inlineInput]}
                                     keyboardType='numeric'
@@ -527,13 +542,13 @@ const EditInspectionModal = ({
                             </View>
 
                             <View style={[styles.detailItem, styles.inline]}>
-                                <Text style={styles.label}>Couvain mâle</Text>
+                                <Text style={styles.label}>حضنة الذكور </Text>
                                 <Picker
                                     style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
                                     selectedValue={formData.Brood.maleBrood}
                                     onValueChange={(value) => handleModalInputChange('Brood', 'maleBrood', value)}
                                 >
-                                    <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                                    <Picker.Item label="اختر..." value="" enabled={false} />
 
                                     {malebrood.map((state, index) => (
                                         <Picker.Item key={index} label={state} value={state} />
@@ -542,7 +557,7 @@ const EditInspectionModal = ({
                             </View>
 
                             <View style={[styles.detailItem, styles.inline]}>
-                                <Text style={styles.label}>Mâles Observés</Text>
+                                <Text style={styles.label}>وجود الذكور </Text>
                                 <Switch
 
                                     onValueChange={(value) => handleModalInputChange('DronesSeen', value)}
@@ -554,17 +569,19 @@ const EditInspectionModal = ({
 
                         {/* Colony section */}
                         <View style={styles.fieldset}>
-                            <Text style={styles.fieldsetTitle}>Colonie</Text>
+                            <Text style={styles.fieldsetTitle}>المستعمرة</Text>
                             <View style={[styles.detailItem, styles.inline]}>
-                                <Text style={styles.label}>Des abeilles mortes sont présentes</Text>
+                                <Text style={styles.label}>وجود نحل ميت</Text>
+
                                 <Switch
                                     value={formData.Colony.deadBees}
                                     onValueChange={(value) => handleModalInputChange('Colony', 'deadBees', value)}
                                 />
+
                             </View>
                             {/* Additional Colony fields */}
                             <View style={styles.modalRow}>
-                                <Text style={styles.modalLabel}>Tempérament</Text>
+
                                 <Picker
                                     selectedValue={formData.Colony.temperament}
                                     style={[styles.modalInput, { backgroundColor: '#FBF5E0' }]}
@@ -574,9 +591,9 @@ const EditInspectionModal = ({
                                         <Picker.Item key={index} label={state} value={state} />
                                     ))}
                                 </Picker>
+                                <Text style={styles.modalLabel}>سلوك المستعمرة </Text>
                             </View>
                             <View style={styles.modalRow}>
-                                <Text style={styles.modalLabel}>Force</Text>
                                 <Picker
                                     selectedValue={formData.Colony.strength}
                                     style={[styles.modalInput, { backgroundColor: '#FBF5E0' }]}
@@ -587,9 +604,11 @@ const EditInspectionModal = ({
                                         <Picker.Item key={index} label={state} value={state} />
                                     ))}
                                 </Picker>
+                                <Text style={styles.modalLabel}>قوة المستعمرة </Text>
+
                             </View>
                             <View style={styles.modalRow}>
-                                <Text style={styles.modalLabel}>Note</Text>
+
                                 <TextInput
                                     style={[styles.modalInput, styles.modalTextArea]}
                                     multiline
@@ -597,22 +616,23 @@ const EditInspectionModal = ({
                                     value={formData.Colony.note}
                                     onChangeText={(value) => handleModalInputChange('Colony', 'note', value)}
                                 />
+                                <Text style={styles.modalLabel}>ملاحظة </Text>
                             </View>
                         </View>
 
 
                         {/* Treatment Details */}
                         {formData.BeeHealth && (<View style={styles.fieldset}>
-                            <Text style={styles.fieldsetTitle}>Maladie et traitement</Text>
+                            <Text style={styles.fieldsetTitle}>صحة النحل</Text>
 
                             <View style={[styles.detailItem, styles.inline]}>
-                                <Text style={styles.label}>Maladie</Text>
+                                <Text style={styles.label}>المرض </Text>
                                 <Picker
                                     style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
                                     selectedValue={formData.BeeHealth.disease}
                                     onValueChange={(value) => handleModalInputChange('BeeHealth', 'disease', value)}
                                 >
-                                    <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                                    <Picker.Item label="اختر..." value="" enabled={false} />
 
                                     {diseases.map((state, index) => (
                                         <Picker.Item key={index} label={state} value={state} />
@@ -621,13 +641,13 @@ const EditInspectionModal = ({
                             </View>
 
                             <View style={[styles.detailItem, styles.inline]}>
-                                <Text style={styles.label}>Traitements</Text>
+                                <Text style={styles.label}>العلاج </Text>
                                 <Picker
                                     style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
                                     selectedValue={formData.BeeHealth.treatment}
                                     onValueChange={(value) => handleModalInputChange('BeeHealth', 'treatment', value)}
                                 >
-                                    <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                                    <Picker.Item label="اختر..." value="" enabled={false} />
 
                                     {treatments.map((state, index) => (
                                         <Picker.Item key={index} label={state} value={state} />
@@ -636,13 +656,13 @@ const EditInspectionModal = ({
                             </View>
 
                             <View style={styles.fieldset}>
-                                <Text style={styles.fieldsetTitle}>Durée</Text>
+                                <Text style={styles.fieldsetTitle}>المدة</Text>
                                 <View>
                                     <View style={[styles.detailItem, styles.inline]}>
-                                        <Text style={styles.label}>À partir de</Text>
+                                        <Text style={styles.label}>من </Text>
                                         <Pressable onPress={togglePickerFrom}>
                                             <Text style={[styles.textInput, styles.inlineInput]}>
-                                                {formData.BeeHealth.duration.from ? new Date(formData.BeeHealth.duration.from).toLocaleDateString('fr-FR') : 'Sélectionner une date'}
+                                                {formData.BeeHealth.duration.from ? new Date(formData.BeeHealth.duration.from).toLocaleDateString('fr-FR') : 'حدد تاريخا'}
                                             </Text>
                                         </Pressable>
                                     </View>
@@ -661,10 +681,10 @@ const EditInspectionModal = ({
 
                                 <View>
                                     <View style={[styles.detailItem, styles.inline]}>
-                                        <Text style={styles.label}>À</Text>
+                                        <Text style={styles.label}>إلى </Text>
                                         <Pressable onPress={togglePickerTo}>
                                             <Text style={[styles.textInput, styles.inlineInput]}>
-                                                {formData.BeeHealth.duration.to ? new Date(formData.BeeHealth.duration.to).toLocaleDateString('fr-FR') : 'Sélectionner une date'}
+                                                {formData.BeeHealth.duration.to ? new Date(formData.BeeHealth.duration.to).toLocaleDateString('fr-FR') : 'حدد تاريخا'}
                                             </Text>
                                         </Pressable>
                                     </View>
@@ -685,7 +705,7 @@ const EditInspectionModal = ({
 
 
                             <View style={[styles.detailItem, styles.inline]}>
-                                <Text style={styles.label}>Quantité</Text>
+                                <Text style={styles.label}>الكمية </Text>
                                 <TextInput
                                     style={[styles.textInput, styles.inlineInput]}
                                     keyboardType='numeric'
@@ -698,13 +718,13 @@ const EditInspectionModal = ({
 
 
                             <View style={[styles.detailItem, styles.inline]}>
-                                <Text style={styles.label}>Doses</Text>
+                                <Text style={styles.label}>الجرعات </Text>
                                 <Picker
                                     style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
                                     selectedValue={formData.BeeHealth.doses}
                                     onValueChange={(value) => handleModalInputChange('BeeHealth', 'doses', value)}
                                 >
-                                    <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                                    <Picker.Item label="اختر..." value="" enabled={false} />
 
                                     {doses.map((state, index) => (
                                         <Picker.Item key={index} label={state} value={state} />
@@ -713,7 +733,7 @@ const EditInspectionModal = ({
                             </View>
 
                             <View style={[styles.detailItem, styles.inline]}>
-                                <Text style={styles.label}>Note</Text>
+                                <Text style={styles.label}>ملاحظة </Text>
                                 <TextInput
                                     style={[styles.textInput, styles.inlineInput, styles.textArea]}
                                     multiline={true}
@@ -728,16 +748,16 @@ const EditInspectionModal = ({
 
                         {/* Honey and Pollen stores Details */}
                         <View style={styles.fieldset}>
-                            <Text style={styles.fieldsetTitle}>Récoltes</Text>
+                            <Text style={styles.fieldsetTitle}>الحصاد</Text>
 
                             <View style={[styles.detailItem, styles.inline]}>
-                                <Text style={styles.label}>Récolte de miel </Text>
+                                <Text style={styles.label}>حصاد العسل  </Text>
                                 <Picker
                                     style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
                                     selectedValue={formData.HoneyStores}
                                     onValueChange={(value) => handleModalInputChange('HoneyStores', value)}
                                 >
-                                    <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                                    <Picker.Item label="اختر..." value="" enabled={false} />
 
                                     {HoneyPollenHarvest.map((state, index) => (
                                         <Picker.Item key={index} label={state} value={state} />
@@ -746,13 +766,13 @@ const EditInspectionModal = ({
                             </View>
 
                             <View style={[styles.detailItem, styles.inline]}>
-                                <Text style={styles.label}>Récolte de pollens </Text>
+                                <Text style={styles.label}>حصاد حبوب اللقاح </Text>
                                 <Picker
                                     style={[styles.textInput, styles.inlineInput, { backgroundColor: '#FBF5E0' }]}
                                     selectedValue={formData.PollenStores}
                                     onValueChange={(value) => handleModalInputChange('PollenStores', value)}
                                 >
-                                    <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                                    <Picker.Item label="اختر..." value="" enabled={false} />
 
                                     {HoneyPollenHarvest.map((state, index) => (
                                         <Picker.Item key={index} label={state} value={state} />
@@ -766,11 +786,11 @@ const EditInspectionModal = ({
                         {/* Actions Taken */}
 
                         <View style={styles.fieldset}>
-                            <Text style={styles.fieldsetTitle}>Actions entreprises</Text>
+                            <Text style={styles.fieldsetTitle}>الأنشطة</Text>
                             <View style={styles.frameContainer}>
 
                                 <View style={styles.frame}>
-                                    <Text style={styles.frameTitle}>Ajouts</Text>
+                                    <Text style={styles.frameTitle}>الاضافات</Text>
                                     <View style={styles.optionsContainer}>
                                         {options.map((option) => renderOption(option, selectedAjouts, handleActionChange, 'Adding'))}
                                     </View>
@@ -780,7 +800,7 @@ const EditInspectionModal = ({
 
 
                                 <View style={styles.frame}>
-                                    <Text style={styles.frameTitle}>Enlèvements</Text>
+                                    <Text style={styles.frameTitle}>الإزالات</Text>
                                     <View style={styles.optionsContainer}>
                                         {options.map((option) => renderOption(option, selectedEnlevements, handleActionChange, 'Removing'))}
                                     </View>
@@ -794,7 +814,7 @@ const EditInspectionModal = ({
 
 
                         {/* Note Details */}
-                        <Text style={styles.fieldsetTitle}>Note</Text>
+                        <Text style={styles.fieldsetTitle}>ملاحظة</Text>
                         <View style={styles.modalRow}>
                             <TextInput
                                 style={[styles.textInput, styles.inlineInput, styles.textArea]}
@@ -813,17 +833,17 @@ const EditInspectionModal = ({
                     <View style={styles.modalFooter}>
                         <TouchableHighlight
                             style={[styles.button, styles.closeButton]}
-                            underlayColor="#D1D1D1"   
+                            underlayColor="#D1D1D1"
                             onPress={() => setModalVisible(false)}
                         >
-                            <Text style={styles.buttonText}>Annuler</Text>
+                            <Text style={styles.buttonText}>إلغاء</Text>
                         </TouchableHighlight>
                         <TouchableHighlight
                             style={[styles.button, styles.saveButton]}
-                            underlayColor="#FFCC02"  
+                            underlayColor="#FFCC02"
                             onPress={handleSave}
                         >
-                            <Text style={styles.buttonText}>Modifier</Text>
+                            <Text style={styles.buttonText}>تعديل</Text>
                         </TouchableHighlight>
                     </View>
 
@@ -836,7 +856,7 @@ const EditInspectionModal = ({
 const styles = StyleSheet.create({
     modalOverlay: {
         flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',  
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -844,7 +864,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
         padding: 20,
-        marginTop: 25,  
+        marginTop: 25,
         marginBottom: 20,
         borderRadius: 20
 
@@ -934,7 +954,7 @@ const styles = StyleSheet.create({
         color: '#342D21',
     },
     inline: {
-        flexDirection: 'row',
+        flexDirection: 'row-reverse',
         alignItems: 'center',
     },
     inlineInput: {
@@ -969,8 +989,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
         marginBottom: 10,
-        justifyContent: 'flex-start',  
-        alignItems: 'flex-start',  
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
     },
 
     option: {

@@ -101,8 +101,7 @@ export default function HarvestHistoryScreen({ navigation }) {
       setHarvests(response.data.data);
     } catch (error) {
       console.error('Error fetching harvest data:', error);
-      Alert.alert('Error', 'Erreur lors du chargement des récoltes');
-    }
+     }
     finally {
       setIsLoading(false);
     }
@@ -122,7 +121,7 @@ export default function HarvestHistoryScreen({ navigation }) {
 
   const handleFormSubmit = async () => {
     if (!selectedApiary || !selectedHive || !selectedProduct || !quantity || !selectedUnit || !selectedSeason || !selectedHarvestMethod) {
-      return Alert.alert('Erreur', 'Veuillez remplir tous les champs');
+      return Alert.alert('خطأ', 'يرجى ملء جميع الحقول');
     } else {
       try {
         const formData = {
@@ -141,7 +140,7 @@ export default function HarvestHistoryScreen({ navigation }) {
         };
 
         const response = await axios.post('/harvest/create', formData);
-        Alert.alert('Success', 'Récolte ajoutée avec succès');
+        Alert.alert('نجاح', 'تمت إضافة الحصاد بنجاح');
 
         setSelectedApiary('');
         setSelectedHive('');
@@ -157,7 +156,7 @@ export default function HarvestHistoryScreen({ navigation }) {
         fetchHarvestData();
       } catch (error) {
         console.error('Error creating harvest entry:', error);
-        Alert.alert('Error', 'Erreur lors de l\'ajout de la récolte');
+        Alert.alert('خطأ', 'خطأ في إضافة الحصاد');
       }
     }
   };
@@ -174,13 +173,13 @@ export default function HarvestHistoryScreen({ navigation }) {
 
       })}
     >
-      <Text style={styles.tableCell}>{item.Apiary}</Text>
-      <Text style={styles.tableCell}>{item.Hive}</Text>
-      <Text style={styles.tableCell}>{item.Product}{'\n'}{index === lastItemIndex && (
+      <Text style={styles.tableCell}>{item.Apiary}{'\n'}{index === lastItemIndex && (
         <View style={styles.badge}>
-          <Text style={{ color: 'white', fontSize: 9, fontWeight: 'bold' }}>Dernière récolte</Text>
+          <Text style={{ color: 'white', fontSize: 12, fontWeight: 'bold', textAlign:'right' }}>آخر حصاد</Text>
         </View>
       )}</Text>
+      <Text style={styles.tableCell}>{item.Hive}</Text>
+      <Text style={styles.tableCell}>{item.Product}</Text>
 
 
 
@@ -191,7 +190,7 @@ export default function HarvestHistoryScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <HomeHeader navigation={navigation} title={'Récoltes'} />
+      <HomeHeader navigation={navigation} title={'الحصاد'} />
       <ScrollView horizontal={true}>
         <Card style={styles.card}>
 
@@ -206,9 +205,9 @@ export default function HarvestHistoryScreen({ navigation }) {
           <ScrollView horizontal={true}>
             <View style={styles.table}>
               <View style={styles.tableHeader}>
-                <Text style={styles.tableHeaderText}>Rucher</Text>
-                <Text style={styles.tableHeaderText}>Ruche</Text>
-                <Text style={styles.tableHeaderText}>Produit</Text>
+                <Text style={styles.tableHeaderText}>المنحل</Text>
+                <Text style={styles.tableHeaderText}>الخلية</Text>
+                <Text style={styles.tableHeaderText}>المنتج</Text>
 
               </View>
               {isLoading ? (
@@ -228,7 +227,7 @@ export default function HarvestHistoryScreen({ navigation }) {
                   ListEmptyComponent={
                     <View style={styles.tableRow}>
                       <Text style={styles.noDataCell}>
-                        Aucune récolte trouvée.
+                      لا يوجد حصاد حتى الآن.
                       </Text>
                     </View>
                   }
@@ -332,16 +331,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   badge: {
-
-
     backgroundColor: "#2EB922",
-    borderRadius: 12,
-    padding: 4,
+    borderRadius: 10,
+    paddingHorizontal: 6,
+    paddingVertical: 4,
     alignItems: 'center',
     justifyContent: 'center',
-
-
-
   },
   container: {
     flex: 1,

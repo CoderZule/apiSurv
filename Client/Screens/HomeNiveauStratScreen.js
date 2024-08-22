@@ -35,7 +35,7 @@ export default function HomeNiveauStratScreen({ navigation }) {
             setErrorMessage('');
         } catch (error) {
             if (error.response && error.response.status === 404) {
-                setErrorMessage('Aucune région trouvée pour ce produit.');
+                setErrorMessage('هذا المنتج غير متوفر في أي منطقة')
             } else {
                 setErrorMessage('Erreur lors de la récupération des données.');
             }
@@ -59,21 +59,22 @@ export default function HomeNiveauStratScreen({ navigation }) {
 
     return (
         <SafeAreaView style={styles.safeArea}>
-            <HomeHeader navigation={navigation} title={'Accueil'} />
-            <Text style={styles.title}>Top régions avec les plus récoltes:</Text>
+            <HomeHeader navigation={navigation} title={'الصفحة الرئيسية'} />
+            <Text style={styles.title}>أفضل المناطق ذات أعلى حصاد</Text>
 
             <View style={styles.pickerContainer}>
-                <Text style={styles.pickerTitle}>Récolte:</Text>
+                
                 <Picker
                     selectedValue={selectedProduct}
                     style={styles.pickerSelect}
                     onValueChange={(itemValue) => setSelectedProduct(itemValue)}
                 >
-                    <Picker.Item label="Sélectionner..." value="" enabled={false} />
+                   <Picker.Item label="اختر..." value="" enabled={false} />
                     {HarvestProducts.map((product) => (
                         <Picker.Item label={product} value={product} key={product} />
                     ))}
                 </Picker>
+                <Text style={styles.pickerTitle}>المنتج: </Text>
             </View>
             {errorMessage ? (
                 <Text style={styles.error}>{errorMessage}</Text>
