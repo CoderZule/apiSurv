@@ -1,15 +1,24 @@
 import { initializeApp } from 'firebase/app';
 import { getStorage } from 'firebase/storage';
 import { getFirestore } from 'firebase/firestore';
+import {
+  FIREBASE_API_KEY,
+  FIREBASE_AUTH_DOMAIN,
+  FIREBASE_PROJECT_ID,
+  FIREBASE_STORAGE_BUCKET,
+  FIREBASE_MESSAGING_SENDER_ID,
+  FIREBASE_APP_ID,
+  FIREBASE_MEASUREMENT_ID
+} from '@env';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBAQYz0wA9WDdF6nT0LkDtLyX4036zGIPQ",
-  authDomain: "apisurv-76b78.firebaseapp.com",
-  projectId: "apisurv-76b78",
-  storageBucket: "apisurv-76b78.appspot.com",
-  messagingSenderId: "75280605938",
-  appId: "1:75280605938:web:c018f65a639a1406a5266b",
-  measurementId: "G-HXLGT28GME"
+  apiKey: FIREBASE_API_KEY,
+  authDomain: FIREBASE_AUTH_DOMAIN,
+  projectId: FIREBASE_PROJECT_ID,
+  storageBucket: FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: FIREBASE_MESSAGING_SENDER_ID,
+  appId: FIREBASE_APP_ID,
+  measurementId: FIREBASE_MEASUREMENT_ID
 };
 
 // Initialize Firebase

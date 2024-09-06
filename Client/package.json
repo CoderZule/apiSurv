@@ -19,9 +19,12 @@
     "axios": "^1.6.8",
     "expo": "~51.0.8",
     "expo-app-loading": "^2.1.1",
+    "expo-av": "~14.0.6",
     "expo-barcode-scanner": "~13.0.1",
     "expo-camera": "~15.0.9",
+    "expo-file-system": "~17.0.1",
     "expo-font": "~12.0.5",
+    "expo-image-picker": "~15.0.7",
     "expo-location": "~17.0.1",
     "expo-status-bar": "~1.12.1",
     "firebase": "^10.12.4",
@@ -35,6 +38,7 @@
     "react-native-big-calendar": "^4.13.2",
     "react-native-calendars": "^1.1305.0",
     "react-native-chart-kit": "^6.12.0",
+    "react-native-dotenv": "^3.4.11",
     "react-native-gesture-handler": "~2.16.1",
     "react-native-ionicons": "^4.6.5",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
@@ -45,10 +49,7 @@
     "react-native-screens": "^3.31.1",
     "react-native-svg": "^15.4.0",
     "react-native-vector-icons": "^10.0.3",
-    "socket.io-client": "^4.7.5",
-    "expo-image-picker": "~15.0.7",
-    "expo-file-system": "~17.0.1",
-    "expo-av": "~14.0.6"
+    "socket.io-client": "^4.7.5"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
