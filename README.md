@@ -1,6 +1,11 @@
-![Version 1.0](https://img.shields.io/badge/version-1.0-blue)
+# apiSurv
+
+<p align="center">
+  <img src="https://img.shields.io/badge/version-1.0-blue" alt="Version 1.0">
+</p>
 
 ## Features
+
 
 - **Comprehensive Hive Management with QR Code Scanning**  
   Beekeepers can instantly access detailed information about hives, including owner, apiary, colony, and queen details. They can also log and manage inspection records, such as bee health, feeding supplies, and current weather, simply by scanning a hive's unique QR code.
