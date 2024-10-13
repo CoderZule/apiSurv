@@ -23,7 +23,7 @@ export default function ScannerScreenInspectionsDetails({ navigation }) {
                 }
             } catch (error) {
                 if (error.response && error.response.status === 404) {
-                      navigation.navigate('HiveDetailsScreen', { hiveData, InspectionsHistoryData: [] });
+                      navigation.navigate('HiveQRDetailsScreen', { hiveData, InspectionsHistoryData: [] });
                 } else {
                    
                     console.error('Error fetching inspections:', error);

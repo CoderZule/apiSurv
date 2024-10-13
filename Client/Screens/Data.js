@@ -1,6 +1,96 @@
+//Apiary Data
+
+export const Apiarytypes = [
+  'أساسي',
+  'مهاجر',
+  'ثابت',
+  'أخرى'
+];
+
+export const sunExposures = [
+  'مشمس',
+  'ظليل جزئياً',
+  'ظل',
+  'أخرى'
+];
+
+//Hive: Colony Data
+export const force = [
+  "ضعيف جداً",
+  "ضعيف",
+  "معتدل",
+  "قوي",
+  "قوي جداً"
+];
 export const colors = ['أحمر', 'أزرق', 'أخضر', 'أصفر', 'برتقالي', 'بنفسجي', 'وردي', 'بني', 'أبيض', 'أسود'];
+
+export const Hivetypes = [
+  'دادانت',
+  'لانغستروث',
+  'محلي c',
+  'محلي S',
+  'وطني',
+  'صندوق طويل'
+];
+
+export const source = [
+  'مستعمرة مشتراة',
+  'نواة مشتراة',
+  'حزمة مشتراة',
+  'نواة ملتقطة',
+  'مقطع',
+  'فخ مخرج',
+  'منقسم',
+  'مستبدل'
+];
+
+export const purpose = [
+  'إنتاج العسل',
+  'إنتاج النحل',
+  'تربية الملكات',
+  'بحث وتطوير',
+  'أخرى'
+];
+
+export const strength = [
+  'ضعيف جداً',
+  'ضعيف',
+  'معتدل',
+  'قوي',
+  'قوي جداً'
+];
+
+export const ColonyTemperament = [
+  'عدواني',
+  'عصبي',
+  'هادئ'
+];
+
+//Hive: Queen Data
+
+export const status = ['مقبولة', 'خلايا ملكية', 'عذراء', 'مخصبة']; 
+
+export const queen_state = [
+  'خلايا مكشوفة',
+  'خلايا مغطاة',
+  'ناشئة',
+  'مزوجة',
+  'ناضجة',
+  'قديمة',
+  'غير معروفة'
+];  
+
+export const race = [
+  'نحلة شمال أفريقيا الوسطى',
+  'نحلة الصحراء',
+  'نحلة الأطلس',
+  'نحلة كارنيكا',
+  'نحلة إيطالية'
+];
+
 export const queenColors = ['أحمر', 'أزرق', 'أخضر', 'أصفر', 'أبيض'];
 
+export const queen_origin = ['مشتراة', 'مصنعة', 'طائفة ملتقطة', 'أخرى'];
 
 export const queen_cells = ['لا شيء', 'تطريد', 'استبدال', 'طارئ'];
 
@@ -10,21 +100,15 @@ export const temperament = [
   "هادئة",
 ];
 
-export const force = [
-  "ضعيف جداً",
-  "ضعيف",
-  "معتدل",
-  "قوي",
-  "قوي جداً"
-];
 
+//Inspection Data
 export const brood = [
-  "مغلق",
-  "مفتوح",
-  "غير منتظم",
-  "على القرص",
-  "وسط الإطار",
-  "منتظم"
+  "منتظمة",
+  "تتوسط الإطار",
+  "فسيفسائية",
+  "غير منتظمة",
+  "مفتوحة",
+  "مغلقة"
 ];
 
 export const malebrood = [
@@ -85,9 +169,8 @@ export const treatments = [
   'ثيمول',
   'تايلوسين'
 ];
-
-
 export const doses = ["قطرات", "ميليغرام", "غرامات", "ميليلتر"];
+
 export const HoneyPollenHarvest = ["منخفض", "متوسط", "مرتفع"];
 export const options = [
   { name: "حضنة مفتوحة", requiresNumberInput: true },
@@ -98,15 +181,16 @@ export const options = [
   { name: "قرص عسل", requiresNumberInput: true }
 ];
 
-                                 
+//Harvest Data  
+
 export const HarvestProducts = [
-  "عسل",           // Honey
-  "حبوب اللقاح",    // Pollen
-  "شمع النحل",      // Beeswax
-  "العكبر",        // Propolis
-  "الهلام الملكي",  // Royal Jelly
-  "خبز النحل",      // Bee Bread
-  "سم النحل"        // Bee Venom
+  "عسل",           
+  "حبوب اللقاح",    
+  "شمع النحل",       
+  "العكبر",       
+  "الهلام الملكي",   
+  "خبز النحل",     
+  "سم النحل"      
 ];
 
 export const HarvestSeasons = [
@@ -125,17 +209,19 @@ export const HarvestMethods = [
   "الجمع بالحك"
 ];
 
+//Task Data
 export const taskpriority = ['منخفض', 'مرتفع', 'عادي', 'حاسم'];
 
 
+//Finance Data
 export const IncomeCategory = [
- "عسل",           // Honey
-"حبوب اللقاح",    // Pollen
-"شمع النحل",      // Beeswax
-"العكبر",        // Propolis
-"الهلام الملكي",  // Royal Jelly
-"خبز النحل",      // Bee Bread
-"سم النحل"        // Bee Venom
+ "عسل",          
+"حبوب اللقاح",  
+"شمع النحل",    
+"العكبر",     
+"الهلام الملكي",  
+"خبز النحل",   
+"سم النحل" 
 ];
 export const ExpenseCategory = ['معدات', 'طعام', 'خلايا نحل', 'أدوية', 'أدوات', 'نقل'];
 

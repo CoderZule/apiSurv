@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ScrollView, View, Text, StyleSheet, Modal, Switch, Alert, TextInput, Pressable, Platform, TouchableHighlight, TouchableOpacity } from 'react-native'; // Added Pressable and Platform
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';

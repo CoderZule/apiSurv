@@ -8,7 +8,6 @@ import { useCameraPermissions } from 'expo-camera';
 import { useIsFocused } from '@react-navigation/native';
 import LottieView from "lottie-react-native";
 
-import ChangePasswordOnFirstLogin from './UserAccountManagement/ChangePasswordOnFirstLogin';
 
 export default function HomeScreen({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
@@ -16,9 +15,9 @@ export default function HomeScreen({ navigation }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [apiariesCount, setApiariesCount] = useState(0);
   const [hivesCount, setHivesCount] = useState(0);
-  const [passwordModalVisible, setPasswordModalVisible] = useState(false);
+
   const isFocused = useIsFocused();
-  const [isLoading, setIsLoading] = useState(true);  
+  const [isLoading, setIsLoading] = useState(true);
 
   const [incompleteTasksCount, setIncompleteTasksCount] = useState(0);
 
@@ -41,9 +40,7 @@ export default function HomeScreen({ navigation }) {
           const user = JSON.parse(currentUserString);
           setCurrentUser(user);
 
-          if (user && user.FirstTimeLogin) {
-            setPasswordModalVisible(true);
-          }
+
         }
       } catch (error) {
         console.error('Error retrieving current user:', error);
@@ -53,7 +50,7 @@ export default function HomeScreen({ navigation }) {
     if (isFocused) {
       fetchCurrentUser();
     }
-  }, [isFocused]);
+  }, [currentUser, isFocused]);
 
 
 
@@ -65,7 +62,7 @@ export default function HomeScreen({ navigation }) {
         });
         const transactions = response.data.data;
 
-       
+
         const currentYearTotals = {
           revenues: 0,
           expenses: 0,
@@ -96,7 +93,7 @@ export default function HomeScreen({ navigation }) {
           }
         });
 
-         
+
         const currentYearTotal = currentYearTotals.revenues - currentYearTotals.expenses;
         const previousYearTotal = previousYearTotals.revenues - previousYearTotals.expenses;
 
@@ -161,7 +158,7 @@ export default function HomeScreen({ navigation }) {
       } catch (error) {
         console.error('Error fetching hives count:', error);
       } finally {
-        setIsLoading(false);  
+        setIsLoading(false);
       }
     };
 
@@ -171,38 +168,6 @@ export default function HomeScreen({ navigation }) {
   }, [currentUser]);
 
 
-
-
-  const fetchTasks = async () => {
-
-    if (!currentUser) {
-    
-      console.error('Current user is null');
-      return;
-    }
-
-    try {
-      const response = await axios.get(`/task/getAllTasks`, {
-        params: {
-          userId: currentUser._id
-        }
-      });
-
-     
-      const incompleteCount = response.data.data.filter(event => !event.completed).length;
-      setIncompleteTasksCount(incompleteCount);
-
-    } catch (error) {
-      console.error('Error fetching tasks:', error);
-    }
-  };
-
-
-  useEffect(() => {
-    if (currentUser) {
-      fetchTasks();
-    }
-  }, [currentUser]);
 
 
   const strengthMapping = {
@@ -228,16 +193,16 @@ export default function HomeScreen({ navigation }) {
 
           const userHives = hives.filter(hive => userApiaries.some(apiary => apiary._id === hive.Apiary._id));
 
- 
+
           const totalStrength = userHives.reduce((total, hive) => {
             const strengthValue = strengthMapping[hive.Colony.strength] || 0;
-             return total + strengthValue;
+            return total + strengthValue;
           }, 0);
 
           const averageStrength = userHives.length ? totalStrength / userHives.length : 0;
-        
 
-         
+
+
           setStrengthPercentage(averageStrength);
         }
       } catch (error) {
@@ -259,9 +224,45 @@ export default function HomeScreen({ navigation }) {
       name: 'الرصيد',
       value: `${Math.abs(financialData.currentYearTotal).toLocaleString()} ${financialData.currentYearTotal < 0 ? '-' : ''} د.ت `,
       img: require('../assets/solde.png')
-    },   
-    { id: 4, name: 'قوة خلايا النحل', value: `${strengthPercentage.toFixed(0)}%`, img: require('../assets/force.png') }, // Update here
+    },
+    { id: 4, name: 'قوة خلايا النحل', value: `${strengthPercentage.toFixed(0)}%`, img: require('../assets/force.png') },
+
   ];
+
+
+
+
+  const fetchTasks = async () => {
+
+    if (!currentUser) {
+
+      console.error('Current user is null');
+      return;
+    }
+
+    try {
+      const response = await axios.get(`/task/getAllTasks`, {
+        params: {
+          userId: currentUser._id
+        }
+      });
+
+
+      const incompleteCount = response.data.data.filter(event => !event.completed).length;
+      setIncompleteTasksCount(incompleteCount);
+
+    } catch (error) {
+      console.error('Error fetching tasks:', error);
+    }
+  };
+
+
+  useEffect(() => {
+    if (currentUser) {
+      fetchTasks();
+    }
+  }, [currentUser]);
+
 
 
 
@@ -288,7 +289,7 @@ export default function HomeScreen({ navigation }) {
           <Text style={styles.buttonText}>منح الإذن</Text>
         </TouchableOpacity>
       </View>
-    );    
+    );
   }
 
 
@@ -309,7 +310,7 @@ export default function HomeScreen({ navigation }) {
       { cancelable: false }
     );
   };
-  
+
 
   return (
     <View style={styles.container}>
@@ -323,7 +324,7 @@ export default function HomeScreen({ navigation }) {
       {isLoading ? (
         <View style={[styles.container, styles.loadingContainer]}>
           <LottieView
-            source={require('../assets/lottie/loading.json')}  
+            source={require('../assets/lottie/loading.json')}
             autoPlay
             loop
             style={{ width: 150, height: 150 }}
@@ -339,8 +340,9 @@ export default function HomeScreen({ navigation }) {
           <View style={styles.headerTextView}>
             <Text style={styles.headerText}></Text>
             <View style={styles.headerTextContainer}>
-              {currentUser ? (<Text style={styles.headerText}>{currentUser.Firstname}</Text>
-              ) : null}
+              {currentUser ?
+                (<Text style={styles.headerText}>{currentUser.Firstname}</Text>
+                ) : null}
             </View>
             <Text style={styles.headerText}>مرحبا </Text>
 
@@ -393,12 +395,7 @@ export default function HomeScreen({ navigation }) {
         </View>
       </Modal>
 
-      <ChangePasswordOnFirstLogin
 
-        visible={passwordModalVisible}
-        onClose={() => setPasswordModalVisible(false)}
-        userId={currentUser ? currentUser._id : null}
-      />
 
 
 

@@ -14,7 +14,7 @@ const EditHarvestModal = ({ visible, onSave, onCancel, formData, onInputChange, 
 
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
-    setShowDatePicker(Platform.OS === 'ios'); // On iOS, showDatePicker remains true
+    setShowDatePicker(Platform.OS === 'ios');
     setDate(currentDate);
     onInputChange('Date', currentDate);  
   };

@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import CustomDrawerItem from './CustomDrawerItem'; // Make sure to import the custom component
 import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 export default function DrawerContent(props) {
     const navigation = useNavigation();
@@ -56,7 +57,7 @@ export default function DrawerContent(props) {
     };
 
     const renderDrawerItems = () => {
-        if (role === 'Apiculteur' || role === 'Assistance intermédiaire') {
+        if (role === 'Apiculteur') {
             return (
                 <>
                     <CustomDrawerItem
@@ -69,13 +70,17 @@ export default function DrawerContent(props) {
                         icon={() => <Ionicons name='person-outline' size={24} color="#977700" />}
                         onPress={() => props.navigation.navigate('Profil')}
                     />
-                    {role === 'Assistance intermédiaire' &&
-                        <CustomDrawerItem
-                            label="وجود الأمراض"
-                            icon={() => <Ionicons name='pulse-outline' size={24} color="#977700" />}
-                            onPress={() => props.navigation.navigate('AlertBeekeepers')}
-                        />
-                    }
+
+                    <CustomDrawerItem
+                        label="المناحل"
+                        icon={() => <Ionicons name='trail-sign-outline' size={24} color="#977700" />}
+                        onPress={() => props.navigation.navigate('Apiary')}
+                    />
+                    <CustomDrawerItem
+                        label="الخلايا"
+                        icon={() => <FontAwesome5 name="forumbee" size={22} color="#977700" />}
+                        onPress={() => props.navigation.navigate('Hive')}
+                    />
                     <CustomDrawerItem
                         label="المهام"
                         icon={() => <Ionicons name='calendar-outline' size={24} color="#977700" />}
@@ -107,13 +112,41 @@ export default function DrawerContent(props) {
                         onPress={() => props.navigation.navigate('Gallery')}
                     />
                     <CustomDrawerItem
+                        label="طلباتي"
+                        icon={() => <Ionicons name='chatbox-ellipses-outline' size={24} color="#977700" />}
+                        onPress={() => props.navigation.navigate('Requests')}
+                    />
+                    <CustomDrawerItem
                         label="حول التطبيق"
                         icon={() => <Ionicons name='information-circle-outline' size={24} color="#977700" />}
                         onPress={() => props.navigation.navigate('AboutApp')}
                     />
                 </>
             );
-        } else if (role === 'Niveau Stratégique') {
+        }
+
+        else if (role == 'Assistance intermédiaire') {
+            return (
+                <>
+                    <CustomDrawerItem
+                        label="وجود الأمراض"
+                        icon={() => <Ionicons name='pulse-outline' size={24} color="#977700" />}
+                        onPress={() => props.navigation.navigate('AlertBeekeepers')}
+                    />
+                    <CustomDrawerItem
+                        label="الملف الشخصي"
+                        icon={() => <Ionicons name='person-outline' size={24} color="#977700" />}
+                        onPress={() => props.navigation.navigate('Profil')}
+                    />
+                    <CustomDrawerItem
+                        label="حول التطبيق"
+                        icon={() => <Ionicons name='information-circle-outline' size={24} color="#977700" />}
+                        onPress={() => props.navigation.navigate('AboutApp')}
+                    />
+                </>
+            );
+        }
+        else if (role === 'Niveau Stratégique') {
             return (
                 <>
                     <CustomDrawerItem
@@ -147,9 +180,9 @@ export default function DrawerContent(props) {
                 {renderDrawerItems()}
                 <View style={styles.divider} />
                 <TouchableOpacity onPress={handleLogout} style={styles.logoutContainer}>
-                <Text style={styles.drawerItemLogout}>تسجيل الخروج</Text>
+                    <Text style={styles.drawerItemLogout}>تسجيل الخروج</Text>
                     <Ionicons name="exit-outline" size={24} color="#977700" style={styles.iconStyle} />
-                    
+
                 </TouchableOpacity>
             </DrawerContentScrollView>
         </View>
@@ -173,15 +206,15 @@ const styles = StyleSheet.create({
         backgroundColor: '#977700',
         alignItems: 'center',
         justifyContent: 'center',
-        height: 150,
+        height: 140,
     },
     logoImage: {
-        width: 150,
-        height: 140,
+        width: 130,
+        height: 130,
     },
     drawerItemLabel: {
         fontSize: 15,
-         color: '#000000',
+        color: '#000000',
     },
     drawerItemLogout: {
         fontSize: 17,

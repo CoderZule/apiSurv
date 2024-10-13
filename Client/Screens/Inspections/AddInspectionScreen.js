@@ -1020,7 +1020,7 @@ const AddInspectionScreen = ({ route }) => {
                     <Text style={styles.label}>من   </Text>
                     <Pressable onPress={togglePickerFrom}>
                       <Text style={[styles.textInput, styles.inlineInput]}>
-                        {formData.from ? formData.from.toLocaleDateString('fr-FR') : 'Sélectionner une date'}
+                        {formData.from ? formData.from.toLocaleDateString('fr-FR') : 'حدد تاريخا'}
                       </Text>
                     </Pressable>
                   </View>

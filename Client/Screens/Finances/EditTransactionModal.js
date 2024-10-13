@@ -152,10 +152,10 @@ const EditTransactionModal = ({ visible, onSave, onCancel, formData, onInputChan
 
                             <View style={styles.buttonContainer}>
                                 <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={onCancel}>
-                                    <Text style={styles.buttonText}>Annuler</Text>
+                                    <Text style={styles.buttonText}>تعديل</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity style={[styles.button, styles.saveButton]} onPress={handleSave}>
-                                    <Text style={styles.buttonText}>Modifier</Text>
+                                    <Text style={styles.buttonText}>تعديل</Text>
                                 </TouchableOpacity>
                             </View>
                         </ScrollView>

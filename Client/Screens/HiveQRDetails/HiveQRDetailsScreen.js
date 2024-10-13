@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import _ from 'lodash';  
 import { FontAwesome5 } from '@expo/vector-icons';
 
-const HiveDetailsScreen = ({ route, navigation }) => {
+const HiveQRDetailsScreen = ({ route, navigation }) => {
     const { hiveData, InspectionsHistoryData } = route.params;
 
 
@@ -39,7 +39,7 @@ const HiveDetailsScreen = ({ route, navigation }) => {
                 </View>
                 <View style={styles.buttonsRow}>
                     <TouchableOpacity onPress={() => setShowHiveModal(true)} style={[styles.button]}>
-                        <FontAwesome5 name="archive" size={30} color="#fff" />
+                        <FontAwesome5 name="forumbee" size={30} color="#fff" />
                         <Text style={[styles.buttonText, { marginTop: 5 }]}>الخلية</Text>
                     </TouchableOpacity>
 
@@ -64,7 +64,7 @@ const HiveDetailsScreen = ({ route, navigation }) => {
                                     <Text style={styles.textGeneralInfo}>{hiveData.Apiary.Owner.Firstname} {hiveData.Apiary.Owner.Lastname}</Text>
                                 </View>
                                 <View style={styles.detailItem}>
-                                    <Text style={styles.labelGeneralInfo}>رقم .ب.ت.و</Text>
+                                    <Text style={styles.labelGeneralInfo}>رقم ب.ت.و</Text>
                                     <Text style={styles.textGeneralInfo}>{hiveData.Apiary.Owner.Cin}</Text>
                                 </View>
                                 <View style={styles.detailItem}>
@@ -384,4 +384,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default HiveDetailsScreen;
+export default HiveQRDetailsScreen;

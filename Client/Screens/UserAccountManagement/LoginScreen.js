@@ -14,6 +14,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import axios from '../../axiosConfig';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import RegisterScreen from './RegisterScreen';
 
 export default function LoginScreen() {
   const navigation = useNavigation();
@@ -25,6 +26,10 @@ export default function LoginScreen() {
   });
 
   const handleLogin = async () => {
+    if ( !form.email || !form.password) {
+      Alert.alert('الحقول فارغة', 'يرجى ملء جميع الحقول .');
+      return;
+  }
     try {
       const response = await axios.post('/user/login', {
         Email: form.email,
@@ -43,15 +48,20 @@ export default function LoginScreen() {
       });
 
     } catch (error) {
-      Alert.alert('فشل الاتصال', 'بيانات الاعتماد غير صحيحة. يرجى المحاولة مرة أخرى.');
+      Alert.alert('فشل تسجيل الدخول', 'بيانات الاعتماد غير صحيحة. يرجى المحاولة مرة أخرى.');
     }
   };
+
+  const handleRegister = async () => {
+    navigation.navigate('Register');
+  };
+
 
   const togglePasswordVisibility = () => {
     setForm({ ...form, hidePassword: !form.hidePassword });
   };
 
-  const handlePress = () => {
+  const handleRequestPress = () => {
     Alert.alert(
       'تأكيد',
       "هل أنت متأكد أنك تريد إرسال بريد إلكتروني لإعادة تعيين كلمة المرور الخاصة بك؟",
@@ -73,6 +83,7 @@ export default function LoginScreen() {
     );
   };
 
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
@@ -92,7 +103,7 @@ export default function LoginScreen() {
             <View style={styles.input}>
               <Text style={styles.inputLabel}>البريد الإلكتروني</Text>
               <View style={styles.inputContainer}>
-                <FontAwesome5 name="envelope" size={22} color="#977700" style={styles.inputIcon} />
+                <FontAwesome5 name="envelope" size={15} color="#977700" style={styles.inputIcon} />
                 <TextInput
                   autoCapitalize="none"
                   autoCorrect={false}
@@ -109,7 +120,7 @@ export default function LoginScreen() {
             <View style={styles.input}>
               <Text style={styles.inputLabel}>كلمة المرور</Text>
               <View style={styles.inputContainer}>
-                <FontAwesome5 name="lock" size={22} color="#977700" style={styles.inputIcon} />
+                <FontAwesome5 name="lock" size={15} color="#977700" style={styles.inputIcon} />
                 <TextInput
                   autoCorrect={false}
                   clearButtonMode="while-editing"
@@ -123,14 +134,16 @@ export default function LoginScreen() {
                 <TouchableOpacity onPress={togglePasswordVisibility}>
                   <FontAwesome5
                     name={form.hidePassword ? 'eye-slash' : 'eye'}
-                    size={22}
+                    size={15}
                     color="#6b7280"
                     style={styles.inputIconEye}
                   />
                 </TouchableOpacity>
               </View>
             </View>
-
+            <Text style={styles.formLink} onPress={handleRequestPress}>
+              نسيت كلمة المرور؟
+            </Text>
             <View style={styles.formAction}>
               <TouchableOpacity onPress={handleLogin}>
                 <View style={styles.btn}>
@@ -139,9 +152,17 @@ export default function LoginScreen() {
               </TouchableOpacity>
             </View>
 
-            <Text style={styles.formLink} onPress={handlePress}>
-              نسيت كلمة المرور؟
-            </Text>
+            <View style={styles.formAction}>
+              <TouchableOpacity onPress={handleRegister}>
+                <View style={styles.btnRegister}>
+                  <Text style={styles.btnText}>إنشاء حساب</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+
+
+
+
           </View>
         </KeyboardAwareScrollView>
       </View>
@@ -173,8 +194,8 @@ const styles = StyleSheet.create({
   },
   headerImg: {
     marginTop: 20,
-    width: 210,
-    height: 180,
+    width: 260,
+    height: 130,
     alignSelf: 'center',
   },
   form: {
@@ -185,7 +206,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
-    paddingVertical: 45,
+    paddingVertical: 35,
   },
   input: {
     marginBottom: 16,
@@ -220,16 +241,18 @@ const styles = StyleSheet.create({
   },
   formAction: {
     marginTop: 16,
-    marginBottom: 16,
+    marginBottom: 10,
   },
   formLink: {
     fontSize: 14,
     fontWeight: '500',
     color: '#977700',
-    textAlign: 'center',
-    marginTop: 12,
+    textAlign: 'right',
     textDecorationLine: 'underline',
+
   },
+
+
   btn: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -237,6 +260,16 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 24,
     backgroundColor: '#FEE502',
+    borderRadius: 30,
+  },
+  btnRegister: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderColor: '#FEE502',
+    borderWidth: 1.5,
     borderRadius: 30,
   },
   btnText: {

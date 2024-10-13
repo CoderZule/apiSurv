@@ -213,17 +213,18 @@ export default function ProfilScreen({ navigation }) {
                 <View style={styles.input}>
                   <Text style={styles.inputLabel}>الهاتف</Text>
                   <View style={styles.inputContainer}>
-                    <FontAwesome5
+                 
+                    <TextInput
+                      style={styles.inputControl}
+                      value={Phone}
+                      onChangeText={setPhone}
+                      keyboardType="phone-pad"
+                    />
+                       <FontAwesome5
                       name="phone"
                       size={15}
                       color="#977700"
                       style={styles.inputIcon}
-                    />
-                    <TextInput
-                      style={styles.inputControlPhoneEM}
-                      value={Phone}
-                      onChangeText={setPhone}
-                      keyboardType="phone-pad"
                     />
 
                   </View>
