@@ -143,7 +143,7 @@ const HiveDetailsScreen = ({ route, navigation }) => {
                         <Text style={styles.value}>{formData.Type}</Text>
                         <View style={styles.labelContainer}>
                             <Text style={styles.label}>النوع</Text>
-                            <Ionicons name="grid-outline" size={14} color="orange" />
+                            <Ionicons name="pricetag-outline" size={14} color="gray" />
                         </View>
                     </View>
 
@@ -154,7 +154,7 @@ const HiveDetailsScreen = ({ route, navigation }) => {
                         <Text style={styles.value}>{formData.Source}</Text>
                         <View style={styles.labelContainer}>
                             <Text style={styles.label}>المصدر</Text>
-                            <Ionicons name="grid-outline" size={14} color="orange" />
+                            <Ionicons name="earth-outline" size={14} color="green" />
                         </View>
                     </View>
 
@@ -164,7 +164,7 @@ const HiveDetailsScreen = ({ route, navigation }) => {
                         <Text style={styles.value}>{formData.Purpose}</Text>
                         <View style={styles.labelContainer}>
                             <Text style={styles.label}>الغرض</Text>
-                            <Ionicons name="grid-outline" size={14} color="orange" />
+                            <Ionicons name="checkmark-circle-outline" size={14} color="red" />
                         </View>
                     </View>
 
@@ -181,13 +181,11 @@ const HiveDetailsScreen = ({ route, navigation }) => {
 
                     <View style={styles.divider} />
 
-
-
                     <View style={styles.row}>
                         <Text style={styles.value}>{formData.Colony.supers}</Text>
                         <View style={styles.labelContainer}>
                             <Text style={styles.label}>عدد العاسلات</Text>
-                            <Ionicons name="grid-outline" size={14} color="orange" />
+                            <Ionicons  name="file-tray-full-outline" size={14} color="orange" />
                         </View>
                     </View>
 
@@ -198,7 +196,7 @@ const HiveDetailsScreen = ({ route, navigation }) => {
                         <Text style={styles.value}>{formData.Colony.TotalFrames}</Text>
                         <View style={styles.labelContainer}>
                             <Text style={styles.label}>مجموع الإطارات</Text>
-                            <Ionicons name="grid-outline" size={14} color="orange" />
+                            <Ionicons name="file-tray-full-outline" size={14} color="orange" />
                         </View>
                     </View>
                 </View>
@@ -208,13 +206,11 @@ const HiveDetailsScreen = ({ route, navigation }) => {
                 <View style={styles.fieldset}>
                     <Text style={styles.fieldsetTitle}>معلومات عن المستعمرة</Text>
 
-
-
                     <View style={styles.row}>
                         <Text style={styles.value}>{formData.Colony.strength}</Text>
                         <View style={styles.labelContainer}>
-                            <Text style={styles.label}>قوة</Text>
-                            <Ionicons name="grid-outline" size={14} color="orange" />
+                            <Text style={styles.label}>القوة</Text>
+                            <Ionicons name="fitness-outline" size={14} color="blue"  />
                         </View>
                     </View>
 
@@ -223,11 +219,12 @@ const HiveDetailsScreen = ({ route, navigation }) => {
                     <View style={styles.row}>
                         <Text style={styles.value}>{formData.Colony.temperament}</Text>
                         <View style={styles.labelContainer}>
-                            <Text style={styles.label}>مزاج</Text>
-                            <Ionicons name="grid-outline" size={14} color="orange" />
+                            <Text style={styles.label}>السلوك</Text>
+                            <Ionicons name="happy-outline" size={14} color="gray" />
                         </View>
                     </View>
                 </View>
+
                 <View style={styles.divider} />
 
 
@@ -252,7 +249,7 @@ const HiveDetailsScreen = ({ route, navigation }) => {
                                 <Text style={styles.value}>{formData.Queen.status}</Text>
                                 <View style={styles.labelContainer}>
                                     <Text style={styles.label}>الوضع</Text>
-                                    <Ionicons name="grid-outline" size={14} color="orange" />
+                                    <Ionicons name="information-circle-outline"  size={14} color="blue" />
                                 </View>
                             </View>
 
@@ -262,7 +259,7 @@ const HiveDetailsScreen = ({ route, navigation }) => {
                                 <Text style={styles.value}>{formData.Queen.queen_state}</Text>
                                 <View style={styles.labelContainer}>
                                     <Text style={styles.label}>الحالة</Text>
-                                    <Ionicons name="grid-outline" size={14} color="orange" />
+                                    <Ionicons name="shield-checkmark-outline" size={14} color="green" />
                                 </View>
                             </View>
 
@@ -272,11 +269,10 @@ const HiveDetailsScreen = ({ route, navigation }) => {
                             <View style={styles.row}>
                                 <Text style={styles.value}>{formData.Queen.temperament}</Text>
                                 <View style={styles.labelContainer}>
-                                    <Text style={styles.label}>المزاج</Text>
-                                    <Ionicons name="grid-outline" size={14} color="orange" />
+                                    <Text style={styles.label}>السلوك</Text>
+                                    <Ionicons name="happy-outline" size={14} color="gray" />
                                 </View>
                             </View>
-
 
 
                             <View style={styles.divider} />
@@ -285,7 +281,7 @@ const HiveDetailsScreen = ({ route, navigation }) => {
                                 <Text style={styles.value}>{formData.Queen.race}</Text>
                                 <View style={styles.labelContainer}>
                                     <Text style={styles.label}>السلالة</Text>
-                                    <Ionicons name="grid-outline" size={14} color="orange" />
+                                    <Ionicons name="ribbon-outline" size={14} color="purple" />
                                 </View>
                             </View>
 
@@ -296,7 +292,7 @@ const HiveDetailsScreen = ({ route, navigation }) => {
                                 <Text style={styles.value}>{formData.Queen.clipped ? 'نعم' : 'لا'}</Text>
                                 <View style={styles.labelContainer}>
                                     <Text style={styles.label}>أجنحة مقصوصة؟</Text>
-                                    <Ionicons name="grid-outline" size={14} color="orange" />
+                                    <Ionicons name="cut-outline" size={14} color="red" />
                                 </View>
                             </View>
                             <View style={styles.divider} />
@@ -306,7 +302,7 @@ const HiveDetailsScreen = ({ route, navigation }) => {
                                 <Text style={styles.value}>{formData.Queen.isMarked ? 'نعم' : 'لا'}</Text>
                                 <View style={styles.labelContainer}>
                                     <Text style={styles.label}>معلمة؟</Text>
-                                    <Ionicons name="grid-outline" size={14} color="orange" />
+                                    <Ionicons name="flag-outline" size={14} color="orange" />
                                 </View>
                             </View>
 
@@ -316,7 +312,7 @@ const HiveDetailsScreen = ({ route, navigation }) => {
                                 <Text style={styles.value}>{formData.Queen.color}</Text>
                                 <View style={styles.labelContainer}>
                                     <Text style={styles.label}>اللون</Text>
-                                    <Ionicons name="grid-outline" size={14} color="orange" />
+                                    <Ionicons  name="color-palette-outline" size={14} color="fuchsia" />
                                 </View>
                             </View>)}
 
@@ -327,7 +323,7 @@ const HiveDetailsScreen = ({ route, navigation }) => {
                                 <Text style={styles.value}>{formData.Queen.origin}</Text>
                                 <View style={styles.labelContainer}>
                                     <Text style={styles.label}>الأصل</Text>
-                                    <Ionicons name="grid-outline" size={14} color="orange" />
+                                    <Ionicons name="location-outline" size={14} color="teal" />
                                 </View>
                             </View>
 
@@ -481,7 +477,8 @@ const styles = StyleSheet.create({
     qrTitle: {
         fontSize: 18,
         marginBottom: 10,
-        color: 'brown',
+        color: 'black',
+        fontWeight:'bold'
     },
 });
 

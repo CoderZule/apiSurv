@@ -268,7 +268,7 @@ export default function HomeScreen({ navigation }) {
 
   const openScannerInspDetails = () => {
     setModalVisible(false);
-    navigation.navigate('ScannerScreenInspectionsDetails');
+    navigation.navigate('ScannerScreenHiveDetails');
   };
   const openScannerAddInspec = () => {
     setModalVisible(false);

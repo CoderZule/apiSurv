@@ -9,7 +9,7 @@ import LoginScreen from '../Screens/UserAccountManagement/LoginScreen';
 import RegisterScreen from '../Screens/UserAccountManagement/RegisterScreen';
 import HomeScreen from '../Screens/HomeScreen';
 import DrawerNavigator from './DrawerNavigator';
-import ScannerScreenInspectionsDetails from '../Screens/Scan/ScannerScreenInspectionsDetails';
+import ScannerScreenHiveDetails from '../Screens/Scan/ScannerScreenHiveDetails';
 import HiveQRDetailsScreen from '../Screens/HiveQRDetails/HiveQRDetailsScreen';
 import AddInspectionScreen from '../Screens/Inspections/AddInspectionScreen';
 import ScannerScreenAddInspections from '../Screens/Scan/ScannerScreenAddInspections';
@@ -50,7 +50,7 @@ export function IntroStack() {
           <Stack.Screen name="HomeNiveauStrat" component={HomeNiveauStratScreen} />
  
           <Stack.Screen name="DrawerNavigator" component={DrawerNavigator} />
-          <Stack.Screen name="ScannerScreenInspectionsDetails" component={ScannerScreenInspectionsDetails} />
+          <Stack.Screen name="ScannerScreenHiveDetails" component={ScannerScreenHiveDetails} />
           <Stack.Screen name="ScannerScreenAddInspections" component={ScannerScreenAddInspections} />
 
 

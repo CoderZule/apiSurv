@@ -5,8 +5,7 @@ import axios from '../../axiosConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 
-export default function ScannerScreenAddInspections({ navigation }) {
-
+export default function ScannerScreenHiveDetails({ navigation }) {
     const [currentUser, setCurrentUser] = useState(null);
     const [scanning, setScanning] = useState(true);
     const isFocused = useIsFocused();
@@ -31,25 +30,19 @@ export default function ScannerScreenAddInspections({ navigation }) {
     }, [isFocused]);
 
 
-
     const handleBarCodeScanned = async ({ type, data }) => {
         if (!scanning) return;  
         setScanning(false);  
     
         if (!currentUser) {
-           
-            Alert.alert('Error', 'User not logged in', [
-                { text: 'OK', onPress: () => setScanning(true) }  
-            ]);
+            Alert.alert('Error', 'User not logged in', [{ text: 'OK', onPress: () => setScanning(true) }]);
             return;
         }
     
         try {
-            // Fetch all hives owned by the current user
             const hivesResponse = await axios.get('/hive/getAllHives');
             const hives = hivesResponse.data.data;
     
-            // Filter hives by user's apiaries
             const userApiariesResponse = await axios.get('/apiary/getAllApiaries');
             const userApiaries = userApiariesResponse.data.data.filter(apiary => apiary.Owner._id === currentUser._id);
             const userHives = hives.filter(hive => userApiaries.some(apiary => apiary._id === hive.Apiary._id));
@@ -57,21 +50,39 @@ export default function ScannerScreenAddInspections({ navigation }) {
             const hive = userHives.find(hive => hive._id === data);
     
             if (!hive) {
-                Alert.alert('رفض الوصول', 'أنت لا تملك هذه الخلية', [
-                    { text: 'حسناً', onPress: () => setScanning(true) }  
-                ]);
+                 Alert.alert('رفض الوصول', 'أنت لا تملك هذه الخلية', [{ text: 'حسناً', onPress: () => setScanning(true) }]);
                 return;
             }
     
             const response = await axios.get(`/hive/getHiveById/${hive._id}`);
             const hiveData = response.data;
-            navigation.navigate('AddInspectionScreen', { hiveData });
     
+            try {
+                const inspectionsResponse = await axios.get(`/inspection/getInspectionByHiveId/${data}`);
+                const InspectionsHistoryData = inspectionsResponse.data;
+    
+                if (Array.isArray(InspectionsHistoryData) && InspectionsHistoryData.length > 0) {
+                    navigation.navigate('HiveDetailsScreen', { hiveData, InspectionsHistoryData });
+                } else {
+                    navigation.navigate('HiveDetailsScreen', { hiveData, InspectionsHistoryData: [] });
+                }
+            } catch (error) {
+                if (error.response && error.response.status === 404) {
+                    navigation.navigate('HiveQRDetailsScreen', { hiveData, InspectionsHistoryData: [] });
+                } else {
+                    console.error('Error fetching inspections:', error);
+                }
+            }
         } catch (error) {
-            console.error('Error fetching hive data:', error);
+            if (error.response && error.response.status === 404) {
+                console.log('Hive not found');
+            } else {
+                console.error('Error fetching hive data:', error);
+            }
         }  
     };
     
+
 
 
     return (
@@ -83,6 +94,7 @@ export default function ScannerScreenAddInspections({ navigation }) {
 
             <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.goBack()}>
                 <Image source={require('../../assets/back.png')} style={styles.customIcon2} /><Text style={{ color: 'white' }}>الرجوع</Text>
+
 
             </TouchableOpacity>
 

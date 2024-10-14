@@ -32,7 +32,7 @@ const EditHiveModal = ({ visible, onSave, onCancel, formData, apiaries, onInputC
         onInputChange('Added', currentDate);
     };
 
-    
+
 
 
     const handleSave = async () => {
@@ -268,10 +268,12 @@ const EditHiveModal = ({ visible, onSave, onCancel, formData, apiaries, onInputC
                             />
 
                             <Text style={styles.label}>الملكة موجودة</Text>
-                            <Switch
-                                value={formData.Queen ? formData.Queen.seen : false}
-                                onValueChange={(itemValue) => onInputChange('Queen', { ...formData.Queen, seen: itemValue })}
-                            />
+                            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                <Switch
+                                    value={formData.Queen ? formData.Queen.seen : false}
+                                    onValueChange={(itemValue) => onInputChange('Queen', { ...formData.Queen, seen: itemValue })}
+                                />
+                            </View>
 
                             {formData.Queen && formData.Queen.seen && (
                                 <>
@@ -372,15 +374,18 @@ const EditHiveModal = ({ visible, onSave, onCancel, formData, apiaries, onInputC
                                     </View>
 
                                     <Text style={styles.label}>أجنحة مقصوصة</Text>
-                                    <Switch value={formData.Queen.clipped}
-                                        onValueChange={(itemValue) => onInputChange('Queen', { ...formData.Queen, clipped: itemValue })}
-                                    />
+                                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                        <Switch value={formData.Queen.clipped}
+                                            onValueChange={(itemValue) => onInputChange('Queen', { ...formData.Queen, clipped: itemValue })}
+                                        />
+                                    </View>
 
                                     <Text style={styles.label}>الملكة معلمة</Text>
-                                    <Switch value={formData.Queen.isMarked}
-                                        onValueChange={(itemValue) => onInputChange('Queen', { ...formData.Queen, isMarked: itemValue })}
-                                    />
-
+                                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                        <Switch value={formData.Queen.isMarked}
+                                            onValueChange={(itemValue) => onInputChange('Queen', { ...formData.Queen, isMarked: itemValue })}
+                                        />
+                                    </View>
 
                                     {formData.Queen.isMarked && (
                                         <>
@@ -446,7 +451,7 @@ const EditHiveModal = ({ visible, onSave, onCancel, formData, apiaries, onInputC
             </KeyboardAvoidingView>
 
 
-        </Modal>
+        </Modal >
     );
 };
 

@@ -19,13 +19,12 @@ import AlertBeekeepersScreen from '../Screens/AlertBeekeepersScreen';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import RequestsHistoryScreen from '../Screens/Requests/RequestsHistoryScreen';
 
 const Drawer = createDrawerNavigator()
 
 export default function DrawerNavigator() {
     const [initialRoute, setInitialRoute] = useState('');
-    const [loading, setLoading] = useState(true); 
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const getUserRole = async () => {
@@ -35,18 +34,18 @@ export default function DrawerNavigator() {
                 setInitialRoute(user.Role === 'Niveau Stratégique' ? 'HomeNiveauStrat' : 'Home');
                 console.log(user.Role);
             }
-            setLoading(false); 
+            setLoading(false);
         };
 
         getUserRole();
     }, []);
 
-   
+
     if (loading) {
         return (
             <View style={[styles.container, styles.loadingContainer]}>
                 <LottieView
-                    source={require('../assets/lottie/loading.json')}  
+                    source={require('../assets/lottie/loading.json')}
                     loop
                     style={{ width: 100, height: 100 }}
                 />
@@ -56,7 +55,7 @@ export default function DrawerNavigator() {
 
     return (
         <Drawer.Navigator
-            initialRouteName={initialRoute}  
+            initialRouteName={initialRoute}
             screenOptions={{
                 activeTintColor: 'white',
                 headerShown: false,
@@ -77,7 +76,6 @@ export default function DrawerNavigator() {
             <Drawer.Screen name="Finances" component={TransactionsHistoryScreen} />
             <Drawer.Screen name="Stats" component={StatsScreen} />
             <Drawer.Screen name="Gallery" component={GalleryScreen} />
-            <Drawer.Screen name="Requests" component={RequestsHistoryScreen} />
             <Drawer.Screen name="AlertBeekeepers" component={AlertBeekeepersScreen} />
             <Drawer.Screen name="AboutApp" component={AboutAppScreen} />
 

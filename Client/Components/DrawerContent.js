@@ -111,11 +111,7 @@ export default function DrawerContent(props) {
                         icon={() => <Ionicons name='images-outline' size={24} color="#977700" />}
                         onPress={() => props.navigation.navigate('Gallery')}
                     />
-                    <CustomDrawerItem
-                        label="طلباتي"
-                        icon={() => <Ionicons name='chatbox-ellipses-outline' size={24} color="#977700" />}
-                        onPress={() => props.navigation.navigate('Requests')}
-                    />
+           
                     <CustomDrawerItem
                         label="حول التطبيق"
                         icon={() => <Ionicons name='information-circle-outline' size={24} color="#977700" />}

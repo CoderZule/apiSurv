@@ -175,7 +175,7 @@ export default function ProfilScreen({ navigation }) {
                 <Text style={styles.cardTitle}>معلومات النحال</Text>
 
                 <View style={styles.input}>
-                  <Text style={styles.inputLabel}>الاسم الأول</Text>
+                  <Text style={styles.inputLabel}>الاسم</Text>
                   <View style={styles.inputContainer}>
 
                     <TextInput
@@ -190,10 +190,12 @@ export default function ProfilScreen({ navigation }) {
                       style={styles.inputIcon}
                     />
                   </View>
+
+                  
                 </View>
 
                 <View style={styles.input}>
-                  <Text style={styles.inputLabel}>الاسم الأخير</Text>
+                  <Text style={styles.inputLabel}>اللقب</Text>
                   <View style={styles.inputContainer}>
 
                     <TextInput
@@ -213,15 +215,36 @@ export default function ProfilScreen({ navigation }) {
                 <View style={styles.input}>
                   <Text style={styles.inputLabel}>الهاتف</Text>
                   <View style={styles.inputContainer}>
-                 
+
                     <TextInput
                       style={styles.inputControl}
                       value={Phone}
                       onChangeText={setPhone}
                       keyboardType="phone-pad"
                     />
-                       <FontAwesome5
+                    <FontAwesome5
                       name="phone"
+                      size={15}
+                      color="#977700"
+                      style={styles.inputIcon}
+                    />
+
+                  </View>
+                </View>
+
+
+                <View style={styles.input}>
+                  <Text style={styles.inputLabel}>رقم ب.ت.و</Text>
+                  <View style={styles.inputContainer}>
+
+                    <TextInput
+                      style={styles.inputControl}
+                      value={Cin}
+                      onChangeText={setCin}
+                      keyboardType="number-pad"
+                    />
+                    <FontAwesome5
+                      name="id-card"
                       size={15}
                       color="#977700"
                       style={styles.inputIcon}
@@ -291,99 +314,99 @@ export default function ProfilScreen({ navigation }) {
         onRequestClose={handleModalClose}
       >
         <View style={styles.modalBackground}>
- 
-            <View style={styles.modalView}>
-              <Text style={styles.modalTitle}>تغيير كلمة المرور</Text>
-              {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
-              <View style={styles.modalInput}>
-                <TouchableOpacity
-                  style={styles.visibilityIcon}
-                  onPress={toggleCurrentPasswordVisibility}
-                >
-                  <FontAwesome5
-                    name={hideCurrentPassword ? 'eye-slash' : 'eye'}
-                    size={20}
-                    color="#6b7280"
-                  />
-                </TouchableOpacity>
-                <TextInput
-                  style={styles.inputControl}
-                  onChangeText={setCurrentPasswordInput}
-                  placeholder="كلمة المرور الحالية"
-                  secureTextEntry={hideCurrentPassword}
-                  placeholderTextColor="#6b7280"
+          <View style={styles.modalView}>
+            <Text style={styles.modalTitle}>تغيير كلمة المرور</Text>
+            {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+            <View style={styles.modalInput}>
+              <TouchableOpacity
+                style={styles.visibilityIcon}
+                onPress={toggleCurrentPasswordVisibility}
+              >
+                <FontAwesome5
+                  name={hideCurrentPassword ? 'eye-slash' : 'eye'}
+                  size={20}
+                  color="#6b7280"
                 />
-                <FontAwesome5 name="lock" size={22} color="#977700" style={styles.inputIcon} />
+              </TouchableOpacity>
+              <TextInput
+                style={styles.inputControl}
+                onChangeText={setCurrentPasswordInput}
+                placeholder="كلمة المرور الحالية"
+                secureTextEntry={hideCurrentPassword}
+                placeholderTextColor="#6b7280"
+              />
+              <FontAwesome5 name="lock" size={22} color="#977700" style={styles.inputIcon} />
 
 
-              </View>
-
-              <View style={styles.modalInput}>
-                <TouchableOpacity
-                  style={styles.visibilityIcon}
-                  onPress={toggleNewPasswordVisibility}
-                >
-                  <FontAwesome5
-                    name={hideNewPassword ? 'eye-slash' : 'eye'}
-                    size={20}
-                    color="#6b7280"
-                  />
-                </TouchableOpacity>
-
-                <TextInput
-                  style={styles.inputControl}
-                  value={newPassword}
-                  onChangeText={setNewPassword}
-                  placeholder="كلمة المرور الجديدة"
-                  secureTextEntry={hideNewPassword}
-                  placeholderTextColor="#6b7280"
-                />
-                <FontAwesome5 name="lock" size={22} color="#977700" style={styles.inputIcon} />
-
-              </View>
-
-              <View style={styles.modalInput}>
-                <TouchableOpacity
-                  style={styles.visibilityIcon}
-                  onPress={toggleConfirmPasswordVisibility}
-                >
-                  <FontAwesome5
-                    name={hideConfirmPassword ? 'eye-slash' : 'eye'}
-                    size={20}
-                    color="#6b7280"
-                  />
-                </TouchableOpacity>
-
-                <TextInput
-                  style={styles.inputControl}
-                  value={confirmPassword}
-                  onChangeText={setConfirmPassword}
-                  placeholder="تأكيد كلمة المرور"
-                  secureTextEntry={hideConfirmPassword}
-                  placeholderTextColor="#6b7280"
-                />
-                <FontAwesome5 name="lock" size={22} color="#977700" style={styles.inputIcon} />
-
-
-              </View>
-
-              <View style={styles.modalButtons}>
-                <Pressable
-                  style={[styles.modalButton, styles.buttonClose]}
-                  onPress={handleModalClose}
-                >
-                  <Text style={styles.textStyle}>إلغاء</Text>
-                </Pressable>
-                <Pressable
-                  style={[styles.modalButton, styles.buttonSave]}
-                  onPress={handlePasswordChange}
-                >
-                  <Text style={styles.textStyle}>تغيير كلمة المرور</Text>
-                </Pressable>
-              </View>
             </View>
-          
+
+            <View style={styles.modalInput}>
+              <TouchableOpacity
+                style={styles.visibilityIcon}
+                onPress={toggleNewPasswordVisibility}
+              >
+                <FontAwesome5
+                  name={hideNewPassword ? 'eye-slash' : 'eye'}
+                  size={20}
+                  color="#6b7280"
+                />
+              </TouchableOpacity>
+
+              <TextInput
+                style={styles.inputControl}
+                value={newPassword}
+                onChangeText={setNewPassword}
+                placeholder="كلمة المرور الجديدة"
+                secureTextEntry={hideNewPassword}
+                placeholderTextColor="#6b7280"
+              />
+              <FontAwesome5 name="lock" size={22} color="#977700" style={styles.inputIcon} />
+
+            </View>
+
+            <View style={styles.modalInput}>
+              <TouchableOpacity
+                style={styles.visibilityIcon}
+                onPress={toggleConfirmPasswordVisibility}
+              >
+                <FontAwesome5
+                  name={hideConfirmPassword ? 'eye-slash' : 'eye'}
+                  size={20}
+                  color="#6b7280"
+                />
+              </TouchableOpacity>
+
+              <TextInput
+                style={styles.inputControl}
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+                placeholder="تأكيد كلمة المرور"
+                secureTextEntry={hideConfirmPassword}
+                placeholderTextColor="#6b7280"
+              />
+              <FontAwesome5 name="lock" size={22} color="#977700" style={styles.inputIcon} />
+
+
+            </View>
+
+            <View style={styles.modalButtons}>
+              <Pressable
+                style={[styles.modalButton, styles.buttonClose]}
+                onPress={handleModalClose}
+              >
+                <Text style={styles.textStyle}>إلغاء</Text>
+              </Pressable>
+              <Pressable
+                style={[styles.modalButton, styles.buttonSave]}
+                onPress={handlePasswordChange}
+              >
+                <Text style={styles.textStyle}>تغيير كلمة المرور</Text>
+              </Pressable>
+            </View>
+          </View>
+
         </View>
       </Modal>
     </SafeAreaView>

@@ -132,7 +132,7 @@ const ApiaryDetailsScreen = ({ route, navigation }) => {
                     <Text style={styles.valueLine}>{formData.Name}</Text>
                     <View style={styles.labelContainer}>
                         <Text style={styles.label}>اسم المنحل</Text>
-                        <Ionicons name='trail-sign-outline' size={14} color="brown" />
+                        <Ionicons name='trail-sign-outline' size={14} color="#977700" />
                     </View>
                 </View>
 
