@@ -326,7 +326,7 @@ export default function ProfilScreen({ navigation }) {
               >
                 <FontAwesome5
                   name={hideCurrentPassword ? 'eye-slash' : 'eye'}
-                  size={20}
+                  size={14}
                   color="#6b7280"
                 />
               </TouchableOpacity>
@@ -337,7 +337,7 @@ export default function ProfilScreen({ navigation }) {
                 secureTextEntry={hideCurrentPassword}
                 placeholderTextColor="#6b7280"
               />
-              <FontAwesome5 name="lock" size={22} color="#977700" style={styles.inputIcon} />
+              <FontAwesome5 name="lock" size={14} color="#977700" style={styles.inputIcon} />
 
 
             </View>
@@ -349,7 +349,7 @@ export default function ProfilScreen({ navigation }) {
               >
                 <FontAwesome5
                   name={hideNewPassword ? 'eye-slash' : 'eye'}
-                  size={20}
+                  size={14}
                   color="#6b7280"
                 />
               </TouchableOpacity>
@@ -362,7 +362,7 @@ export default function ProfilScreen({ navigation }) {
                 secureTextEntry={hideNewPassword}
                 placeholderTextColor="#6b7280"
               />
-              <FontAwesome5 name="lock" size={22} color="#977700" style={styles.inputIcon} />
+              <FontAwesome5 name="lock" size={14} color="#977700" style={styles.inputIcon} />
 
             </View>
 
@@ -373,7 +373,7 @@ export default function ProfilScreen({ navigation }) {
               >
                 <FontAwesome5
                   name={hideConfirmPassword ? 'eye-slash' : 'eye'}
-                  size={20}
+                  size={14}
                   color="#6b7280"
                 />
               </TouchableOpacity>
@@ -386,7 +386,7 @@ export default function ProfilScreen({ navigation }) {
                 secureTextEntry={hideConfirmPassword}
                 placeholderTextColor="#6b7280"
               />
-              <FontAwesome5 name="lock" size={22} color="#977700" style={styles.inputIcon} />
+              <FontAwesome5 name="lock" size={14} color="#977700" style={styles.inputIcon} />
 
 
             </View>
@@ -442,13 +442,13 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
   input: {
-    marginBottom: 16,
+    marginBottom: 10,
 
   },
   inputLabel: {
     fontSize: 14,
     color: '#333',
-    marginBottom: 4,
+    marginBottom: 2,
   },
   inputContainer: {
     flexDirection: 'row',
@@ -480,7 +480,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   formAction: {
-    marginTop: 24,
+    marginTop: 5
   },
   btn: {
     backgroundColor: '#FEE502',

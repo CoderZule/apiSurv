@@ -20,15 +20,20 @@ export default function RegisterScreen() {
     const [form, setForm] = useState({
         firstname: '',
         lastname: '',
-        phone: '',
-        cin: '',
+       // phone: '',
+        // cin: '',
         email: '',
         password: '',
         hidePassword: true,
     });
 
     const handleRegister = async () => {
-        if (!form.firstname || !form.lastname || !form.phone || !form.cin || !form.email || !form.password) {
+        // if (!form.firstname || !form.lastname || !form.phone || !form.cin || !form.email || !form.password) {
+        //     Alert.alert('الحقول فارغة', 'يرجى ملء جميع الحقول.');
+        //     return;
+        // }
+
+              if (!form.firstname || !form.lastname || !form.email || !form.password) {
             Alert.alert('الحقول فارغة', 'يرجى ملء جميع الحقول.');
             return;
         }
@@ -37,8 +42,8 @@ export default function RegisterScreen() {
             const response = await axios.post('/user/register', {
                 Firstname: form.firstname,
                 Lastname: form.lastname,
-                Phone: form.phone,
-                Cin: form.cin,
+               // Phone: form.phone,
+                // Cin: form.cin,
                 Email: form.email,
                 Password: form.password,
                 platform: 'mobile',
@@ -104,7 +109,7 @@ export default function RegisterScreen() {
                             </View>
                         </View>
 
-                        <View style={styles.input}>
+                        {/* <View style={styles.input}>
                             <Text style={styles.inputLabel}>رقم الهاتف</Text>
                             <View style={styles.inputContainer}>
                                 <FontAwesome5 name="phone" size={15} color="#977700" style={styles.inputIcon} />
@@ -134,7 +139,7 @@ export default function RegisterScreen() {
                                 />
 
                             </View>
-                        </View>
+                        </View> */}
 
                         <View style={styles.input}>
                             <Text style={styles.inputLabel}>البريد الإلكتروني</Text>
@@ -215,7 +220,7 @@ const styles = StyleSheet.create({
     header: {
         alignItems: 'center',
         justifyContent: 'center',
-        marginVertical: 36,
+        marginVertical: 16,
     },
     headerImg: {
         marginTop: 20,
