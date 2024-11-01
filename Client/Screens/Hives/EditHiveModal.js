@@ -119,9 +119,10 @@ const EditHiveModal = ({ visible, onSave, onCancel, formData, apiaries, onInputC
                                     style={styles.picker}
                                 >
                                     <Picker.Item label="اختر..." value="" enabled={false} />
-                                    {apiaries.map((apiary) => (
+                                    {apiaries && apiaries.map((apiary) => (
                                         <Picker.Item label={apiary.Name} value={apiary._id} key={apiary._id} />
                                     ))}
+
                                 </Picker>
                             </View>
 

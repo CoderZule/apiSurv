@@ -62,9 +62,9 @@ export default function ScannerScreenHiveDetails({ navigation }) {
                 const InspectionsHistoryData = inspectionsResponse.data;
     
                 if (Array.isArray(InspectionsHistoryData) && InspectionsHistoryData.length > 0) {
-                    navigation.navigate('HiveDetailsScreen', { hiveData, InspectionsHistoryData });
+                    navigation.navigate('HiveQRDetailsScreen', { hiveData, InspectionsHistoryData });
                 } else {
-                    navigation.navigate('HiveDetailsScreen', { hiveData, InspectionsHistoryData: [] });
+                    navigation.navigate('HiveQRDetailsScreen', { hiveData, InspectionsHistoryData: [] });
                 }
             } catch (error) {
                 if (error.response && error.response.status === 404) {
