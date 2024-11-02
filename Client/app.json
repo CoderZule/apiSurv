@@ -20,17 +20,29 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FBF5E0"
+        "backgroundColor": "#ffffff"
       },
       "package": "com.zule.apiSurv",
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyBAQYz0wA9WDdF6nT0LkDtLyX4036zGIPQ"
+          "apiKey": "AIzaSyDOUC4XjQdOOgBPcJ-eAtrLcGcU3t7A2WE"
         }
-      }
+      },
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_NETWORK_STATE",
+        "INTERNET"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+  
+      "eas": {
+        "projectId": "92d38aae-9224-4cf3-bb6c-e66a9a7289fd"
+      }
     }
   }
 }

@@ -143,7 +143,7 @@ export default function ApiaryHistoryScreen({ navigation }) {
 
     return (
         <SafeAreaView style={styles.safeArea}>
-            <HomeHeader navigation={navigation} title={'المنحل'} />
+            <HomeHeader navigation={navigation} title={'المناحل'} />
             <ScrollView horizontal={true}>
                 <Card style={styles.card}>
 

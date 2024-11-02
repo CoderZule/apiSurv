@@ -120,7 +120,7 @@ export default function HarvestHistoryScreen({ navigation }) {
   };
 
   const handleFormSubmit = async () => {
-    if (!selectedApiary || !selectedHive || !selectedProduct || !quantity || !selectedUnit || !selectedSeason || !selectedHarvestMethod) {
+    if (!selectedApiary || !selectedHive || !selectedProduct || !quantity || !selectedUnit || !selectedSeason || !selectedHarvestMethod || !qualityTestResults) {
       return Alert.alert('خطأ', 'يرجى ملء جميع الحقول');
     } else {
       try {

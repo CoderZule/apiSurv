@@ -1,31 +1,34 @@
-import React from "react";
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import React, { useEffect } from "react";
+import { StyleSheet, Text, View, Image, TouchableOpacity, StatusBar } from 'react-native';
 import AppIntroSlider from 'react-native-app-intro-slider';
- import { useNavigation } from '@react-navigation/native';  
- 
+import { useNavigation } from '@react-navigation/native';
+
 const Intro = () => {
-  const navigation = useNavigation(); 
- 
-  
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    StatusBar.setHidden(true); // Hide the status bar
+  }, []);
+
   const styles = StyleSheet.create({
     title: {
-      fontSize: 25, 
-      fontWeight:'bold',
-       marginTop: 30,
+      fontSize: 25,
+      fontWeight: 'bold',
+      marginTop: 30,
       marginBottom: 13,
-       color: '#977700',
-       textAlign: 'center',
-     },
+      color: '#977700',
+      textAlign: 'center',
+    },
     image: {
       width: 330,
       height: 340,
     },
     text: {
-      textAlign:"center",
+      textAlign: "center",
       fontSize: 17,
-      fontFamily:'',
+      fontFamily: '',
       color: '#969696',
-     },
+    },
     button: {
       marginTop: 20,
       width: 276,
@@ -39,8 +42,8 @@ const Intro = () => {
     buttonText: {
       fontSize: 17,
       color: '#373737',
-      fontWeight:'bold',
-     }
+      fontWeight: 'bold',
+    }
   });
 
   const slides = [
@@ -69,11 +72,11 @@ const Intro = () => {
 
   const _renderItem = ({ item, index }) => {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor:'#FBF5E0' }}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FBF5E0' }}>
         <Image style={styles.image} source={item.image} />
         <Text style={styles.title}>{item.title}</Text>
         <Text style={styles.text}>{item.text}</Text>
-         {index === slides.length - 1 && (
+        {index === slides.length - 1 && (
           <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login')}>
             <Text style={styles.buttonText}>ابدأ</Text>
           </TouchableOpacity>
@@ -82,18 +85,20 @@ const Intro = () => {
     );
   }
 
-  const renderNextButton = () => null; 
-  const renderDoneButton = () => null; 
+  const renderNextButton = () => null;
+  const renderDoneButton = () => null;
 
   return (
-    <AppIntroSlider
-      activeDotStyle={{ width: 15, backgroundColor: '#977700' }}
-      dotStyle={{ width: 15, backgroundColor: '#D9D9D9' }}
-      renderItem={_renderItem}
-      renderNextButton={renderNextButton} 
-      renderDoneButton={renderDoneButton} 
-      data={slides}
-    />
+    <>
+      <AppIntroSlider
+        activeDotStyle={{ width: 15, backgroundColor: '#977700' }}
+        dotStyle={{ width: 15, backgroundColor: '#D9D9D9' }}
+        renderItem={_renderItem}
+        renderNextButton={renderNextButton}
+        renderDoneButton={renderDoneButton}
+        data={slides}
+      />
+    </>
   );
 }
 
