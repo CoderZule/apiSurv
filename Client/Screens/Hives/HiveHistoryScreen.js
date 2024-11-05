@@ -285,7 +285,7 @@ export default function HiveHistoryScreen({ navigation }) {
                     source={require('../../assets/lottie/loading.json')}
                     autoPlay
                     loop
-                    style={{ width: 100, height: 100 }}
+                    style={{ width: 100, height: 70 }}
                   />
                 </View>
               ) : (

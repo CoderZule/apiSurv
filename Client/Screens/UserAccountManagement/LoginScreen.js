@@ -14,10 +14,12 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import axios from '../../axiosConfig';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import RegisterScreen from './RegisterScreen';
+import LottieView from "lottie-react-native";
 
 export default function LoginScreen() {
   const navigation = useNavigation();
+  const [isLoading, setIsLoading] = useState(false);
+
 
   const [form, setForm] = useState({
     email: '',
@@ -26,10 +28,12 @@ export default function LoginScreen() {
   });
 
   const handleLogin = async () => {
-    if ( !form.email || !form.password) {
+    if (!form.email || !form.password) {
       Alert.alert('الحقول فارغة', 'يرجى ملء جميع الحقول .');
       return;
-  }
+    }
+    setIsLoading(true);
+
     try {
       const response = await axios.post('/user/login', {
         Email: form.email,
@@ -42,6 +46,7 @@ export default function LoginScreen() {
         ['currentUser', JSON.stringify(response.data.currentUser)],
       ]);
 
+      setIsLoading(false);
       navigation.reset({
         index: 0,
         routes: [{ name: 'DrawerNavigator' }],
@@ -162,8 +167,18 @@ export default function LoginScreen() {
 
 
 
-
           </View>
+
+            {isLoading && (
+              <View style={styles.loadingContainer}>
+                <LottieView
+                  source={require('../../assets/lottie/loading.json')}
+                  autoPlay
+                  loop
+                  style={{ width: 100, height: 100 }}
+                />
+              </View>
+            )}
         </KeyboardAwareScrollView>
       </View>
     </SafeAreaView>
@@ -276,5 +291,15 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: '#373737',
     fontWeight: 'bold',
-  }
+  },
+  loadingContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)', // dimmed background
+  },
 });

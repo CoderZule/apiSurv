@@ -207,7 +207,7 @@ export default function GalleryScreen({ navigation }) {
               source={require('../../assets/lottie/loading.json')}
               autoPlay
               loop
-              style={{ width: 50, height: 50 }}
+              style={{ width: 100, height: 100 }}
             />
           </View>
         ) :
@@ -245,7 +245,7 @@ export default function GalleryScreen({ navigation }) {
                           source={require('../../assets/lottie/loading.json')}
                           autoPlay
                           loop
-                          style={{ width: 50, height: 50 }}
+                          style={{ width: 100, height: 100 }}
                         />
                       </View>
                     )}
@@ -315,7 +315,7 @@ export default function GalleryScreen({ navigation }) {
                   source={require('../../assets/lottie/loading.json')}
                   autoPlay
                   loop
-                  style={{ width: 50, height: 50 }}
+                  style={{ width: 100, height: 100 }}
                 />
               </View>
             )}
@@ -363,7 +363,7 @@ export default function GalleryScreen({ navigation }) {
               source={require('../../assets/lottie/loading.json')}
               autoPlay
               loop
-              style={{ width: 150, height: 150 }}
+              style={{ width: 100, height: 100 }}
             />
             <Text style={styles.uploadProgressText}>{`تحميل: ${Math.round(uploadProgress)}%`}</Text>
           </View>

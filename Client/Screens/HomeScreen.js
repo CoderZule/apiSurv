@@ -18,6 +18,10 @@ export default function HomeScreen({ navigation }) {
 
   const isFocused = useIsFocused();
   const [isLoading, setIsLoading] = useState(true);
+  const [loadingApiaries, setLoadingApiaries] = useState(true);
+  const [loadingHives, setLoadingHives] = useState(true);
+  const [loadingFinancial, setLoadingFinancial] = useState(true);
+  const [loadingStrength, setLoadingStrength] = useState(true);
 
   const [incompleteTasksCount, setIncompleteTasksCount] = useState(0);
 
@@ -56,6 +60,7 @@ export default function HomeScreen({ navigation }) {
 
   useEffect(() => {
     const fetchTransactions = async () => {
+
       try {
         const response = await axios.get('/transaction/getAllTransactions', {
           params: { userId: currentUser?._id },
@@ -107,11 +112,14 @@ export default function HomeScreen({ navigation }) {
           previousYearRevenues: previousYearTotals.revenues,
           previousYearExpenses: previousYearTotals.expenses
         });
+        setLoadingFinancial(false);
+
       } catch (error) {
         console.error('Error fetching transactions:', error);
       }
       finally {
         setIsLoading(false);
+
       }
     };
 
@@ -123,6 +131,7 @@ export default function HomeScreen({ navigation }) {
 
   useEffect(() => {
     const fetchApiariesCount = async () => {
+
       try {
         if (currentUser) {
           const response = await axios.get('/apiary/getAllApiaries');
@@ -130,10 +139,13 @@ export default function HomeScreen({ navigation }) {
 
           const userApiaries = apiaries.filter(apiary => apiary.Owner._id === currentUser._id);
           setApiariesCount(userApiaries.length);
+          setLoadingApiaries(false);
+
         }
       } catch (error) {
         console.error('Error fetching apiaries count:', error);
       }
+
     };
 
     fetchApiariesCount();
@@ -154,6 +166,8 @@ export default function HomeScreen({ navigation }) {
           const userHives = hives.filter(hive => userApiaries.some(apiary => apiary._id === hive.Apiary._id));
 
           setHivesCount(userHives.length);
+          setLoadingHives(false);
+
         }
       } catch (error) {
         console.error('Error fetching hives count:', error);
@@ -204,10 +218,13 @@ export default function HomeScreen({ navigation }) {
 
 
           setStrengthPercentage(averageStrength);
+          setLoadingStrength(false);
+
         }
       } catch (error) {
         console.error('Error fetching hives strength:', error);
       }
+
     };
 
     if (currentUser) {
@@ -217,17 +234,45 @@ export default function HomeScreen({ navigation }) {
 
 
   const propertiesData = [
-    { id: 1, name: 'مناحل', value: apiariesCount.toString(), img: require('../assets/rucher.png') },
-    { id: 2, name: 'خلايا النحل', value: hivesCount.toString(), img: require('../assets/ruche.png') },
+    {
+      id: 1,
+      name: 'مناحل',
+      value: loadingApiaries
+        ? <LottieView source={require('../assets/lottie/loading.json')} autoPlay
+          loop style={{ width: 20, height: 20 }} />
+        : apiariesCount.toString(),
+      img: require('../assets/rucher.png')
+    },
+    {
+      id: 2,
+      name: 'خلايا النحل',
+      value: loadingHives
+        ? <LottieView source={require('../assets/lottie/loading.json')} autoPlay
+          loop style={{ width: 20, height: 20 }} />
+        : hivesCount.toString(),
+      img: require('../assets/ruche.png')
+    },
     {
       id: 3,
       name: 'الرصيد',
-      value: `${Math.abs(financialData.currentYearTotal).toLocaleString()} ${financialData.currentYearTotal < 0 ? '-' : ''} د.ت `,
+      value: loadingFinancial
+        ? <LottieView source={require('../assets/lottie/loading.json')} autoPlay
+          loop style={{ width: 20, height: 20 }} />
+        : `${Math.abs(financialData.currentYearTotal).toLocaleString()} ${financialData.currentYearTotal < 0 ? '-' : ''} د.ت `,
       img: require('../assets/solde.png')
     },
-    { id: 4, name: 'قوة خلايا النحل', value: `${strengthPercentage.toFixed(0)}%`, img: require('../assets/force.png') },
-
+    {
+      id: 4,
+      name: 'قوة خلايا النحل',
+      value: loadingStrength
+        ? <LottieView source={require('../assets/lottie/loading.json')} autoPlay
+          loop style={{ width: 20, height: 20 }} />
+        : `${strengthPercentage.toFixed(0)}%`,
+      img: require('../assets/force.png')
+    },
   ];
+
+
 
 
 
