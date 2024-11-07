@@ -20,6 +20,7 @@ import TransactionDetailsScreen from '../Screens/Finances/TransactionDetailsScre
 import HomeNiveauStratScreen from '../Screens/HomeNiveauStratScreen';
 import ApiaryDetailsScreen from '../Screens/Apiaries/ApiaryDetailsScreen';
 import HiveDetailsScreen from '../Screens/Hives/HiveDetailsScreen';
+import AlertBeekeepersScreen from '../Screens/AlertBeekeepersScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -48,7 +49,8 @@ export function IntroStack() {
           <Stack.Screen name="Register" component={RegisterScreen} />
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="HomeNiveauStrat" component={HomeNiveauStratScreen} />
- 
+          <Stack.Screen name="AlertBeekeepers" component={AlertBeekeepersScreen} />
+
           <Stack.Screen name="DrawerNavigator" component={DrawerNavigator} />
           <Stack.Screen name="ScannerScreenHiveDetails" component={ScannerScreenHiveDetails} />
           <Stack.Screen name="ScannerScreenAddInspections" component={ScannerScreenAddInspections} />

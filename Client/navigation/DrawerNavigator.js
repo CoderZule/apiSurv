@@ -31,8 +31,13 @@ export default function DrawerNavigator() {
             const currentUser = await AsyncStorage.getItem('currentUser');
             if (currentUser) {
                 const user = JSON.parse(currentUser);
-                setInitialRoute(user.Role === 'Niveau Stratégique' ? 'HomeNiveauStrat' : 'Home');
-                console.log(user.Role);
+                setInitialRoute(
+                    user.Role === 'Niveau Stratégique'
+                        ? 'HomeNiveauStrat'
+                        : user.Role === 'Assistance intermédiaire'
+                        ? 'AlertBeekeepers'
+                        : 'Home'
+                );                
             }
             setLoading(false);
         };
