@@ -53,7 +53,9 @@ export default function LoginScreen() {
       });
 
     } catch (error) {
+      setIsLoading(false);
       Alert.alert('فشل تسجيل الدخول', 'بيانات الاعتماد غير صحيحة. يرجى المحاولة مرة أخرى.');
+    
     }
   };
 
