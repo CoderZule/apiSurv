@@ -335,7 +335,7 @@ const HiveDetailsScreen = ({ route, navigation }) => {
             </View>
  
                <View style={styles.qrContainer}>
-                    <Text style={styles.qrTitle}>رمز QR للخلية</Text>
+                    <Text style={styles.qrTitle}>رمز QR للخلية {formData.Name}</Text>
                     <SvgQRCode
                         value={hiveData._id}   
                         size={100}

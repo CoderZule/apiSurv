@@ -20,21 +20,29 @@ export default function RegisterScreen() {
     const [form, setForm] = useState({
         firstname: '',
         lastname: '',
-       // phone: '',
-        // cin: '',
         email: '',
         password: '',
         hidePassword: true,
     });
 
-    const handleRegister = async () => {
-        // if (!form.firstname || !form.lastname || !form.phone || !form.cin || !form.email || !form.password) {
-        //     Alert.alert('الحقول فارغة', 'يرجى ملء جميع الحقول.');
-        //     return;
-        // }
 
-              if (!form.firstname || !form.lastname || !form.email || !form.password) {
+
+    const handleRegister = async () => {
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!form.firstname || !form.lastname || !form.email || !form.password) {
             Alert.alert('الحقول فارغة', 'يرجى ملء جميع الحقول.');
+            return;
+        }
+
+        if (!emailRegex.test(form.email)) {
+            Alert.alert('صيغة البريد الإلكتروني غير صالحة', 'يرجى إدخال بريد إلكتروني صالح.');
+            return;
+        }
+
+        if (form.password.length <= 5) {
+            Alert.alert('كلمة المرور قصيرة', 'يجب أن تتكون كلمة المرور من أكثر من 5 أحرف.');
             return;
         }
 
@@ -42,8 +50,6 @@ export default function RegisterScreen() {
             const response = await axios.post('/user/register', {
                 Firstname: form.firstname,
                 Lastname: form.lastname,
-               // Phone: form.phone,
-                // Cin: form.cin,
                 Email: form.email,
                 Password: form.password,
                 platform: 'mobile',
@@ -55,6 +61,7 @@ export default function RegisterScreen() {
                 Alert.alert('فشل إنشاء حساب', 'البريد الإلكتروني مستخدم بالفعل.');
             } else {
                 Alert.alert('فشل إنشاء حساب', 'حدث خطأ أثناء الإنشاء. يرجى التحقق من البيانات والمحاولة مرة أخرى.');
+                
             }
         }
     };
@@ -190,8 +197,8 @@ export default function RegisterScreen() {
                                 </View>
                             </TouchableOpacity>
                             <Text style={styles.formLink} onPress={navigation.goBack} >
-                            لديك حساب بالفعل؟ تسجيل الدخول
-                                </Text>
+                                لديك حساب بالفعل؟ تسجيل الدخول
+                            </Text>
                         </View>
                     </View>
                 </KeyboardAwareScrollView>
@@ -299,12 +306,12 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     formLink: {
-        marginTop:25,
+        marginTop: 25,
         fontSize: 14,
         fontWeight: '500',
         color: '#977700',
         textAlign: 'right',
         textDecorationLine: 'underline',
-    
-      },
+
+    },
 });
