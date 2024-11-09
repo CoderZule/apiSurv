@@ -8,13 +8,15 @@ import { useCameraPermissions } from 'expo-camera';
 import { useIsFocused } from '@react-navigation/native';
 import LottieView from "lottie-react-native";
 
+ 
+
 
 export default function HomeScreen({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [permission, requestPermission] = useCameraPermissions();
-  const [currentUser, setCurrentUser] = useState(null);
-  const [apiariesCount, setApiariesCount] = useState(0);
+   const [apiariesCount, setApiariesCount] = useState(0);
   const [hivesCount, setHivesCount] = useState(0);
+  const [currentUser, setCurrentUser] = useState(null);
 
   const isFocused = useIsFocused();
   const [isLoading, setIsLoading] = useState(true);
@@ -36,6 +38,7 @@ export default function HomeScreen({ navigation }) {
 
   const [strengthPercentage, setStrengthPercentage] = useState(0);
 
+
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
@@ -56,11 +59,9 @@ export default function HomeScreen({ navigation }) {
     }
   }, [currentUser, isFocused]);
 
-
-
-  useEffect(() => {
+ 
     const fetchTransactions = async () => {
-
+ 
       try {
         const response = await axios.get('/transaction/getAllTransactions', {
           params: { userId: currentUser?._id },
@@ -123,35 +124,31 @@ export default function HomeScreen({ navigation }) {
       }
     };
 
-    if (currentUser) {
-      fetchTransactions();
-    }
-  }, [currentUser, isFocused]);
-
-
-  useEffect(() => {
+    
     const fetchApiariesCount = async () => {
 
       try {
         if (currentUser) {
           const response = await axios.get('/apiary/getAllApiaries');
           const apiaries = response.data.data;
-
-          const userApiaries = apiaries.filter(apiary => apiary.Owner._id === currentUser._id);
-          setApiariesCount(userApiaries.length);
+    
+          if (apiaries) { 
+            const userApiaries = apiaries.filter(apiary => apiary.Owner?._id === currentUser._id);
+            setApiariesCount(userApiaries.length);
+          }
+        }
+        
           setLoadingApiaries(false);
 
-        }
+        
       } catch (error) {
         console.error('Error fetching apiaries count:', error);
       }
 
     };
 
-    fetchApiariesCount();
-  }, [currentUser]);
-
-  useEffect(() => {
+ 
+ 
     const fetchHivesCount = async () => {
       try {
         if (currentUser) {
@@ -160,7 +157,7 @@ export default function HomeScreen({ navigation }) {
 
           // Fetch all apiaries owned by the current user
           const apiariesResponse = await axios.get('/apiary/getAllApiaries');
-          const userApiaries = apiariesResponse.data.data.filter(apiary => apiary.Owner._id === currentUser._id);
+          const userApiaries = apiariesResponse.data.data.filter(apiary => apiary.Owner?._id === currentUser._id);
 
           // Filter hives based on the apiaries owned by the current user
           const userHives = hives.filter(hive => userApiaries.some(apiary => apiary._id === hive.Apiary._id));
@@ -175,12 +172,7 @@ export default function HomeScreen({ navigation }) {
         setIsLoading(false);
       }
     };
-
-    if (currentUser) {
-      fetchHivesCount();
-    }
-  }, [currentUser]);
-
+ 
 
 
 
@@ -192,10 +184,9 @@ export default function HomeScreen({ navigation }) {
     "قوي جداً": 100,
   };
 
-
-
-  useEffect(() => {
+ 
     const fetchHivesStrength = async () => {
+ 
       try {
         if (currentUser) {
           const response = await axios.get('/hive/getAllHives');
@@ -203,7 +194,7 @@ export default function HomeScreen({ navigation }) {
 
           // Fetch all apiaries owned by the current user
           const apiariesResponse = await axios.get('/apiary/getAllApiaries');
-          const userApiaries = apiariesResponse.data.data.filter(apiary => apiary.Owner._id === currentUser._id);
+          const userApiaries = apiariesResponse.data.data.filter(apiary => apiary.Owner?._id === currentUser._id);
 
           const userHives = hives.filter(hive => userApiaries.some(apiary => apiary._id === hive.Apiary._id));
 
@@ -226,12 +217,7 @@ export default function HomeScreen({ navigation }) {
       }
 
     };
-
-    if (currentUser) {
-      fetchHivesStrength();
-    }
-  }, [currentUser]);
-
+ 
 
   const propertiesData = [
     {
@@ -273,10 +259,6 @@ export default function HomeScreen({ navigation }) {
   ];
 
 
-
-
-
-
   const fetchTasks = async () => {
 
     if (!currentUser) {
@@ -304,12 +286,17 @@ export default function HomeScreen({ navigation }) {
 
   useEffect(() => {
     if (currentUser) {
+      fetchTransactions();
+      fetchApiariesCount()
+      fetchHivesCount();
+      fetchHivesStrength();
       fetchTasks();
     }
-  }, [currentUser]);
+  }, [currentUser , isFocused]);
+ 
 
 
-
+  
 
   const openScannerInspDetails = () => {
     setModalVisible(false);

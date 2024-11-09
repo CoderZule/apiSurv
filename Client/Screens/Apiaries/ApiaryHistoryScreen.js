@@ -55,7 +55,7 @@ export default function ApiaryHistoryScreen({ navigation }) {
             }
             try {
                 const apiariesResponse = await axios.get('/apiary/getAllApiaries');
-                const userApiaries = apiariesResponse.data.data.filter(apiary => apiary.Owner._id === currentUser._id);
+                const userApiaries = apiariesResponse.data.data.filter(apiary => apiary.Owner?._id === currentUser._id);
                 setApiaries(userApiaries);
              } catch (error) {
                 console.error('Error fetching apiary data:', error);

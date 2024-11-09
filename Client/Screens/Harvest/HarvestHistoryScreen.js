@@ -58,7 +58,7 @@ export default function HarvestHistoryScreen({ navigation }) {
         const apiariesResponse = await axios.get('/apiary/getAllApiaries');
         const hivesResponse = await axios.get('/hive/getAllHives');
 
-        const userApiaries = apiariesResponse.data.data.filter(apiary => apiary.Owner._id === currentUser._id);
+        const userApiaries = apiariesResponse.data.data.filter(apiary => apiary.Owner?._id === currentUser._id);
         setApiaries(userApiaries);
 
         const userHives = hivesResponse.data.data.filter(hive => userApiaries.some(apiary => apiary._id === hive.Apiary._id));

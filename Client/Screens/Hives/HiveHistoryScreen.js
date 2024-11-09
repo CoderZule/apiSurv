@@ -74,7 +74,7 @@ export default function HiveHistoryScreen({ navigation }) {
 
     try {
       const apiariesResponse = await axios.get('/apiary/getAllApiaries');
-      const userApiaries = apiariesResponse.data.data.filter(apiary => apiary.Owner._id === currentUser._id);
+      const userApiaries = apiariesResponse.data.data.filter(apiary => apiary.Owner?._id === currentUser._id);
 
       setApiaries(userApiaries);
       let allHives = [];

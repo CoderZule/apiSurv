@@ -237,7 +237,7 @@ export default function StatsScreen({ navigation }) {
         });
         const apiaries = response.data.data;
 
-        const userApiaries = apiaries.filter(apiary => apiary.Owner._id === currentUser._id);
+        const userApiaries = apiaries.filter(apiary => apiary.Owner?._id === currentUser._id);
         setApiaries(userApiaries);
 
 

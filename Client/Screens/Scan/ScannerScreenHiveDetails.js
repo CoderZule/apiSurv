@@ -44,7 +44,7 @@ export default function ScannerScreenHiveDetails({ navigation }) {
             const hives = hivesResponse.data.data;
     
             const userApiariesResponse = await axios.get('/apiary/getAllApiaries');
-            const userApiaries = userApiariesResponse.data.data.filter(apiary => apiary.Owner._id === currentUser._id);
+            const userApiaries = userApiariesResponse.data.data.filter(apiary => apiary.Owner?._id === currentUser._id);
             const userHives = hives.filter(hive => userApiaries.some(apiary => apiary._id === hive.Apiary._id));
     
             const hive = userHives.find(hive => hive._id === data);
