@@ -13,9 +13,11 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { FontAwesome5 } from '@expo/vector-icons';
 import axios from '../../axiosConfig';
 import { useNavigation } from '@react-navigation/native';
+import LottieView from "lottie-react-native";
 
 export default function RegisterScreen() {
     const navigation = useNavigation();
+    const [isLoading, setIsLoading] = useState(false);
 
     const [form, setForm] = useState({
         firstname: '',
@@ -46,6 +48,7 @@ export default function RegisterScreen() {
             return;
         }
 
+        setIsLoading(true);
         try {
             const response = await axios.post('/user/register', {
                 Firstname: form.firstname,
@@ -55,13 +58,16 @@ export default function RegisterScreen() {
                 platform: 'mobile',
             });
 
+            setIsLoading(false);
+
             Alert.alert('نجاح', 'تم إنشاء الحساب بنجاح.');
         } catch (error) {
+            setIsLoading(false);
             if (error.response && error.response.status === 400) {
                 Alert.alert('فشل إنشاء حساب', 'البريد الإلكتروني مستخدم بالفعل.');
             } else {
                 Alert.alert('فشل إنشاء حساب', 'حدث خطأ أثناء الإنشاء. يرجى التحقق من البيانات والمحاولة مرة أخرى.');
-                
+
             }
         }
     };
@@ -201,6 +207,17 @@ export default function RegisterScreen() {
                             </Text>
                         </View>
                     </View>
+
+                    {isLoading && (
+                        <View style={styles.loadingContainer}>
+                            <LottieView
+                                source={require('../../assets/lottie/loading.json')}
+                                autoPlay
+                                loop
+                                style={{ width: 100, height: 100 }}
+                            />
+                        </View>
+                    )}
                 </KeyboardAwareScrollView>
             </View>
         </SafeAreaView>
@@ -314,4 +331,15 @@ const styles = StyleSheet.create({
         textDecorationLine: 'underline',
 
     },
+
+    loadingContainer: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.4)'
+      },
 });

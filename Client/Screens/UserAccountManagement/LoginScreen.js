@@ -302,6 +302,6 @@ const styles = StyleSheet.create({
     bottom: 0,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.4)', // dimmed background
+    backgroundColor: 'rgba(0, 0, 0, 0.4)'
   },
 });
