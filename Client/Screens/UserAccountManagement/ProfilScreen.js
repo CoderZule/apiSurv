@@ -63,6 +63,20 @@ export default function ProfilScreen({ navigation }) {
   }, []);
 
   const handleUpdateProfile = async () => {
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!Firstname || !Lastname || !Email || !Cin || !Phone) {
+      Alert.alert('الحقول فارغة', 'يرجى ملء جميع الحقول.');
+      return;
+    }
+
+    if (!emailRegex.test(Email)) {
+      Alert.alert('صيغة البريد الإلكتروني غير صالحة', 'يرجى إدخال بريد إلكتروني صالح.');
+      return;
+    }
+
+
     try {
       const updatedUserData = {
         _id: currentUser._id,
@@ -82,8 +96,12 @@ export default function ProfilScreen({ navigation }) {
       setCurrentUser(updatedUserData);
       Alert.alert('نجاح', 'تم تحديث المعلومات بنجاح');
     } catch (error) {
-      console.error('Erreur lors de la mise à jour des informations:', error);
-      Alert.alert('خطأ', 'فشل في تحديث المعلومات');
+      if (error.response && error.response.status === 400) {
+        Alert.alert('فشل في تحديث المعلومات', 'البريد الإلكتروني مستخدم بالفعل.');
+      } else {
+        Alert.alert('خطأ', 'فشل في تحديث المعلومات');
+      }
+
     }
   };
 
@@ -109,6 +127,11 @@ export default function ProfilScreen({ navigation }) {
 
       if (newPassword !== confirmPassword) {
         setError('كلمات المرور غير متطابقة.');
+        return;
+      }
+
+      if (newPassword.length <= 5) {
+        Alert.alert('كلمة المرور قصيرة', 'يجب أن تتكون كلمة المرور من أكثر من 5 أحرف.');
         return;
       }
 
@@ -191,7 +214,7 @@ export default function ProfilScreen({ navigation }) {
                     />
                   </View>
 
-                  
+
                 </View>
 
                 <View style={styles.input}>
