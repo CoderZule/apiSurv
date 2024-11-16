@@ -63,13 +63,24 @@ export default function ProfilScreen({ navigation }) {
   }, []);
 
   const handleUpdateProfile = async () => {
+    const nameRegex = /^[a-zA-Z\s]+$/;
+    const emailRegex =/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!Firstname || !Lastname || !Email || !Cin || !Phone) {
       Alert.alert('الحقول فارغة', 'يرجى ملء جميع الحقول.');
       return;
     }
+    if (!nameRegex.test(Firstname)) {
+      Alert.alert('الاسم غير صالح', 'يرجى إدخال اسم صالح.');
+      return;
+    }
+
+    if (!nameRegex.test(Lastname)) {
+      Alert.alert('اللقب غير صالح', 'يرجى إدخال لقب صالح.');
+      return;
+    }
+
 
     if (!emailRegex.test(Email)) {
       Alert.alert('صيغة البريد الإلكتروني غير صالحة', 'يرجى إدخال بريد إلكتروني صالح.');

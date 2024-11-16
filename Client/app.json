@@ -15,7 +15,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.zule.apiSurv"
     },
     "android": {
       "adaptiveIcon": {
@@ -39,7 +40,6 @@
       "favicon": "./assets/favicon.png"
     },
     "extra": {
-  
       "eas": {
         "projectId": "92d38aae-9224-4cf3-bb6c-e66a9a7289fd"
       }

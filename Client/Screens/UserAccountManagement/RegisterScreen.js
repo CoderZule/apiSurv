@@ -14,6 +14,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import axios from '../../axiosConfig';
 import { useNavigation } from '@react-navigation/native';
 import LottieView from "lottie-react-native";
+ 
 
 export default function RegisterScreen() {
     const navigation = useNavigation();
@@ -31,17 +32,29 @@ export default function RegisterScreen() {
 
     const handleRegister = async () => {
 
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
+        const nameRegex = /^[a-zA-Z\s]+$/;  
+        const emailRegex =/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        
         if (!form.firstname || !form.lastname || !form.email || !form.password) {
             Alert.alert('الحقول فارغة', 'يرجى ملء جميع الحقول.');
             return;
         }
-
+        
+        if (!nameRegex.test(form.firstname)) {
+            Alert.alert('الاسم غير صالح', 'يرجى إدخال اسم صالح.');
+            return;
+        }
+        
+        if (!nameRegex.test(form.lastname)) {
+            Alert.alert('اللقب غير صالح', 'يرجى إدخال لقب صالح.');
+            return;
+        }
+        
         if (!emailRegex.test(form.email)) {
             Alert.alert('صيغة البريد الإلكتروني غير صالحة', 'يرجى إدخال بريد إلكتروني صالح.');
             return;
         }
+        
 
         if (form.password.length <= 5) {
             Alert.alert('كلمة المرور قصيرة', 'يجب أن تتكون كلمة المرور من أكثر من 5 أحرف.');
