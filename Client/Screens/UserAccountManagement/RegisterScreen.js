@@ -32,7 +32,9 @@ export default function RegisterScreen() {
 
     const handleRegister = async () => {
 
-        const nameRegex = /^[a-zA-Z\s]+$/;  
+        const nameRegex = /^[\p{L}\s]+$/u;
+
+
         const emailRegex =/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         
         if (!form.firstname || !form.lastname || !form.email || !form.password) {
