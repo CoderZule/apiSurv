@@ -66,7 +66,7 @@ export default function ProfilScreen({ navigation }) {
     const nameRegex = /^[\p{L}\s]+$/u;
 
 
-    const emailRegex =/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 
     if (!Firstname || !Lastname || !Email || !Cin || !Phone) {
@@ -89,6 +89,7 @@ export default function ProfilScreen({ navigation }) {
       return;
     }
 
+    setIsLoading(true);
 
     try {
       const updatedUserData = {
@@ -107,9 +108,11 @@ export default function ProfilScreen({ navigation }) {
 
       await AsyncStorage.setItem('currentUser', JSON.stringify(updatedUserData));
       setCurrentUser(updatedUserData);
+      setIsLoading(false);
       Alert.alert('نجاح', 'تم تحديث المعلومات بنجاح');
     } catch (error) {
       if (error.response && error.response.status === 400) {
+        setIsLoading(false);
         Alert.alert('فشل في تحديث المعلومات', 'البريد الإلكتروني مستخدم بالفعل.');
       } else {
         Alert.alert('خطأ', 'فشل في تحديث المعلومات');
@@ -193,152 +196,154 @@ export default function ProfilScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.safeArea}>
       <HomeHeader navigation={navigation} title={'الملف الشخصي'} />
-      {isLoading ? (
-        <View style={[styles.container, styles.loadingContainer]}>
+
+
+      <View style={styles.container}>
+        <KeyboardAwareScrollView contentContainerStyle={styles.scrollContainer}>
+          <Card style={styles.card}>
+
+            <Card.Content>
+              <Text style={styles.cardTitle}>معلومات النحال</Text>
+
+              <View style={styles.input}>
+                <Text style={styles.inputLabel}>الاسم</Text>
+                <View style={styles.inputContainer}>
+
+                  <TextInput
+                    style={styles.inputControl}
+                    value={Firstname}
+                    onChangeText={setFirstName}
+                  />
+                  <FontAwesome5
+                    name="user"
+                    size={15}
+                    color="#977700"
+                    style={styles.inputIcon}
+                  />
+                </View>
+
+
+              </View>
+
+              <View style={styles.input}>
+                <Text style={styles.inputLabel}>اللقب</Text>
+                <View style={styles.inputContainer}>
+
+                  <TextInput
+                    style={styles.inputControl}
+                    value={Lastname}
+                    onChangeText={setLastName}
+                  />
+                  <FontAwesome5
+                    name="user"
+                    size={15}
+                    color="#977700"
+                    style={styles.inputIcon}
+                  />
+                </View>
+              </View>
+
+              <View style={styles.input}>
+                <Text style={styles.inputLabel}>الهاتف</Text>
+                <View style={styles.inputContainer}>
+
+                  <TextInput
+                    style={styles.inputControl}
+                    value={Phone}
+                    onChangeText={setPhone}
+                    keyboardType="phone-pad"
+                  />
+                  <FontAwesome5
+                    name="phone"
+                    size={15}
+                    color="#977700"
+                    style={styles.inputIcon}
+                  />
+
+                </View>
+              </View>
+
+
+              <View style={styles.input}>
+                <Text style={styles.inputLabel}>رقم ب.ت.و</Text>
+                <View style={styles.inputContainer}>
+
+                  <TextInput
+                    style={styles.inputControl}
+                    value={Cin}
+                    onChangeText={setCin}
+                    keyboardType="number-pad"
+                  />
+                  <FontAwesome5
+                    name="id-card"
+                    size={15}
+                    color="#977700"
+                    style={styles.inputIcon}
+                  />
+
+                </View>
+              </View>
+            </Card.Content>
+          </Card>
+
+          <Card style={styles.card}>
+            <Card.Content>
+              <Text style={styles.cardTitle}>إعدادات الحساب</Text>
+
+              <View style={styles.input}>
+                <Text style={styles.inputLabel}>البريد الإلكتروني</Text>
+                <View style={styles.inputContainer}>
+                  <FontAwesome5
+                    name="envelope"
+                    size={15}
+                    color="#977700"
+                    style={styles.inputIcon}
+                  />
+                  <TextInput
+                    style={styles.inputControlPhoneEM}
+                    value={Email}
+                    onChangeText={setEmail}
+                    keyboardType="email-address"
+                  />
+
+
+                </View>
+              </View>
+
+              <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.penIconContainer}>
+                <View style={styles.input}>
+                  <Text style={styles.inputLabel}>
+                    كلمة المرور{' '}
+                    <FontAwesome5
+                      name="pen"
+                      size={15}
+                      color="#5188C7"
+                      style={styles.inputIcon}
+                    />
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </Card.Content>
+          </Card>
+
+          <View style={styles.formAction}>
+            <TouchableOpacity onPress={handleUpdateProfile}>
+              <View style={styles.btn}>
+                <Text style={styles.btnText}>تحديث</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </KeyboardAwareScrollView>
+      </View>
+
+      {isLoading && (
+        <View style={styles.loadingContainer}>
           <LottieView
             source={require('../../assets/lottie/loading.json')}
             autoPlay
             loop
             style={{ width: 100, height: 100 }}
           />
-        </View>
-      ) : (
-        <View style={styles.container}>
-          <KeyboardAwareScrollView contentContainerStyle={styles.scrollContainer}>
-            <Card style={styles.card}>
-
-              <Card.Content>
-                <Text style={styles.cardTitle}>معلومات النحال</Text>
-
-                <View style={styles.input}>
-                  <Text style={styles.inputLabel}>الاسم</Text>
-                  <View style={styles.inputContainer}>
-
-                    <TextInput
-                      style={styles.inputControl}
-                      value={Firstname}
-                      onChangeText={setFirstName}
-                    />
-                    <FontAwesome5
-                      name="user"
-                      size={15}
-                      color="#977700"
-                      style={styles.inputIcon}
-                    />
-                  </View>
-
-
-                </View>
-
-                <View style={styles.input}>
-                  <Text style={styles.inputLabel}>اللقب</Text>
-                  <View style={styles.inputContainer}>
-
-                    <TextInput
-                      style={styles.inputControl}
-                      value={Lastname}
-                      onChangeText={setLastName}
-                    />
-                    <FontAwesome5
-                      name="user"
-                      size={15}
-                      color="#977700"
-                      style={styles.inputIcon}
-                    />
-                  </View>
-                </View>
-
-                <View style={styles.input}>
-                  <Text style={styles.inputLabel}>الهاتف</Text>
-                  <View style={styles.inputContainer}>
-
-                    <TextInput
-                      style={styles.inputControl}
-                      value={Phone}
-                      onChangeText={setPhone}
-                      keyboardType="phone-pad"
-                    />
-                    <FontAwesome5
-                      name="phone"
-                      size={15}
-                      color="#977700"
-                      style={styles.inputIcon}
-                    />
-
-                  </View>
-                </View>
-
-
-                <View style={styles.input}>
-                  <Text style={styles.inputLabel}>رقم ب.ت.و</Text>
-                  <View style={styles.inputContainer}>
-
-                    <TextInput
-                      style={styles.inputControl}
-                      value={Cin}
-                      onChangeText={setCin}
-                      keyboardType="number-pad"
-                    />
-                    <FontAwesome5
-                      name="id-card"
-                      size={15}
-                      color="#977700"
-                      style={styles.inputIcon}
-                    />
-
-                  </View>
-                </View>
-              </Card.Content>
-            </Card>
-
-            <Card style={styles.card}>
-              <Card.Content>
-                <Text style={styles.cardTitle}>إعدادات الحساب</Text>
-
-                <View style={styles.input}>
-                  <Text style={styles.inputLabel}>البريد الإلكتروني</Text>
-                  <View style={styles.inputContainer}>
-                    <FontAwesome5
-                      name="envelope"
-                      size={15}
-                      color="#977700"
-                      style={styles.inputIcon}
-                    />
-                    <TextInput
-                      style={styles.inputControlPhoneEM}
-                      value={Email}
-                      onChangeText={setEmail}
-                      keyboardType="email-address"
-                    />
-
-
-                  </View>
-                </View>
-
-                <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.penIconContainer}>
-                  <View style={styles.input}>
-                    <Text style={styles.inputLabel}>
-                      كلمة المرور{' '}
-                      <FontAwesome5
-                        name="pen"
-                        size={15}
-                        color="#5188C7"
-                        style={styles.inputIcon}
-                      />
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              </Card.Content>
-            </Card>
-
-            <View style={styles.formAction}>
-              <TouchableOpacity onPress={handleUpdateProfile}>
-                <View style={styles.btn}>
-                  <Text style={styles.btnText}>تحديث</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-          </KeyboardAwareScrollView>
         </View>
       )}
 
@@ -459,10 +464,7 @@ const styles = StyleSheet.create({
     padding: 16,
     direction: 'rtl'
   },
-  loadingContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+
   scrollContainer: {
     paddingBottom: 16,
   },
@@ -599,5 +601,15 @@ const styles = StyleSheet.create({
   errorText: {
     color: 'red',
     marginBottom: 8,
+  },
+  loadingContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)'
   },
 });
