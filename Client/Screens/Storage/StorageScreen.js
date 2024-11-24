@@ -14,7 +14,7 @@ export default function StorageScreen({ navigation }) {
   const [totals, setTotals] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState('');
-  const [newQuantity, setNewQuantity] = useState('');
+  const [reducedQuantity, setReducedQuantity] = useState('');
   const [selectedUnit, setSelectedUnit] = useState('');
   const isFocused = useIsFocused();
   const [isLoading, setIsLoading] = useState(true);
@@ -82,7 +82,7 @@ export default function StorageScreen({ navigation }) {
 
   const handleUpdateQuantity = async () => {
     try {
-      if (!selectedProduct || !selectedUnit || !newQuantity || isNaN(newQuantity) || newQuantity <= 0) {
+      if (!selectedProduct || !selectedUnit || !reducedQuantity || isNaN(reducedQuantity) || reducedQuantity <= 0) {
         Alert.alert('خطأ', 'يرجى ملء جميع الحقول وإدخال كمية صالحة.');
         return;
       }
@@ -108,7 +108,7 @@ export default function StorageScreen({ navigation }) {
         return;
       }
 
-      if (newQuantity > quantityEntry.Total) {
+      if (reducedQuantity > quantityEntry.Total) {
         Alert.alert('خطأ', 'الكمية المخفضة لا يمكن أن تكون أكبر من الكمية الحالية.');
         return;
       }
@@ -116,7 +116,8 @@ export default function StorageScreen({ navigation }) {
       const response = await axios.put('/storage/updateQuantity', {
         product: selectedProduct,
         unit: selectedUnit,
-        newQuantity: Number(newQuantity),
+        reducedQuantity: Number(reducedQuantity),
+        user : currentUser._id
       });
 
       if (response.status === 200 && response.data.success) {
@@ -134,7 +135,7 @@ export default function StorageScreen({ navigation }) {
 
   const openModal = (product) => {
     setSelectedProduct(product);
-    setNewQuantity('');
+    setReducedQuantity('');
     setSelectedUnit('');
     setShowModal(true);
   };
@@ -231,8 +232,8 @@ export default function StorageScreen({ navigation }) {
               style={styles.input}
               placeholder="الكمية المراد تقليلها"
               keyboardType="numeric"
-              value={newQuantity}
-              onChangeText={setNewQuantity}
+              value={reducedQuantity}
+              onChangeText={setReducedQuantity}
             />
 
             <Picker
