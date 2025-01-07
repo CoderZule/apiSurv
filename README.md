@@ -1,5 +1,3 @@
 
-
-<p align="center">
-  <img src="https://img.shields.io/badge/version-2.0-blue" alt="Version 1.0">
-</p>
+## App Screenshots
+<img src="https://github.com/user-attachments/assets/ad8a9fde-1f8a-49f4-a80e-6350d4071ff2"  width="200"/>
